@@ -1,0 +1,47 @@
+NS:=texastribune
+APP:=dot
+DOCKER_ENV_FILE?=env
+NET=${APP}_net
+S3_SOURCE=s3://dot-postgres-exports/pg.dump
+DATABASE_URL?=postgres://postgres:postgres@dot-db:5432/dot
+
+.PHONY: build
+
+dev: build net db
+	-docker volume rm ${APP}_node_modules-vol
+	-docker volume create --name ${APP}_node_modules-vol
+	docker run --rm \
+		--volume=$$(pwd):/app \
+		--volume=${APP}_node_modules-vol:/app/node_modules \
+		--publish=3000:3000 \
+		--net=${NET} \
+		--interactive \
+		--tty \
+		--env-file=${DOCKER_ENV_FILE} \
+		--entrypoint=bash \
+		--name=${APP} ${NS}/${APP}
+
+build:
+	docker build -t ${NS}/${APP} .
+
+net:
+	-docker network create ${NET}
+
+db: net
+	-docker volume create --name ${APP}_db-vol
+	-docker stop dot-db
+	 docker start dot-db 2>/dev/null || \
+		docker run --detach \
+		--net=${NET} \
+		--volume=${APP}_db-vol:/var/lib/postgresql/data \
+		--name=dot-db \
+		postgres:9.6
+	sleep 5
+
+db-refresh: db
+	docker run -it --rm \
+		--net=${NET} \
+		--env-file=${DOCKER_ENV_FILE} \
+		--env=DATABASE_URL=${DATABASE_URL} \
+		--env=S3_SOURCE=${S3_SOURCE} \
+		texastribune/pg-tools:9.6 /app/import-from-s3.sh

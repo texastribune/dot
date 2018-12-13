@@ -1,0 +1,25 @@
+doctype html
+html
+  head
+    title Pixel Tracker Dashboard
+    meta(
+      name='viewport',
+      content='width=device-width, initial-scale=1.0'
+    )
+    link(
+      href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons',
+      rel='stylesheet'
+    )
+    unless isDev
+      link(
+        href='/dashboard/static/dist/styles.min.css',
+        rel='stylesheet'
+      )
+
+  body
+    #app
+
+  if isDev
+    script(src='/dashboard/static/dist/dashboard.js')
+  else
+    script(src='/dashboard/static/dist/dashboard.min.js')
