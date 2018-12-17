@@ -1,4 +1,4 @@
-**Note for non-Texas Tribune users**: We're happy to answer questions about this app, but there are no current plans to adopt a release schedule or offer official support.
+**Note for non-Texas Tribune users**: We're happy to answer questions about this app, but there are no current plans to adopt a release schedule or offer official support. We will certainly be making improvements as time goes on, though, so check back.
 
 # Dot
 The Texas Tribune's pixel tracking tool.
