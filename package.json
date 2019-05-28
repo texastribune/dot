@@ -20,7 +20,7 @@
     "url": "https://github.com/texastribune/dot/issues"
   },
   "dependencies": {
-    "apollo-cache-inmemory": "^1.1.4",
+    "apollo-cache-inmemory": "^1.6.0",
     "apollo-client": "^2.0.4",
     "apollo-link": "^1.0.6",
     "apollo-link-http": "^1.3.1",
