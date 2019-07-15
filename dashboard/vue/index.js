@@ -5,18 +5,16 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import Vuetify from 'vuetify';
-import Raven from 'raven-js';
-import RavenVue from 'raven-js/plugins/vue';
 
 import App from './App.vue';
 import routes from './routes';
-import config from '../config';
+// import config from '../config';
 import sharedConfig from '../../shared-config';
 import logToConsoleOrSentry from '../errors';
 
-require('vuetify/dist/vuetify.min.css');
+// require('vuetify/dist/vuetify.min.css');
 
-const { sentryUrl } = config;
+// const { sentryUrl } = config;
 const {
   isDev,
   isTest,
@@ -30,7 +28,7 @@ if (isDev) {
     console.error(err); // eslint-disable-line no-console
   };
 } else {
-  Raven.config(sentryUrl).addPlugin(RavenVue, Vue).install();
+  // Raven.config(sentryUrl).addPlugin(RavenVue, Vue).install();
 }
 
 // general Vue config

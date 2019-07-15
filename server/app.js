@@ -14,12 +14,12 @@ const logToConsoleOrSentry = require('./error');
 const app = express();
 
 // sentry request middleware
-if (!isDev) {
+/* if (!isDev) {
   raven.config(sentryUrl, {
     captureUnhandledRejections: true,
   }).install();
   app.use(raven.requestHandler());
-}
+} */
 
 // template set-up
 app.set('view engine', 'pug');
@@ -44,7 +44,7 @@ if (isDev) {
 
 // error-handling middleware
 if (!isDev) {
-  app.use(raven.errorHandler());
+  // app.use(raven.errorHandler());
 }
 app.use((err, req, res, next) => {
   if (isDev) {
