@@ -1,4 +1,4 @@
-FROM node:6.11.1
+FROM node:13.5.0
 MAINTAINER tech@texastribune.org
 
 RUN mkdir /app
