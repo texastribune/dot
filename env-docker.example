@@ -1,0 +1,10 @@
+API_HOST=https://www.yourdomain.com
+
+AWS_ACCESS_KEY_ID=<redacted>
+AWS_SECRET_ACCESS_KEY=<redacted>
+
+DB_HOST=dot-db
+DB_USER=postgres
+DB_PASSWORD=postgres
+DB_NAME=dot
+DB_PORT=5432
