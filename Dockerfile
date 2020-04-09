@@ -6,8 +6,8 @@ WORKDIR /app
 ARG API_HOST=https://dot.texastribune.org
 
 COPY package.json /app/
-COPY yarn.lock /app/
-RUN yarn
+COPY package-lock.json /app/
+RUN npm i
 
 COPY . /app/
 

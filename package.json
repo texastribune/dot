@@ -2,15 +2,8 @@
   "name": "dot",
   "description": "The Texas Tribune's pixel tracking tool",
   "scripts": {
-    "tracker:dev:webpack": "NODE_ENV=development webpack --watch --config ./tracker/webpack/config.dev.js",
-    "tracker:prod:webpack": "NODE_ENV=production webpack --config ./tracker/webpack/config.prod.js",
-    "tracker:dev": "yarn start & yarn run tracker:dev:webpack",
-    "dash:prod:webpack": "NODE_ENV=production webpack --config ./dashboard/webpack/config.prod.js",
-    "dash:test:webpack": "NODE_ENV=test webpack --config ./dashboard/webpack/config.prod.js",
-    "dash:dev": "yarn start",
     "start": "NODE_ENV=development nodemon --ignore dashboard/ server/app.js",
-    "start:prod": "NODE_ENV=production node server/app.js",
-    "start:test": "NODE_ENV=test node server/app.js"
+    "start:prod": "NODE_ENV=production node server/app.js"
   },
   "repository": {
     "type": "git",
@@ -19,50 +12,7 @@
   "bugs": {
     "url": "https://github.com/texastribune/dot/issues"
   },
-  "dependencies": {
-    "apollo-cache-inmemory": "^1.1.4",
-    "apollo-client": "^2.0.4",
-    "apollo-link": "^1.0.6",
-    "apollo-link-http": "^1.3.1",
-    "body-parser": "^1.18.2",
-    "date-fns": "^1.29.0",
-    "express": "^4.14.0",
-    "graphql": "^0.11.7",
-    "graphql-server-express": "^1.3.0",
-    "graphql-tag": "^2.6.0",
-    "graphql-tools": "^2.13.0",
-    "morgan": "^1.7.0",
-    "pg": "^6.0.3",
-    "pug": "^2.0.0-rc.4",
-    "raven": "^2.4.0",
-    "raven-js": "^3.22.1",
-    "vue": "^2.5.11",
-    "vue-apollo": "next",
-    "vue-router": "^3.0.1",
-    "vue-template-compiler": "^2.0.0",
-    "vuejs-datepicker": "^0.9.24",
-    "vuetify": "^0.17.6"
-  },
-  "devDependencies": {
-    "babel-core": "^6.25.0",
-    "babel-loader": "^7.1.0",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "css-loader": "1",
-    "dotenv-webpack": "^1.5.4",
-    "eslint": "^4.15.0",
-    "eslint-config-airbnb-base": "^12.1.0",
-    "eslint-plugin-import": "^2.7.0",
-    "eslint-plugin-vue": "^4.2.0",
-    "extract-text-webpack-plugin": "2",
-    "nodemon": "^1.11.0",
-    "style-loader": "^0.19.1",
-    "vue-eslint-parser": "^2.0.2",
-    "vue-loader": "^13.5.1",
-    "webpack": "^3.0.0",
-    "webpack-dev-middleware": "^2.0.1",
-    "webpack-hot-middleware": "^2.21.0",
-    "webpack-merge": "^4.1.1"
-  },
+  "dependencies": {},
+  "devDependencies": {},
   "license": "MIT"
 }
