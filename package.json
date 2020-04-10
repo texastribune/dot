@@ -2,10 +2,11 @@
   "name": "dot",
   "description": "The Texas Tribune's pixel tracking tool",
   "scripts": {
-    "tsc:server": "rimraf build && tsc -b tsconfig.server.json",
-    "start": "nodemon --watch server --ext ts --exec ts-node --project tsconfig.server.json server/app.ts",
-    "start:prod": "NODE_ENV=production node build/app.js",
-    "build": "npm run tsc:server"
+    "build": "npm run build:dashboard && npm run build:server",
+    "build:dashboard": "rimraf dist && NODE_ENV=production webpack",
+    "build:server": "rimraf build && tsc -b tsconfig.server.json",
+    "start": "NODE_ENV=development nodemon --watch server --ext ts --exec ts-node --project tsconfig.server.json server/app.ts",
+    "start:prod": "NODE_ENV=production node build/app.js"
   },
   "repository": {
     "type": "git",
@@ -15,15 +16,30 @@
     "url": "https://github.com/texastribune/dot/issues"
   },
   "dependencies": {
-    "express": "^4.17.1",
-    "rimraf": "^3.0.2"
+    "pug": "^2.0.4",
+    "vue": "^2.6.11",
+    "vuetify": "^2.2.21"
   },
   "devDependencies": {
     "@types/express": "^4.17.6",
     "@types/node": "^12.12.35",
+    "css-loader": "^3.5.2",
+    "deepmerge": "^4.2.2",
+    "express": "^4.17.1",
+    "fibers": "^4.0.2",
+    "mini-css-extract-plugin": "^0.9.0",
     "nodemon": "^2.0.3",
+    "rimraf": "^3.0.2",
+    "sass": "^1.26.3",
+    "sass-loader": "^8.0.2",
+    "ts-loader": "^6.2.2",
     "ts-node": "^8.8.2",
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "vue-loader": "^15.9.1",
+    "vue-template-compiler": "^2.6.11",
+    "webpack": "^4.42.1",
+    "webpack-assets-manifest": "^3.1.1",
+    "webpack-cli": "^3.3.11"
   },
   "license": "MIT"
 }
