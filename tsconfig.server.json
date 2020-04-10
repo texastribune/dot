@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "outDir": "build",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "strict": true,
+    "target": "esnext"
+  },
+  "include": [
+    "server/**/*"
+  ]
+}
