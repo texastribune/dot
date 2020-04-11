@@ -14,7 +14,7 @@ const config = {
 
   output: {
     chunkFilename: "[name].chunk.[contenthash].js",
-    filename: "[name].[contenthash].js",
+    filename: isDev ? "main.js" : "[name].[contenthash].js",
     path: path.join(process.cwd(), "dist"),
     publicPath: "/static/",
   },
@@ -28,15 +28,6 @@ const config = {
       publicPath: true,
     }),
   ],
-
-  optimization: {
-    runtimeChunk: "single",
-
-    splitChunks: {
-      chunks: "all",
-      name: false,
-    },
-  },
 
   resolve: {
     extensions: [".js", ".ts", ".vue"],
@@ -70,12 +61,21 @@ if (isDev) {
   cssRule.use.unshift("vue-style-loader");
 } else {
   cssRule.use.unshift(MiniCssExtractPlugin.loader);
+
   extraPlugins.push(
     new MiniCssExtractPlugin({
       filename: "[name].[contenthash].css",
       chunkFilename: "[name].chunk.[contenthash].css",
     })
   );
+
+  config.optimization = {
+    runtimeChunk: "single",
+    splitChunks: {
+      chunks: "all",
+      name: false,
+    },
+  };
 }
 
 config.module.rules.push(cssRule);

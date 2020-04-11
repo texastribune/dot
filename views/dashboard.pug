@@ -6,11 +6,15 @@ html
       name='viewport',
       content='width=device-width, initial-scale=1.0'
     )
-    each stylesheet in stylesheets
-      link(rel='stylesheet', type='text/css', href=stylesheet)
+    unless isDev
+      each stylesheet in stylesheets
+        link(rel='stylesheet', type='text/css', href=stylesheet)
 
   body
     #app
 
-  each script in scripts
+  if isDev
+    script(src='main.js')
+  else
+    each script in scripts
       script(src=script)
