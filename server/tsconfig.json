@@ -1,13 +1,11 @@
 {
   "compilerOptions": {
     "esModuleInterop": true,
-    "module": "esnext",
+    "outDir": "../build",
+    "module": "commonjs",
     "moduleResolution": "node",
     "noImplicitAny": true,
     "strict": true,
     "target": "esnext"
-  },
-  "include": [
-    "dashboard/**/*"
-  ]
+  }
 }

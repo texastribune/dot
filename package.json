@@ -4,8 +4,8 @@
   "scripts": {
     "build": "npm run build:dashboard && npm run build:server",
     "build:dashboard": "rimraf dist && NODE_ENV=production webpack",
-    "build:server": "rimraf build && tsc -b tsconfig.server.json",
-    "start": "NODE_ENV=development nodemon --watch server --ext ts --exec ts-node --project tsconfig.server.json server/app.ts",
+    "build:server": "rimraf build && tsc -b ./server/tsconfig.json",
+    "start": "NODE_ENV=development nodemon --watch server --ext ts --exec ts-node --project ./server/tsconfig.json server/app.ts",
     "start:prod": "NODE_ENV=production node build/app.js"
   },
   "repository": {

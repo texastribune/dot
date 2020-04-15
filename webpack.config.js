@@ -44,7 +44,7 @@ const config = {
         loader: "ts-loader",
         options: {
           appendTsSuffixTo: [/\.vue$/],
-          configFile: "tsconfig.client.json",
+          configFile: path.join(process.cwd(), 'dashboard', 'tsconfig.json'),
         },
       },
     ],
