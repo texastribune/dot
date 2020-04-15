@@ -11,6 +11,6 @@ RUN npm i
 
 COPY . /app/
 
-# RUN npm run build-dashboard
+RUN npm run build
 
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
