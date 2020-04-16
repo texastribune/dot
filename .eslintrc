@@ -1,4 +1,10 @@
 {
+  "ignorePatterns": [
+    "tracker",
+    "dist",
+    "build",
+    "node_modules"
+  ],
   "parser": "vue-eslint-parser",
   "parserOptions": {
     "parser": "@typescript-eslint/parser"
