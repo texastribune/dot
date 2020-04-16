@@ -5,16 +5,19 @@
   </v-card>
 </template>
 
-<script>
+<script lang="ts">
+/// <reference path="../node_modules/vuetify/types/lib.d.ts" />
+
+import Vue from 'vue';
 import { VCard, VCardText, VCardTitle } from 'vuetify/lib';
 
-export default {
+export default Vue.extend({
   name: 'TestComponent',
 
   components: {
     VCard,
     VCardText,
-    VCardTitle
-  }
-}
+    VCardTitle,
+  },
+});
 </script>
