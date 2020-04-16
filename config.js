@@ -1,25 +1,26 @@
-const path = require("path");
+// eslint-disable-next-line
+const path = require('path');
 
-const IS_DEV = process.env.NODE_ENV === "development";
-const PORT = parseInt(process.env.NODE_PORT);
+const IS_DEV = process.env.NODE_ENV === 'development';
+const PORT = parseInt(process.env.NODE_PORT, 10);
 
-const DASHBOARD_MANIFEST_FILE_NAME = "assets.json";
-const DASHBOARD_BUILD_PATH = path.join(process.cwd(), "dist");
+const DASHBOARD_MANIFEST_FILE_NAME = 'assets.json';
+const DASHBOARD_BUILD_PATH = path.join(process.cwd(), 'dist');
 const DASHBOARD_MANIFEST_PATH = path.join(
   DASHBOARD_BUILD_PATH,
   DASHBOARD_MANIFEST_FILE_NAME
 );
 const DASHBOARD_TSCONFIG_PATH = path.join(
   process.cwd(),
-  "dashboard",
-  "tsconfig.json"
+  'dashboard',
+  'tsconfig.json'
 );
 
-const DASHBOARD_STATIC_ALIAS = "/static/";
+const DASHBOARD_STATIC_ALIAS = '/static/';
 
-const TEMPLATES_PATH = path.join(process.cwd(), "server", "views");
+const TEMPLATES_PATH = path.join(process.cwd(), 'server', 'views');
 
-const PUBLIC_BUILD_PATH = path.join(process.cwd(), "public");
+const PUBLIC_BUILD_PATH = path.join(process.cwd(), 'public');
 
 module.exports = {
   IS_DEV,
@@ -32,4 +33,3 @@ module.exports = {
   TEMPLATES_PATH,
   PUBLIC_BUILD_PATH,
 };
-
