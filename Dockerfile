@@ -13,4 +13,4 @@ COPY . /app/
 
 RUN npm run build
 
-ENTRYPOINT ["/app/docker-entrypoint.sh"]
+ENTRYPOINT ["npm run start:prod"]
