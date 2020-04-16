@@ -1,11 +1,8 @@
-import path from 'path';
 import fs from 'fs';
 
 import express from 'express';
 import webpackDev from "webpack-dev-middleware";
 import webpack from 'webpack';
-
-import webpackConfig from '../webpack.config';
 
 interface Assets {
   entrypoints: {
@@ -16,41 +13,59 @@ interface Assets {
   }
 }
 
-interface DashboardContext {
+interface Context {
   isDev: boolean;
-  scripts?: string[];
-  stylesheets?: string[];
 }
 
-const app = express();
-const port = process.env.NODE_PORT;
-const isDev = process.env.NODE_ENV === "development";
+interface ProdContext extends Context {
+  scripts: string[];
+  stylesheets: string[];
+}
 
-if (isDev) {
+const webpackConfig = require("../webpack.config") as webpack.Configuration;
+const {
+  IS_DEV,
+  PORT,
+  DASHBOARD_MANIFEST_PATH,
+  DASHBOARD_STATIC_ALIAS,
+  DASHBOARD_BUILD_PATH,
+  TEMPLATES_PATH,
+  PUBLIC_BUILD_PATH,
+} = require("../config");
+
+const app = express();
+
+app.set("views", TEMPLATES_PATH);
+app.set("view engine", "pug");
+
+app.use(express.static(PUBLIC_BUILD_PATH));
+app.use(DASHBOARD_STATIC_ALIAS, express.static(DASHBOARD_BUILD_PATH));
+
+// TODO: better TS for req and res
+app.get("/dashboard", function (req, res) {
+  if (IS_DEV) {
+    const context: Context = { isDev: true };
+
+    res.render("dashboard", context);
+  } else {
+    const assets = JSON.parse(
+      fs.readFileSync(DASHBOARD_MANIFEST_PATH).toString()
+    ) as Assets;
+
+    const context: ProdContext = {
+      isDev: false,
+      scripts: assets.entrypoints.main.js,
+      stylesheets: assets.entrypoints.main.css
+    };
+
+    res.render("dashboard", context);
+  }
+});
+
+if (IS_DEV) {
   app.use(webpackDev(webpack(webpackConfig)));
 }
 
-app.set("view engine", "pug");
-app.use(express.static("public"));
-app.use("/static", express.static("dist"));
-
-app.get("/dashboard", function (req, res) {
-  const context: DashboardContext = { isDev };
-
-  if (!isDev) {
-    // needs error handling
-    const assetsPath = path.join(process.cwd(), "dist", "assets.json");
-    const assets = JSON.parse(
-      fs.readFileSync(assetsPath).toString()
-    ) as Assets;
-
-    context.scripts = assets.entrypoints.main.js;
-    context.stylesheets = assets.entrypoints.main.css;
-  }
-
-  res.render("dashboard", context);
-});
-
-app.listen(port, () => {
-  console.log(`Listening at port ${port}`);
+app.listen(PORT, () => {
+  console.log(`Listening at port ${PORT}`);
 });

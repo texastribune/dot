@@ -1,22 +1,26 @@
-const path = require('path');
-
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { EnvironmentPlugin } = require('webpack');
 
-const isDev = process.env.NODE_ENV === "development";
+const {
+  IS_DEV,
+  DASHBOARD_BUILD_PATH,
+  DASHBOARD_STATIC_ALIAS,
+  DASHBOARD_MANIFEST_FILE_NAME,
+  DASHBOARD_TSCONFIG_PATH
+} = require("./config");
 
 const config = {
-  mode: isDev ? "development" : "production",
+  mode: IS_DEV ? "development" : "production",
 
   entry: "./dashboard",
 
   output: {
     chunkFilename: "[name].chunk.[contenthash].js",
-    filename: isDev ? "main.js" : "[name].[contenthash].js",
-    path: path.join(process.cwd(), "dist"),
-    publicPath: "/static/",
+    filename: IS_DEV ? "[name].js" : "[name].[contenthash].js",
+    path: DASHBOARD_BUILD_PATH,
+    publicPath: DASHBOARD_STATIC_ALIAS
   },
 
   plugins: [
@@ -24,31 +28,31 @@ const config = {
     new EnvironmentPlugin(["API_HOST", "NODE_ENV"]),
     new WebpackAssetsManifest({
       entrypoints: true,
-      output: "assets.json",
-      publicPath: true,
-    }),
+      output: DASHBOARD_MANIFEST_FILE_NAME,
+      publicPath: true
+    })
   ],
 
   resolve: {
-    extensions: [".js", ".ts", ".vue"],
+    extensions: [".js", ".ts", ".vue"]
   },
 
   module: {
     rules: [
       {
         test: /\.vue$/i,
-        loader: "vue-loader",
+        loader: "vue-loader"
       },
       {
         test: /\.ts$/i,
         loader: "ts-loader",
         options: {
           appendTsSuffixTo: [/\.vue$/],
-          configFile: path.join(process.cwd(), 'dashboard', 'tsconfig.json'),
-        },
-      },
-    ],
-  },
+          configFile: DASHBOARD_TSCONFIG_PATH
+        }
+      }
+    ]
+  }
 };
 
 const extraPlugins = [];
@@ -57,7 +61,7 @@ const cssRule = {
   use: ["css-loader", "sass-loader"],
 };
 
-if (isDev) {
+if (IS_DEV) {
   cssRule.use.unshift("vue-style-loader");
 } else {
   cssRule.use.unshift(MiniCssExtractPlugin.loader);
@@ -65,7 +69,7 @@ if (isDev) {
   extraPlugins.push(
     new MiniCssExtractPlugin({
       filename: "[name].[contenthash].css",
-      chunkFilename: "[name].chunk.[contenthash].css",
+      chunkFilename: "[name].chunk.[contenthash].css"
     })
   );
 
@@ -74,7 +78,7 @@ if (isDev) {
     splitChunks: {
       chunks: "all",
       name: false,
-    },
+    }
   };
 }
 
