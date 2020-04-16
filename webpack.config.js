@@ -16,7 +16,7 @@ const {
 const config = {
   mode: IS_DEV ? 'development' : 'production',
 
-  entry: './dashboard',
+  entry: './dashboard/index.ts',
 
   output: {
     chunkFilename: '[name].chunk.[contenthash].js',
