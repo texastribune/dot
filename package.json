@@ -4,8 +4,9 @@
   "scripts": {
     "build": "npm run build:dashboard && npm run build:server",
     "build:dashboard": "rimraf dist && NODE_ENV=production webpack",
-    "build:server": "rimraf build && tsc -b ./server/tsconfig.json",
-    "start": "NODE_ENV=development nodemon --watch server --ext ts --exec ts-node --project ./server/tsconfig.json server/app.ts",
+    "build:server": "rimraf build && tsc -b server/tsconfig.json",
+    "lint": "eslint **/*.{ts,js.vue}",
+    "start": "NODE_ENV=development nodemon --watch server --ext ts --exec ts-node --project server/tsconfig.json server/app.ts",
     "start:prod": "NODE_ENV=production node build/app.js"
   },
   "repository": {
@@ -16,6 +17,7 @@
     "url": "https://github.com/texastribune/dot/issues"
   },
   "dependencies": {
+    "express": "^4.17.1",
     "pug": "^2.0.4",
     "vue": "^2.6.11",
     "vuetify": "^2.2.21"
@@ -25,9 +27,15 @@
     "@types/node": "^12.12.35",
     "@types/webpack": "^4.41.11",
     "@types/webpack-dev-middleware": "^3.7.0",
+    "@typescript-eslint/eslint-plugin": "^2.28.0",
+    "@typescript-eslint/parser": "^2.28.0",
     "css-loader": "^3.5.2",
     "deepmerge": "^4.2.2",
-    "express": "^4.17.1",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-config-prettier": "^6.10.1",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-vue": "^7.0.0-alpha.0",
     "fibers": "^4.0.2",
     "mini-css-extract-plugin": "^0.9.0",
     "nodemon": "^2.0.3",
