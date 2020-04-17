@@ -21,7 +21,10 @@
     "import/extensions": [
       "error",
       "ignorePackages",
-      { "js": "never" }
+      {
+        "js": "never",
+        "ts": "never"
+      }
     ]
   }
 }

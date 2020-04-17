@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable @typescript-eslint/no-var-requires */
 
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
@@ -16,7 +16,9 @@ const {
 const config = {
   mode: IS_DEV ? 'development' : 'production',
 
-  entry: './dashboard/index.ts',
+  devtool: IS_DEV ? 'eval-source-map' : 'source-map',
+
+  entry: './dashboard',
 
   output: {
     chunkFilename: '[name].chunk.[contenthash].js',
@@ -36,7 +38,7 @@ const config = {
   ],
 
   resolve: {
-    extensions: ['.js'],
+    extensions: ['.js', '.ts'],
   },
 
   module: {
