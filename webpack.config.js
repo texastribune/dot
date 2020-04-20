@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+const path = require('path');
 
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
@@ -10,7 +11,6 @@ const {
   DASHBOARD_BUILD_PATH,
   DASHBOARD_STATIC_ALIAS,
   DASHBOARD_MANIFEST_FILE_NAME,
-  DASHBOARD_TSCONFIG_PATH,
 } = require('./config');
 
 const config = {
@@ -52,7 +52,7 @@ const config = {
         loader: 'ts-loader',
         options: {
           appendTsSuffixTo: [/\.vue$/],
-          configFile: DASHBOARD_TSCONFIG_PATH,
+          configFile: path.join(process.cwd(), 'dashboard', 'tsconfig.json'),
         },
       },
     ],
