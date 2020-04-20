@@ -6,8 +6,8 @@
     "build:dashboard": "rimraf dist && NODE_ENV=production webpack",
     "build:server": "rimraf build && tsc -b server/tsconfig.json",
     "lint": "eslint **/*.{ts,js,vue}",
-    "start": "NODE_ENV=development nodemon --watch server --ext ts --exec ts-node --project server/tsconfig.json server/app.ts",
-    "start:prod": "NODE_ENV=production node build/app.js"
+    "start": "touch dist/assets.json && NODE_ENV=development nodemon --watch server --ext ts --exec ts-node --project server/tsconfig.json server/app.ts",
+    "start:prod": "NODE_ENV=production node build/server/app.js"
   },
   "repository": {
     "type": "git",
@@ -17,6 +17,8 @@
     "url": "https://github.com/texastribune/dot/issues"
   },
   "dependencies": {
+    "@sentry/node": "^5.15.4",
+    "connect-slashes": "^1.4.0",
     "express": "^4.17.1",
     "pug": "^2.0.4",
     "vue": "^2.6.11",
