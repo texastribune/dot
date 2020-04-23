@@ -1,22 +1,29 @@
-import { captureException, withScope, Severity } from '@sentry/node';
+import { captureException, withScope } from '@sentry/node';
 
 import AppError from '../errors';
 
-export default function logError({
-  error,
-  level = Severity.Error,
-}: {
-  error: AppError;
-  level?: Severity;
-}): void {
-  withScope((scope) => {
-    scope.setExtra('status', error.status);
-    scope.setLevel(level);
+class UnknownError extends Error {
+  constructor() {
+    super('Malformed JavaScript error');
+    this.name = 'UnknownError';
+  }
+}
 
-    if (error.extra) {
-      scope.setExtra('meta', error.extra);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default function logError(error: any): void {
+  withScope((scope) => {
+    if (error.status) {
+      scope.setExtra('status', error.status);
     }
 
-    captureException(error);
+    if (error instanceof AppError) {
+      scope.setExtra('extra', error.extra);
+    }
+
+    if (error instanceof Error) {
+      captureException(error);
+    } else {
+      captureException(new UnknownError());
+    }
   });
 }
