@@ -18,7 +18,15 @@ const PUBLIC_BUILD_PATH = path.join(process.cwd(), 'public');
 const { SENTRY_DSN, SENTRY_ENVIRONMENT } = process.env;
 const ENABLE_SENTRY = process.env.ENABLE_SENTRY === 'true';
 
-const { AUTH0_DOMAIN, AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET } = process.env;
+const {
+  AUTH0_DOMAIN = 'auth-test.texastribune.org',
+  AUTH0_CLIENT_ID,
+  AUTH0_CLIENT_SECRET,
+  AUTH0_API_AUDIENCE = 'https://texastribune.org/dot',
+  AUTH0_JWT_ISSUER = `https://${AUTH0_DOMAIN}/`,
+  AUTH0_PUBLIC_KEY_URL = `https://${AUTH0_DOMAIN}/.well-known/jwks.json`,
+  AUTH0_JWT_ALGORITHM = 'RS256',
+} = process.env;
 
 module.exports = {
   IS_DEV,
@@ -35,4 +43,8 @@ module.exports = {
   AUTH0_DOMAIN,
   AUTH0_CLIENT_ID,
   AUTH0_CLIENT_SECRET,
+  AUTH0_API_AUDIENCE,
+  AUTH0_JWT_ISSUER,
+  AUTH0_PUBLIC_KEY_URL,
+  AUTH0_JWT_ALGORITHM,
 };
