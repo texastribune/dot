@@ -3,7 +3,6 @@
 const resolvers = {
   Query: {
     posts(root: any, args: any, request: any): string[] {
-      console.log(request.user);
       return ['foo', 'bar'];
     },
   },

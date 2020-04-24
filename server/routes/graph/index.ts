@@ -1,53 +1,30 @@
 import express from 'express';
 import graphql from 'express-graphql';
 import jwt from 'express-jwt';
+import jwksRsa from 'jwks-rsa';
 import { makeExecutableSchema } from 'graphql-tools';
-import axios, { AxiosError } from 'axios';
 
-import { IS_DEV, AUTH0_DOMAIN, AUTH0_CLIENT_ID } from '../../../config';
-import { PublicKeyError, UnauthorizedError } from '../../errors';
+import {
+  IS_DEV,
+  AUTH0_API_AUDIENCE,
+  AUTH0_JWT_ISSUER,
+  AUTH0_PUBLIC_KEY_URL,
+  AUTH0_JWT_ALGORITHM,
+} from '../../../config';
+import AppError from '../../errors';
 import typeDefs from './types';
 import resolvers from './resolvers';
 
-interface PublicKey {
-  alg: string;
-  kty: string;
-  use: string;
-  n: string;
-  e: string;
-  kid: string;
-  x5t: string;
-  x5c: string[];
-}
-
-const PUBLIC_KEY_URL = `https://${AUTH0_DOMAIN}/.well-known/jwks.json`;
-const JWT_ISSUER = `https://${AUTH0_DOMAIN}/`;
-const JWT_AUDIENCE = AUTH0_CLIENT_ID;
-
 const router = express.Router();
-
-const getPublicKey: jwt.SecretCallback = (req, payload, done): void => {
-  axios
-    .get<{ keys: PublicKey[] }>(PUBLIC_KEY_URL)
-    .then(({ data: publicKey }) => {
-      done(null, JSON.stringify(publicKey));
-    })
-    .catch((error) => {
-      const axiosError: AxiosError<PublicKey[]> = error;
-      done(
-        new PublicKeyError({
-          message: axiosError.message,
-          extra: axiosError.toJSON(),
-        })
-      );
-    });
-};
 
 router.use(
   jwt({
-    secret: getPublicKey,
-    audience: JWT_AUDIENCE,
-    issuer: JWT_ISSUER,
+    secret: jwksRsa.expressJwtSecret({
+      jwksUri: AUTH0_PUBLIC_KEY_URL,
+    }),
+    algorithms: [AUTH0_JWT_ALGORITHM],
+    audience: AUTH0_API_AUDIENCE,
+    issuer: AUTH0_JWT_ISSUER,
   }),
   graphql({
     schema: makeExecutableSchema({ typeDefs, resolvers }),
@@ -57,16 +34,32 @@ router.use(
 
 router.use(
   (
-    error: Error,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    error: any,
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) => {
-    if (error.name === 'UnauthorizedError') {
-      next(new UnauthorizedError({ message: error.message }));
-    } else {
-      next(error);
+    if (error instanceof Error) {
+      let status = 500;
+      const { message, name } = error;
+
+      if (error instanceof jwt.UnauthorizedError) {
+        status = 401;
+      } else if (error instanceof jwksRsa.ArgumentError) {
+        status = 500;
+      } else if (error instanceof jwksRsa.JwksError) {
+        status = 500;
+      } else if (error instanceof jwksRsa.SigningKeyNotFoundError) {
+        status = 500;
+      } else if (error instanceof jwksRsa.JwksRateLimitError) {
+        status = 429;
+      }
+
+      return next(new AppError({ message, name, status }));
     }
+
+    return next(error);
   }
 );
 
