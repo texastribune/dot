@@ -1,0 +1,8 @@
+repos:
+  -
+    repo: 'https://github.com/prettier/prettier'
+    rev: 2.0.4
+    hooks:
+      -
+        id: prettier
+        files: '^.*\.(js|ts|vue|json|html|md)'

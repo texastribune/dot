@@ -1,0 +1,20 @@
+doctype html
+html
+  head
+    title Pixel Tracker Dashboard
+    meta(
+      name='viewport',
+      content='width=device-width, initial-scale=1.0'
+    )
+    unless isDev
+      each stylesheet in stylesheets
+        link(rel='stylesheet', type='text/css', href=stylesheet)
+
+  body
+    #app
+
+  if isDev
+    script(src='/main.js')
+  else
+    each script in scripts
+      script(src=script)
