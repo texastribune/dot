@@ -20,6 +20,7 @@ import {
 } from '../config';
 import routes from './routes';
 import logError from './utils/log-error';
+import { EnhancedError } from './errors';
 
 if (ENABLE_SENTRY) {
   Sentry.init({
@@ -49,8 +50,7 @@ app.get('/', (req, res) => {
 app.use(routes);
 app.use(
   (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    error: any,
+    error: EnhancedError,
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
@@ -64,15 +64,14 @@ app.use(
 app.use(
   '(/api*|/graph*)',
   (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    error: any,
+    error: EnhancedError,
     req: express.Request,
     res: express.Response,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     next: express.NextFunction
   ) => {
     res.status(error.status || 500).json({
-      message: error.message || 'Unknown Error',
+      message: error.message,
       error: IS_DEV ? error : {},
     });
   }

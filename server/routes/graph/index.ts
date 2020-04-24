@@ -11,7 +11,7 @@ import {
   AUTH0_PUBLIC_KEY_URL,
   AUTH0_JWT_ALGORITHM,
 } from '../../../config';
-import AppError from '../../errors';
+import { EnhancedError, UnauthorizedError, PublicKeyError } from '../../errors';
 import typeDefs from './types';
 import resolvers from './resolvers';
 
@@ -34,29 +34,23 @@ router.use(
 
 router.use(
   (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    error: any,
+    error: EnhancedError,
     req: express.Request,
     res: express.Response,
     next: express.NextFunction
   ) => {
-    if (error instanceof Error) {
-      let status = 500;
-      const { message, name } = error;
-
-      if (error instanceof jwt.UnauthorizedError) {
-        status = 401;
-      } else if (error instanceof jwksRsa.ArgumentError) {
-        status = 500;
-      } else if (error instanceof jwksRsa.JwksError) {
-        status = 500;
-      } else if (error instanceof jwksRsa.SigningKeyNotFoundError) {
-        status = 500;
-      } else if (error instanceof jwksRsa.JwksRateLimitError) {
-        status = 429;
-      }
-
-      return next(new AppError({ message, name, status }));
+    if (error instanceof jwt.UnauthorizedError) {
+      return next(new UnauthorizedError({ message: error.message }));
+    }
+    if (
+      error instanceof jwksRsa.ArgumentError ||
+      error instanceof jwksRsa.JwksError ||
+      error instanceof jwksRsa.SigningKeyNotFoundError
+    ) {
+      return next(new PublicKeyError({ message: error.message, status: 500 }));
+    }
+    if (error instanceof jwksRsa.JwksRateLimitError) {
+      return next(new PublicKeyError({ message: error.message, status: 429 }));
     }
 
     return next(error);

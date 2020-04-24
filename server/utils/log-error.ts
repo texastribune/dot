@@ -1,9 +1,8 @@
 import { captureException, withScope } from '@sentry/node';
 
-import AppError from '../errors';
+import { AppError, EnhancedError } from '../errors';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function logError(error: any): void {
+export default function logError(error: EnhancedError): void {
   withScope((scope) => {
     if (error.status) {
       scope.setExtra('status', error.status);
