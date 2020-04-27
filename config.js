@@ -1,6 +1,8 @@
 // eslint-disable-next-line
 const path = require('path');
 
+const { APP_URL } = process.env;
+
 const IS_DEV = process.env.NODE_ENV === 'development';
 const PORT = parseInt(process.env.NODE_PORT, 10);
 
@@ -23,12 +25,13 @@ const {
   AUTH0_CLIENT_ID,
   AUTH0_CLIENT_SECRET,
   AUTH0_API_AUDIENCE = 'https://texastribune.org/dot',
-  AUTH0_JWT_ISSUER = `https://${AUTH0_DOMAIN}/`,
-  AUTH0_PUBLIC_KEY_URL = `https://${AUTH0_DOMAIN}/.well-known/jwks.json`,
-  AUTH0_JWT_ALGORITHM = 'RS256',
 } = process.env;
+const AUTH0_JWT_ISSUER = `https://${AUTH0_DOMAIN}/`;
+const AUTH0_PUBLIC_KEY_URL = `https://${AUTH0_DOMAIN}/.well-known/jwks.json`;
+const AUTH0_REDIRECT_URI = `${APP_URL}/logged-in/`;
 
 module.exports = {
+  APP_URL,
   IS_DEV,
   PORT,
   DASHBOARD_STATIC_ALIAS,
@@ -46,5 +49,5 @@ module.exports = {
   AUTH0_API_AUDIENCE,
   AUTH0_JWT_ISSUER,
   AUTH0_PUBLIC_KEY_URL,
-  AUTH0_JWT_ALGORITHM,
+  AUTH0_REDIRECT_URI,
 };

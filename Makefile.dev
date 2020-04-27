@@ -23,7 +23,7 @@ dev: build net db
 
 build:
 	docker build \
-    --build-arg API_HOST=http://localhost:3000 \
+    --build-arg APP_URL=http://localhost:3000 \
    	--tag=${NS}/${APP} .
 
 net:
