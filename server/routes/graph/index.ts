@@ -9,7 +9,6 @@ import {
   AUTH0_API_AUDIENCE,
   AUTH0_JWT_ISSUER,
   AUTH0_PUBLIC_KEY_URL,
-  AUTH0_JWT_ALGORITHM,
 } from '../../../config';
 import { EnhancedError, UnauthorizedError, PublicKeyError } from '../../errors';
 import typeDefs from './types';
@@ -22,7 +21,7 @@ router.use(
     secret: jwksRsa.expressJwtSecret({
       jwksUri: AUTH0_PUBLIC_KEY_URL,
     }),
-    algorithms: [AUTH0_JWT_ALGORITHM],
+    algorithms: ['RS256'],
     audience: AUTH0_API_AUDIENCE,
     issuer: AUTH0_JWT_ISSUER,
   }),

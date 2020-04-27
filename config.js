@@ -29,6 +29,7 @@ const {
 const AUTH0_JWT_ISSUER = `https://${AUTH0_DOMAIN}/`;
 const AUTH0_PUBLIC_KEY_URL = `https://${AUTH0_DOMAIN}/.well-known/jwks.json`;
 const AUTH0_REDIRECT_URI = `${APP_URL}/logged-in/`;
+const AUTH0_TOKEN_URL = `https://${AUTH0_DOMAIN}/oauth/token`;
 
 module.exports = {
   APP_URL,
@@ -50,4 +51,5 @@ module.exports = {
   AUTH0_JWT_ISSUER,
   AUTH0_PUBLIC_KEY_URL,
   AUTH0_REDIRECT_URI,
+  AUTH0_TOKEN_URL,
 };
