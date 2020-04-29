@@ -9,7 +9,8 @@
     "build:server": "rimraf build && tsc -b server/tsconfig.json",
     "lint": "eslint **/*.{ts,js,vue}",
     "start": "touch dist/assets.json && NODE_ENV=development nodemon --watch server --ext ts --exec ts-node --project server/tsconfig.json server/app.ts",
-    "start:prod": "NODE_ENV=production node build/server/app.js"
+    "start:prod": "NODE_ENV=production node build/server/app.js",
+    "release": "release-it"
   },
   "repository": {
     "type": "git",
