@@ -67,5 +67,10 @@
     "webpack-cli": "^3.3.11",
     "webpack-dev-middleware": "^3.7.2"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "release-it": {
+    "hooks": {
+      "after:bump": "cd analytics && mkdir v${version} && cd ../ && cp tracker/dot.js analytics/v${version}"
+    }
+  }
 }
