@@ -17,3 +17,4 @@ node_modules
 # Compiled output
 build
 dist
+!tracker/dist

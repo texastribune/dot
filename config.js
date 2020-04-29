@@ -14,8 +14,12 @@ const DASHBOARD_MANIFEST_PATH = path.join(
   DASHBOARD_MANIFEST_FILE_NAME
 );
 
-const TEMPLATES_PATH = path.join(process.cwd(), 'server', 'views');
 const PUBLIC_BUILD_PATH = path.join(process.cwd(), 'public');
+
+const TRACKER_STATIC_ALIAS = '/analytics/';
+const TRACKER_BUILD_PATH = path.join(process.cwd(), 'analytics');
+
+const TEMPLATES_PATH = path.join(process.cwd(), 'server', 'views');
 
 const { SENTRY_DSN, SENTRY_ENVIRONMENT } = process.env;
 const ENABLE_SENTRY = process.env.ENABLE_SENTRY === 'true';
@@ -41,6 +45,8 @@ module.exports = {
   DASHBOARD_MANIFEST_PATH,
   TEMPLATES_PATH,
   PUBLIC_BUILD_PATH,
+  TRACKER_STATIC_ALIAS,
+  TRACKER_BUILD_PATH,
   SENTRY_DSN,
   ENABLE_SENTRY,
   SENTRY_ENVIRONMENT,

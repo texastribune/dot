@@ -14,6 +14,8 @@ import {
   DASHBOARD_BUILD_PATH,
   TEMPLATES_PATH,
   PUBLIC_BUILD_PATH,
+  TRACKER_STATIC_ALIAS,
+  TRACKER_BUILD_PATH,
   SENTRY_ENVIRONMENT,
   ENABLE_SENTRY,
   SENTRY_DSN,
@@ -38,6 +40,8 @@ app.set('view engine', 'pug');
 
 app.use(express.static(PUBLIC_BUILD_PATH));
 app.use(DASHBOARD_STATIC_ALIAS, express.static(DASHBOARD_BUILD_PATH));
+app.use(TRACKER_STATIC_ALIAS, express.static(TRACKER_BUILD_PATH));
+
 app.use(connectSlashes());
 
 if (IS_DEV) {
