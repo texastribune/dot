@@ -9,8 +9,7 @@
     "build:server": "rimraf build && tsc -b server/tsconfig.json",
     "lint": "eslint **/*.{ts,js,vue}",
     "start": "touch dist/assets.json && NODE_ENV=development nodemon --watch server --ext ts --exec ts-node --project server/tsconfig.json server/app.ts",
-    "start:prod": "NODE_ENV=production node build/server/app.js",
-    "release": "release-it --no-npm.publish --github.release"
+    "start:prod": "NODE_ENV=production node build/server/app.js"
   },
   "repository": {
     "type": "git",
@@ -70,7 +69,13 @@
   "license": "MIT",
   "release-it": {
     "hooks": {
-      "after:bump": "cd analytics && mkdir v${version} && cd ../ && cp tracker/dot.js analytics/v${version}"
+      "after:bump": "cd analytics && mkdir v${version} && cd ../ && cp tracker/dot.js analytics/v${version} && cd ../ && git add analytics/v${version}/dot.js"
+    },
+    "github": {
+      "release": true
+    },
+    "npm": {
+      "publish": false
     }
   }
 }
