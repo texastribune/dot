@@ -15,12 +15,12 @@ export abstract class AppError extends Error implements EnhancedError {
   constructor({
     message,
     name,
-    status = 500,
+    status,
     extra = {},
   }: {
     message: string;
     name: string;
-    status?: number;
+    status: number;
     extra?: AnyObject;
   }) {
     super(message);
@@ -34,6 +34,20 @@ export abstract class AppError extends Error implements EnhancedError {
 export class UnauthorizedError extends AppError {
   constructor({ message, extra }: { message: string; extra?: AnyObject }) {
     super({ message, extra, status: 401, name: 'UnauthorizedError' });
+  }
+}
+
+export class TokenRetrievalError extends AppError {
+  constructor({
+    message,
+    status = 500,
+    extra,
+  }: {
+    message: string;
+    status?: number;
+    extra?: AnyObject;
+  }) {
+    super({ message, status, extra, name: 'TokenRetrievalError' });
   }
 }
 
