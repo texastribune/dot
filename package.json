@@ -1,7 +1,7 @@
 {
   "name": "dot",
   "description": "The Texas Tribune's pixel tracking tool",
-  "version": "2.0.0-0",
+  "version": "2.0.0-1",
   "scripts": {
     "after:bump": "cd analytics && mkdir v${version} && cd ../ && cp tracker/dot.js analytics/v${version}",
     "build": "npm run build:dashboard && npm run build:server",
