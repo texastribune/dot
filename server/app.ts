@@ -5,6 +5,7 @@ import webpack from 'webpack';
 import express from 'express';
 import * as Sentry from '@sentry/node';
 import connectSlashes from 'connect-slashes';
+import morgan from 'morgan';
 
 import webpackConfig from '../webpack.config';
 import {
@@ -31,6 +32,7 @@ if (ENABLE_SENTRY) {
 
 const app = express();
 
+app.use(morgan(IS_DEV ? 'dev' : 'tiny'));
 app.use(Sentry.Handlers.requestHandler() as express.RequestHandler);
 
 app.set('views', TEMPLATES_PATH);
