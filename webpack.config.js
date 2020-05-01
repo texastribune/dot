@@ -29,7 +29,7 @@ const config = {
 
   plugins: [
     new VueLoaderPlugin(),
-    new EnvironmentPlugin(['API_HOST', 'NODE_ENV']),
+    new EnvironmentPlugin(['APP_URL', 'NODE_ENV']),
     new WebpackAssetsManifest({
       entrypoints: true,
       output: DASHBOARD_MANIFEST_FILE_NAME,

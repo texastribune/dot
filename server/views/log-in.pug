@@ -1,0 +1,24 @@
+doctype html
+html
+  head
+    title Logged In
+    meta(
+      name='viewport',
+      content='width=device-width, initial-scale=1.0'
+    )
+
+  body
+    h1 Log in
+
+  script(src='https://cdn.auth0.com/js/auth0/9.13.2/auth0.min.js')
+  script.
+    const auth = new auth0.WebAuth({
+      domain: 'auth-test.texastribune.org',
+      clientID: 'YQ7ktxaQjg0SJ4m2yMylVdF1N7KSgoqg',
+      redirectUri: 'http://localhost:3000/logged-in/',
+      responseType: 'code',
+      responseMode: 'query',
+      audience: 'https://texastribune.org/dot'
+    });
+
+    auth.authorize();

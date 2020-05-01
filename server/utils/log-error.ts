@@ -1,20 +1,15 @@
-import { captureException, withScope, Severity } from '@sentry/node';
+import { captureException, withScope } from '@sentry/node';
 
-import AppError from '../errors';
+import { AppError, EnhancedError } from '../errors';
 
-export default function logError({
-  error,
-  level = Severity.Error,
-}: {
-  error: AppError;
-  level?: Severity;
-}): void {
+export default function logError(error: EnhancedError): void {
   withScope((scope) => {
-    scope.setExtra('status', error.status);
-    scope.setLevel(level);
+    if (error.status) {
+      scope.setExtra('status', error.status);
+    }
 
-    if (error.extra) {
-      scope.setExtra('meta', error.extra);
+    if (error instanceof AppError) {
+      scope.setExtra('extra', error.extra);
     }
 
     captureException(error);

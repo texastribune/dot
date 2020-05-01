@@ -6,7 +6,6 @@ import express from 'express';
 import * as Sentry from '@sentry/node';
 import connectSlashes from 'connect-slashes';
 
-import routes from './routes';
 import webpackConfig from '../webpack.config';
 import {
   IS_DEV,
@@ -19,10 +18,9 @@ import {
   ENABLE_SENTRY,
   SENTRY_DSN,
 } from '../config';
-
-interface RouterError extends Error {
-  status?: number;
-}
+import routes from './routes';
+import logError from './utils/log-error';
+import { EnhancedError } from './errors';
 
 if (ENABLE_SENTRY) {
   Sentry.init({
@@ -46,26 +44,35 @@ if (IS_DEV) {
   app.use(webpackDev(webpack(webpackConfig as webpack.Configuration)));
 }
 
-// routes
 app.get('/', (req, res) => {
   res.redirect(302, '/dashboard');
 });
 app.use(routes);
-
-// error handlers
-app.use(Sentry.Handlers.errorHandler() as express.ErrorRequestHandler);
 app.use(
-  '/api',
   (
-    err: RouterError,
+    error: EnhancedError,
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) => {
+    if (!error.status || error.status >= 500) {
+      logError(error);
+    }
+    next(error);
+  }
+);
+app.use(
+  '(/api*|/graph*)',
+  (
+    error: EnhancedError,
     req: express.Request,
     res: express.Response,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     next: express.NextFunction
   ) => {
-    res.status(err.status || 500).json({
-      message: err.message,
-      error: IS_DEV ? err : {},
+    res.status(error.status || 500).json({
+      message: error.message,
+      error: IS_DEV ? error : {},
     });
   }
 );
