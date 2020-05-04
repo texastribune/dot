@@ -1,13 +1,15 @@
 {
   "name": "dot",
   "description": "The Texas Tribune's pixel tracking tool",
+  "version": "2.0.0-0",
   "scripts": {
     "build": "npm run build:dashboard && npm run build:server",
     "build:dashboard": "rimraf dist && NODE_ENV=production webpack",
     "build:server": "rimraf build && tsc -b server/tsconfig.json",
     "lint": "eslint **/*.{ts,js,vue}",
-    "start": "touch dist/assets.json && NODE_ENV=development nodemon --watch server --ext ts --exec ts-node --project server/tsconfig.json server/app.ts",
-    "start:prod": "NODE_ENV=production node build/server/app.js"
+    "start": "NODE_ENV=development nodemon --watch server --ext ts --exec ts-node --project server/tsconfig.json server/app.ts",
+    "start:prod": "NODE_ENV=production node build/server/app.js",
+    "release": "release-it"
   },
   "repository": {
     "type": "git",
@@ -52,6 +54,7 @@
     "fibers": "^4.0.2",
     "mini-css-extract-plugin": "^0.9.0",
     "nodemon": "^2.0.3",
+    "release-it": "^13.5.7",
     "rimraf": "^3.0.2",
     "sass": "^1.26.3",
     "sass-loader": "^8.0.2",
@@ -65,5 +68,16 @@
     "webpack-cli": "^3.3.11",
     "webpack-dev-middleware": "^3.7.2"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "release-it": {
+    "hooks": {
+      "after:bump": "cd analytics && mkdir v${version} && cd ../ && cp tracker/dot.js analytics/v${version} && git add analytics/v${version}/dot.js"
+    },
+    "github": {
+      "release": true
+    },
+    "npm": {
+      "publish": false
+    }
+  }
 }

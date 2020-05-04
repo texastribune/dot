@@ -13,7 +13,8 @@ export default function dotTracker() {
     const url = e(`${loc.protocol}//${loc.host}${loc.pathname}`);
     const ref = e(doc.referrer);
     const query = e(loc.search);
-    const currentScript = doc.currentScript || doc.querySelector(`script[${attr}]`);
+    const currentScript =
+      doc.currentScript || doc.querySelector(`script[${attr}]`);
     const canonical = e(currentScript.getAttribute(attr) || '');
     const img = new win.Image(1, 1);
     const scriptLocation = isDev ? '' : 'https://dot.texastribune.org';
