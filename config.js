@@ -20,7 +20,7 @@ const PUBLIC_BUILD_PATH = path.join(process.cwd(), 'public');
 
 const TRACKER_STATIC_ALIAS = '/analytics/';
 const TRACKER_BUILD_PATH = path.join(process.cwd(), 'analytics');
-const TRACKER_SCRIPT = 'dot.js';
+const TRACKER_SCRIPT = 'pixel.js';
 
 const TEMPLATES_PATH = path.join(process.cwd(), 'server', 'views');
 
