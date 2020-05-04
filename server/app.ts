@@ -42,7 +42,14 @@ app.set('view engine', 'pug');
 
 app.use(express.static(PUBLIC_BUILD_PATH));
 app.use(DASHBOARD_STATIC_ALIAS, express.static(DASHBOARD_BUILD_PATH));
-app.use(TRACKER_STATIC_ALIAS, express.static(TRACKER_BUILD_PATH));
+app.use(
+  TRACKER_STATIC_ALIAS,
+  express.static(TRACKER_BUILD_PATH, {
+    setHeaders(res) {
+      res.set({ 'Access-Control-Allow-Origin': '*' });
+    },
+  })
+);
 
 app.use(connectSlashes());
 
