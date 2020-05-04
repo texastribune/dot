@@ -1,13 +1,20 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
+import crypto from 'crypto';
+import fs from 'fs';
+import path from 'path';
+
 import axios, { AxiosError } from 'axios';
 import express from 'express';
 
 import {
+  VERSION,
   AUTH0_CLIENT_ID,
   AUTH0_CLIENT_SECRET,
   AUTH0_REDIRECT_URI,
   AUTH0_TOKEN_URL,
+  TRACKER_BUILD_PATH,
+  TRACKER_SCRIPT,
 } from '../../../../config';
 import { TokenRetrievalError } from '../../../errors';
 
@@ -25,6 +32,7 @@ router.get('/tokens', async (req, res, next) => {
       redirect_uri: AUTH0_REDIRECT_URI,
     });
 
+    res.header('Cache-Control', 'no-cache');
     return res.json({ tokens: data });
   } catch (error) {
     if (error.isAxiosError) {
@@ -55,6 +63,22 @@ router.get('/tokens', async (req, res, next) => {
 
     return next(error);
   }
+});
+
+router.get('/trackers', (req, res) => {
+  const latestScriptPath = path.join(
+    TRACKER_BUILD_PATH,
+    VERSION,
+    TRACKER_SCRIPT
+  );
+
+  fs.readFile(latestScriptPath, 'utf8', (error, data) => {
+    const alg = 'sha256';
+    const hash = crypto.createHash(alg).update(data, 'utf8').digest('base64');
+
+    res.header('Cache-Control', 'no-cache');
+    res.json({ hash: `${alg}-${hash}` });
+  });
 });
 
 export default router;

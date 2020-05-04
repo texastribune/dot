@@ -1,8 +1,10 @@
-// eslint-disable-next-line
+/* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
 
-const { APP_URL } = process.env;
+const pkg = require('./package.json');
 
+const { version: VERSION } = pkg;
+const { APP_URL } = process.env;
 const IS_DEV = process.env.NODE_ENV === 'development';
 const PORT = parseInt(process.env.NODE_PORT, 10);
 
@@ -18,6 +20,7 @@ const PUBLIC_BUILD_PATH = path.join(process.cwd(), 'public');
 
 const TRACKER_STATIC_ALIAS = '/analytics/';
 const TRACKER_BUILD_PATH = path.join(process.cwd(), 'analytics');
+const TRACKER_SCRIPT = 'pixel.js';
 
 const TEMPLATES_PATH = path.join(process.cwd(), 'server', 'views');
 
@@ -37,6 +40,7 @@ const AUTH0_TOKEN_URL = `https://${AUTH0_DOMAIN}/oauth/token`;
 
 module.exports = {
   APP_URL,
+  VERSION,
   IS_DEV,
   PORT,
   DASHBOARD_STATIC_ALIAS,
@@ -47,6 +51,7 @@ module.exports = {
   PUBLIC_BUILD_PATH,
   TRACKER_STATIC_ALIAS,
   TRACKER_BUILD_PATH,
+  TRACKER_SCRIPT,
   SENTRY_DSN,
   ENABLE_SENTRY,
   SENTRY_ENVIRONMENT,
