@@ -6,12 +6,10 @@ const WebpackAssetsManifest = require('webpack-assets-manifest');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { EnvironmentPlugin } = require('webpack');
 
-const {
-  IS_DEV,
-  DASHBOARD_BUILD_PATH,
-  DASHBOARD_STATIC_ALIAS,
-  DASHBOARD_MANIFEST_FILE_NAME,
-} = require('./config');
+const IS_DEV = process.env.NODE_ENV === 'development';
+const DASHBOARD_BUILD_PATH = path.join(process.cwd(), 'dist');
+const DASHBOARD_STATIC_ALIAS = '/static/';
+const DASHBOARD_MANIFEST_FILE_NAME = 'assets.json';
 
 const config = {
   mode: IS_DEV ? 'development' : 'production',
