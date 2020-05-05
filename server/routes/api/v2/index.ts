@@ -15,6 +15,7 @@ import {
   AUTH0_TOKEN_URL,
   TRACKER_BUILD_PATH,
   TRACKER_SCRIPT,
+  ACCESS_IDS,
 } from '../../../../config';
 import { TokenRetrievalError } from '../../../errors';
 
@@ -65,6 +66,25 @@ router.get('/tokens', async (req, res, next) => {
   }
 });
 
+router.get('/trackers', (req, res, next) => {
+  if (!req.headers.authorization) {
+    return next(new Error());
+  }
+
+  const [, accessId] = req.headers.authorization.split(' ');
+  let isAllowed = false;
+
+  Object.entries(ACCESS_IDS).forEach(([, validAccessId]) => {
+    if (validAccessId === accessId) {
+      isAllowed = true;
+    }
+  });
+
+  if (isAllowed) {
+    return next();
+  }
+  return next(new Error());
+});
 router.get('/trackers', (req, res) => {
   const latestScriptPath = path.join(
     TRACKER_BUILD_PATH,
