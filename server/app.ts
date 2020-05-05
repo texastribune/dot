@@ -83,6 +83,9 @@ app.use(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     next: express.NextFunction
   ) => {
+    // eslint-disable-next-line no-console
+    console.error(error);
+
     res.status(error.status || 500).json({
       message: error.message,
       error: IS_DEV ? error : {},
