@@ -10,7 +10,7 @@ import {
   AUTH0_JWT_ISSUER,
   AUTH0_PUBLIC_KEY_URL,
 } from '../../../config';
-import { EnhancedError, UnauthorizedError, PublicKeyError } from '../../errors';
+import { EnhancedError, GraphError } from '../../errors';
 import typeDefs from './types';
 import resolvers from './resolvers';
 
@@ -39,17 +39,17 @@ router.use(
     next: express.NextFunction
   ) => {
     if (error instanceof jwt.UnauthorizedError) {
-      return next(new UnauthorizedError({ message: error.message }));
+      return next(new GraphError({ message: error.message, status: 401 }));
     }
     if (
       error instanceof jwksRsa.ArgumentError ||
       error instanceof jwksRsa.JwksError ||
       error instanceof jwksRsa.SigningKeyNotFoundError
     ) {
-      return next(new PublicKeyError({ message: error.message, status: 500 }));
+      return next(new GraphError({ message: error.message, status: 500 }));
     }
     if (error instanceof jwksRsa.JwksRateLimitError) {
-      return next(new PublicKeyError({ message: error.message, status: 429 }));
+      return next(new GraphError({ message: error.message, status: 429 }));
     }
 
     return next(error);

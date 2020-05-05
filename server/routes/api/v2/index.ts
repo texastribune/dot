@@ -17,7 +17,7 @@ import {
   TRACKER_SCRIPT,
   ACCESS_IDS,
 } from '../../../../config';
-import { TokenRetrievalError } from '../../../errors';
+import { TokenEndpointError, TrackerEndpointError } from '../../../errors';
 
 const router = express.Router();
 
@@ -45,7 +45,7 @@ router.get('/tokens', async (req, res, next) => {
         response.data.error_description === 'Invalid authorization code'
       ) {
         return next(
-          new TokenRetrievalError({
+          new TokenEndpointError({
             message: 'Invalid authorization code',
             status: 403,
           })
@@ -53,8 +53,9 @@ router.get('/tokens', async (req, res, next) => {
       }
 
       return next(
-        new TokenRetrievalError({
+        new TokenEndpointError({
           message: 'Error retrieving authorization token',
+          status: 500,
           extra: {
             data: response ? response.data : null,
           },
@@ -68,7 +69,12 @@ router.get('/tokens', async (req, res, next) => {
 
 router.get('/trackers', (req, res, next) => {
   if (!req.headers.authorization) {
-    return next(new Error());
+    return next(
+      new TrackerEndpointError({
+        status: 401,
+        message: 'No authorization header',
+      })
+    );
   }
 
   const [, accessId] = req.headers.authorization.split(' ');
@@ -83,9 +89,16 @@ router.get('/trackers', (req, res, next) => {
   if (isAllowed) {
     return next();
   }
-  return next(new Error());
+
+  return next(
+    new TrackerEndpointError({
+      status: 403,
+      message: 'Invalid authorization header',
+    })
+  );
 });
-router.get('/trackers', (req, res) => {
+
+router.get('/trackers', (req, res, next) => {
   const latestScriptPath = path.join(
     TRACKER_BUILD_PATH,
     VERSION,
@@ -93,11 +106,20 @@ router.get('/trackers', (req, res) => {
   );
 
   fs.readFile(latestScriptPath, 'utf8', (error, data) => {
-    const alg = 'sha256';
-    const hash = crypto.createHash(alg).update(data, 'utf8').digest('base64');
+    if (error) {
+      next(
+        new TrackerEndpointError({
+          status: 500,
+          message: error.message,
+        })
+      );
+    } else {
+      const alg = 'sha256';
+      const hash = crypto.createHash(alg).update(data, 'utf8').digest('base64');
 
-    res.header('Cache-Control', 'no-cache');
-    res.json({ hash: `${alg}-${hash}` });
+      res.header('Cache-Control', 'no-cache');
+      res.json({ hash: `${alg}-${hash}` });
+    }
   });
 });
 
