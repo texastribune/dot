@@ -15,6 +15,6 @@ html
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
 
-    axios.get(`/api/v1/tokens/?code=${code}`).then(data => {
+    axios.get(`/api/v2/tokens/?code=${code}`).then(data => {
       console.log(data);
     });
