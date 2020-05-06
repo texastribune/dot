@@ -46,7 +46,7 @@ router.get('/', async (req, res, next) => {
 
       return next(
         new TokenEndpointError({
-          message: 'Error retrieving authorization token',
+          message: 'Error retrieving authorization tokens',
           status: 500,
           extra: {
             data: response ? response.data : null,
