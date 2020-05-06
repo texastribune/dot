@@ -84,7 +84,7 @@ app.use(
     next: express.NextFunction
   ) => {
     // eslint-disable-next-line no-console
-    console.error(error);
+    console.error(`${error.name}: ${error.message}`, error.stack);
 
     res.status(error.status || 500).json({
       message: error.message,
