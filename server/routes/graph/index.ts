@@ -41,13 +41,21 @@ router.use(
     if (error instanceof jwt.UnauthorizedError) {
       return next(new GraphError({ message: error.message, status: 401 }));
     }
+
     if (
       error instanceof jwksRsa.ArgumentError ||
       error instanceof jwksRsa.JwksError ||
       error instanceof jwksRsa.SigningKeyNotFoundError
     ) {
-      return next(new GraphError({ message: error.message, status: 500 }));
+      return next(
+        new GraphError({
+          message: 'Error validating credentials',
+          status: 500,
+          extra: { detail: error.message },
+        })
+      );
     }
+
     if (error instanceof jwksRsa.JwksRateLimitError) {
       return next(new GraphError({ message: error.message, status: 429 }));
     }
