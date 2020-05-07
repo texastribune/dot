@@ -5,3 +5,8 @@ declare module 'connect-slashes' {
 
   export = connectSlashes;
 }
+
+declare module 'uuid' {
+  // eslint-disable-next-line import/prefer-default-export
+  export function v4(): string;
+}

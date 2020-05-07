@@ -5,6 +5,7 @@ import { URL } from 'url';
 
 import express from 'express';
 import jwt from 'jsonwebtoken';
+import { v4 as uuidv4 } from 'uuid';
 
 import {
   APP_URL,
@@ -130,7 +131,7 @@ router.get('/', (req, res, next) => {
           tracker: 'script',
         },
         PING_JWT_SECRET as string,
-        { algorithm: 'HS256' },
+        { algorithm: 'HS256', jwtid: uuidv4() },
         (jwtError, token) => {
           if (jwtError) {
             next(
