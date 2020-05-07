@@ -29,6 +29,8 @@ export const DASHBOARD_MANIFEST_PATH = path.join(
   DASHBOARD_MANIFEST_FILE_NAME
 );
 
+export const { PING_JWT_SECRET } = process.env;
+
 export const PUBLIC_BUILD_PATH = path.join(process.cwd(), 'public');
 
 export const { SENTRY_DSN, SENTRY_ENVIRONMENT } = process.env;
