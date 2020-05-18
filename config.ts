@@ -51,6 +51,7 @@ export const TRACKER_BUILD_PATH = path.join(process.cwd(), 'analytics');
 export const TRACKER_SCRIPT = 'pixel.js';
 
 export enum ValidSource {
+  Legacy = 'legacy',
   Repub = 'repub',
 }
 export enum ValidTracker {
