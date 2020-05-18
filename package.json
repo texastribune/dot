@@ -4,12 +4,12 @@
   "version": "2.0.0-0",
   "scripts": {
     "build": "npm run build:dashboard && npm run build:server",
-    "build:dashboard": "rimraf dist && NODE_ENV=production webpack",
+    "build:dashboard": "rimraf dist && webpack",
     "build:server": "rimraf build && tsc -b server/tsconfig.json",
     "lint": "eslint **/*.{ts,js,vue}",
-    "start": "NODE_ENV=development nodemon --watch server --ext ts --exec ts-node --project server/tsconfig.json server/app.ts",
-    "start:prod": "NODE_ENV=production node build/server/app.js",
-    "release": "release-it"
+    "release": "release-it",
+    "start:watch": "nodemon --watch server --ext ts --exec ts-node --project server/tsconfig.json server/app.ts",
+    "start": "node build/server/app.js"
   },
   "repository": {
     "type": "git",
@@ -34,6 +34,7 @@
     "pg-hstore": "^2.3.3",
     "pug": "^2.0.4",
     "sequelize": "^5.21.8",
+    "validator": "^13.0.0",
     "vue": "^2.6.11",
     "vuetify": "^2.2.21"
   },
