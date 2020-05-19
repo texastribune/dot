@@ -5,7 +5,7 @@ import { Model, DataTypes } from 'sequelize';
 import { ValidSource, ValidTracker } from '../../config';
 import sequelize from '../db';
 
-class Visit extends Model {
+class View extends Model {
   public id!: number;
 
   public canonical!: string;
@@ -20,30 +20,28 @@ class Visit extends Model {
 
   public version!: string;
 
-  public readonly createdAt!: Date;
-
-  public readonly updatedAt!: Date;
+  public visited_at!: Date;
 
   get domain(): string {
     return new URL(this.url).hostname;
   }
 }
 
-Visit.init(
+View.init(
   {
     id: {
-      type: DataTypes.NUMBER.UNSIGNED,
+      type: DataTypes.INTEGER,
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
     },
     canonical: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false,
       validate: { isUrl: true },
     },
     referrer: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     source: {
@@ -55,7 +53,7 @@ Visit.init(
       allowNull: false,
     },
     url: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false,
       validate: { isUrl: true },
     },
@@ -63,8 +61,13 @@ Visit.init(
       type: DataTypes.STRING(8),
       allowNull: false,
     },
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    visited_at: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
   },
-  { sequelize }
+  { sequelize, timestamps: false }
 );
 
-export default Visit;
+export default View;
