@@ -1,6 +1,6 @@
 const path = require('path');
 
-const serverBuildPath = path.join('build', 'server');
+const serverBuildPath = path.join(process.cwd(), 'build', 'server');
 const {
   DB_HOST = 'dot-db',
   DB_NAME = 'dot',
