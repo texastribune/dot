@@ -22,11 +22,10 @@ export default {
       }
     );
     const { count: visitsCount } = visitsCountQuery[0] as { count: number };
-    console.log(`There are ${visitsCount} rows in the table`);
 
     const MAX_ROWS = 10000;
     const transaction = await queryInterface.sequelize.transaction();
-    let offset = 40000;
+    let offset = 0;
     let total = 0;
 
     try {
@@ -35,7 +34,6 @@ export default {
           `SELECT * FROM visit ORDER BY id LIMIT ${MAX_ROWS} OFFSET ${offset}`,
           {
             type: QueryTypes.SELECT,
-            transaction,
           }
         );
         const visits = visitsQuery as Visit[];
@@ -53,17 +51,18 @@ export default {
 
         await View.bulkCreate(viewsToInsert, { validate: true, transaction });
 
-        total += visits.length;
+        total += viewsToInsert.length;
         offset += MAX_ROWS;
         console.log(`Moved ${total} rows so far`);
       }
 
+      transaction.commit();
       const viewsCount = await View.count();
 
       if (viewsCount !== visitsCount) {
-        throw new Error('The new table has a different number of rows');
+        console.error('The tables have differing rows counts');
+        await View.destroy({ truncate: true });
       } else {
-        transaction.commit();
         console.log('Success!');
       }
     } catch (error) {
