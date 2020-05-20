@@ -23,6 +23,8 @@ export default {
         url LIKE 'http://appyet_base/%' OR
         id = 55664 OR
         id = 1319147 OR
+        id = 976248 OR
+        id = 4357709 OR
         id = 1862496`,
         {
           type: QueryTypes.SELECT,
