@@ -4,7 +4,7 @@
   "version": "2.0.0-0",
   "scripts": {
     "build": "npm run build:dashboard && npm run build:server",
-    "build:dashboard": "rimraf dist && webpack",
+    "build:dashboard": "rimraf dist && NODE_ENV=production webpack",
     "build:server": "rimraf build && tsc -b server/tsconfig.json",
     "lint": "eslint **/*.{ts,js,vue}",
     "release": "release-it",
