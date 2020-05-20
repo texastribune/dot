@@ -55,7 +55,7 @@ View.init(
     url: {
       type: DataTypes.TEXT,
       allowNull: false,
-      validate: { isUrl: true },
+      validate: { isUrl: true, notContains: 'localhost' },
     },
     version: {
       type: DataTypes.STRING(8),
