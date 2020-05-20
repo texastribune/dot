@@ -16,13 +16,13 @@ interface Visit {
 
 export default {
   up: async (queryInterface: QueryInterface): Promise<void> => {
-    const visitCountQuery = await queryInterface.sequelize.query(
+    const visitsCountQuery = await queryInterface.sequelize.query(
       'SELECT COUNT(*) FROM visit',
       {
         type: QueryTypes.SELECT,
       }
     );
-    const { count: visitCount } = visitCountQuery[0] as { count: number };
+    const { count: visitsCount } = visitsCountQuery[0] as { count: number };
 
     const MAX_ROWS = 10000;
     const invalidVisits: Visit[] = [];
@@ -30,7 +30,7 @@ export default {
     let total = 0;
 
     try {
-      while (offset < visitCount) {
+      while (offset < visitsCount) {
         const visitsQuery = await queryInterface.sequelize.query(
           `SELECT * FROM visit ORDER BY id LIMIT ${MAX_ROWS} OFFSET ${offset}`,
           {
