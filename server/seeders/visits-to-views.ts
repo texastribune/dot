@@ -56,17 +56,20 @@ export default {
         console.log(`Moved ${total} rows so far`);
       }
 
-      transaction.commit();
+      await transaction.commit();
       const viewsCount = await View.count();
 
       if (viewsCount !== visitsCount) {
         console.error('The tables have differing rows counts');
+        console.error(`Visits: ${visitsCount}`);
+        console.error(`Views: ${viewsCount}`);
+        console.error('Deleting the views table');
         await View.destroy({ truncate: true });
       } else {
         console.log('Success!');
       }
     } catch (error) {
-      transaction.rollback();
+      await transaction.rollback();
       console.error(error);
     }
   },
