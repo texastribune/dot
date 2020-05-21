@@ -21,7 +21,14 @@ export default {
         type: QueryTypes.SELECT,
       }
     );
-    const { count: visitsCount } = visitsCountQuery[0] as { count: number };
+
+    let { count: visitsCount } = visitsCountQuery[0] as {
+      count: number | string;
+    };
+
+    if (typeof visitsCount === 'string') {
+      visitsCount = parseInt(visitsCount, 10);
+    }
 
     const MAX_ROWS = 10000;
     const transaction = await queryInterface.sequelize.transaction();
