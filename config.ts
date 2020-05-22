@@ -29,6 +29,14 @@ export const DASHBOARD_MANIFEST_PATH = path.join(
   DASHBOARD_MANIFEST_FILE_NAME
 );
 
+export const DB_PORT = parseInt(process.env.DB_PORT || '5432', 10);
+export const {
+  DB_HOST = 'dot-db',
+  DB_NAME = 'dot',
+  DB_PASSWORD = 'postgres',
+  DB_USER = 'postgres',
+} = process.env;
+
 export const { PING_JWT_SECRET } = process.env;
 
 export const PUBLIC_BUILD_PATH = path.join(process.cwd(), 'public');
@@ -41,3 +49,11 @@ export const TEMPLATES_PATH = path.join(process.cwd(), 'server', 'views');
 export const TRACKER_STATIC_ALIAS = '/analytics/';
 export const TRACKER_BUILD_PATH = path.join(process.cwd(), 'analytics');
 export const TRACKER_SCRIPT = 'pixel.js';
+
+export enum ValidSource {
+  Legacy = 'legacy',
+  Repub = 'repub',
+}
+export enum ValidTracker {
+  Script = 'script',
+}

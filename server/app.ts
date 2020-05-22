@@ -21,6 +21,7 @@ import {
   ENABLE_SENTRY,
   SENTRY_DSN,
 } from '../config';
+import db from './db';
 import routes from './routes';
 import logError from './utils/log-error';
 import { EnhancedError } from './errors';
@@ -93,7 +94,9 @@ app.use(
   }
 );
 
-app.listen(PORT, () => {
-  // eslint-disable-next-line no-console
-  console.log(`Listening at port ${PORT}`);
+db.authenticate().then(() => {
+  app.listen(PORT, () => {
+    // eslint-disable-next-line no-console
+    console.log(`Listening at port ${PORT}`);
+  });
 });

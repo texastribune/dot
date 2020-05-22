@@ -14,10 +14,11 @@ import {
   TRACKER_SCRIPT,
   ACCESS_IDS,
   PING_JWT_SECRET,
+  ValidSource,
+  ValidTracker,
 } from '../../../../config';
 import { TrackerEndpointError } from '../../../errors';
 
-const VALID_SOURCES = ['repub'];
 const router = express.Router();
 
 // authorization middleware
@@ -65,7 +66,7 @@ router.get('/', (req, res, next) => {
     );
   }
 
-  if (!VALID_SOURCES.includes(source)) {
+  if (!Object.values(ValidSource).includes(source as ValidSource)) {
     return next(
       new TrackerEndpointError({
         status: 400,
@@ -127,7 +128,7 @@ router.get('/', (req, res, next) => {
           version: VERSION,
           canonical,
           source,
-          tracker: 'script',
+          tracker: ValidTracker.Script,
         },
         PING_JWT_SECRET as string,
         { algorithm: 'HS256', noTimestamp: true },
