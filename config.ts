@@ -1,9 +1,12 @@
+import fs from 'fs';
 import path from 'path';
+
 import pkg from './package.json';
 
 export const { version: VERSION } = pkg;
 export const { APP_URL } = process.env;
 export const IS_DEV = process.env.NODE_ENV === 'development';
+export const IS_PROD = process.env.NODE_ENV === 'production';
 export const PORT = parseInt(process.env.NODE_PORT || '3000', 10);
 
 export const ACCESS_IDS = JSON.parse(process.env.ACCESS_IDS || '{}') as {
@@ -36,6 +39,10 @@ export const {
   DB_PASSWORD = 'postgres',
   DB_USER = 'postgres',
 } = process.env;
+
+export const RDS_PEM = fs.readFileSync(
+  path.join(process.cwd(), 'keys', 'rds.pem')
+);
 
 export const { PING_JWT_SECRET } = process.env;
 
