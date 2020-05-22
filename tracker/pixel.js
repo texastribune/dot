@@ -1,25 +1,28 @@
-/* global window, document */
-/* eslint-disable no-underscore-dangle */
+(function () {
+  var win = window;
 
-export default function dotTracker() {
-  const win = window;
-  const isDev = process.env.NODE_ENV === 'development';
+  if (!win.ttDotTracked) {
+    var doc = document;
+    var e = encodeURIComponent;
+    var attr = 'data-dot-token';
+    var loc = win.location;
+    var currentScript =
+      doc.currentScript || doc.querySelector('script[' + attr + ']');
+    var scriptParts = currentScript.split('/');
 
-  if (!win._ttDotTracked) {
-    const doc = document;
-    const e = encodeURIComponent;
-    const attr = 'data-tt-canonical';
-    const loc = win.location;
-    const url = e(`${loc.protocol}//${loc.host}${loc.pathname}`);
-    const ref = e(doc.referrer);
-    const query = e(loc.search);
-    const currentScript =
-      doc.currentScript || doc.querySelector(`script[${attr}]`);
-    const canonical = e(currentScript.getAttribute(attr) || '');
-    const img = new win.Image(1, 1);
-    const scriptLocation = isDev ? '' : 'https://dot.texastribune.org';
+    var domain = e(loc.hostname);
+    var version = e(scriptParts[scriptParts.length - 2]);
+    var token = e(currentScript.getAttribute(attr) || '');
+    var referrer = e(doc.referrer);
 
-    img.src = `${scriptLocation}/dot.gif?url=${url}&ref=${ref}&query=${query}&canonical=${canonical}`;
-    win._ttDotTracked = true;
+    var img = new win.Image(1, 1);
+    var src = e(currentScript.getAttribute('data-dot-url')) + '/pixel.gif?';
+    src += 'domain=' + domain + '&';
+    src += 'version=' + version + '&';
+    src += 'token=' + token + '&';
+    src += 'referrer=' + referrer;
+    img.src = src;
+
+    win.ttDotTracked = true;
   }
-}
+})();

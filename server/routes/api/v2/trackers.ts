@@ -152,7 +152,7 @@ router.get('/', (req, res, next) => {
 
             res.header('Cache-Control', 'no-cache');
             res.json({
-              script: `<script src="${APP_URL}${TRACKER_STATIC_ALIAS}${VERSION}/${TRACKER_SCRIPT}" data-token="${token}" data-host="${APP_URL}" data-version="${VERSION}" integrity="${sriAlg}-${hash}" crossorigin="anonymous"></script>`,
+              script: `<script src="${APP_URL}${TRACKER_STATIC_ALIAS}${VERSION}/${TRACKER_SCRIPT}" data-dot-token="${token}" data-dot-url="${APP_URL}" integrity="${sriAlg}-${hash}" crossorigin="anonymous"></script>`,
             });
           }
         }
