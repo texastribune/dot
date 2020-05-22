@@ -1,7 +1,7 @@
 {
   "name": "dot",
   "description": "The Texas Tribune's pixel tracking tool",
-  "version": "2.0.0-1",
+  "version": "2.0.0-2",
   "scripts": {
     "build": "npm run build:dashboard && npm run build:server",
     "build:dashboard": "rimraf dist && NODE_ENV=production webpack",
