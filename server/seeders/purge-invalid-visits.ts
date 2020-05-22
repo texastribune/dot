@@ -49,7 +49,8 @@ export default {
           const validCanonical = validate.isURL(visit.canonical);
           const validUrl =
             validate.isURL(visit.url) &&
-            !validate.contains(visit.url, 'localhost');
+            !validate.contains(visit.url, 'localhost') &&
+            !validate.contains(visit.url, 's3.amazonaws.com');
 
           if (!validCanonical || !validUrl) {
             invalidVisits.push(visit);

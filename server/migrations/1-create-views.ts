@@ -15,6 +15,13 @@ export default {
         allowNull: false,
         validate: { isUrl: true },
       },
+      domain: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        validate: {
+          notContains: ['localhost', 's3.amazonaws.com'],
+        },
+      },
       referrer: {
         type: DataTypes.TEXT,
         allowNull: true,
@@ -26,11 +33,6 @@ export default {
       tracker: {
         type: DataTypes.ENUM(...Object.values(ValidTracker)),
         allowNull: false,
-      },
-      url: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-        validate: { isUrl: true, notContains: 'localhost' },
       },
       version: {
         type: DataTypes.STRING(8),

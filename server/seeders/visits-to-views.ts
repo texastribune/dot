@@ -1,5 +1,7 @@
 /* eslint-disable no-console, no-await-in-loop, @typescript-eslint/camelcase */
 
+import { URL } from 'url';
+
 import { QueryInterface, QueryTypes } from 'sequelize';
 
 import View from '../models/view';
@@ -47,10 +49,10 @@ export default {
         const viewsToInsert = visits.map(
           ({ canonical, referrer, url, visited_at }) => ({
             canonical,
+            domain: new URL(url).hostname,
             referrer: referrer || undefined,
             source: ValidSource.Legacy,
             tracker: ValidTracker.Script,
-            url,
             version: '1.0.0',
             visited_at,
           })

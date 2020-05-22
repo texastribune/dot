@@ -1,5 +1,3 @@
-import { URL } from 'url';
-
 import { Model, DataTypes } from 'sequelize';
 
 import { ValidSource, ValidTracker } from '../../config';
@@ -10,21 +8,17 @@ class View extends Model {
 
   public canonical!: string;
 
+  public domain!: string;
+
   public referrer!: string | null;
 
   public source!: ValidSource;
 
   public tracker!: ValidTracker;
 
-  public url!: string;
-
   public version!: string;
 
   public visited_at!: Date;
-
-  get domain(): string {
-    return new URL(this.url).hostname;
-  }
 }
 
 View.init(
@@ -40,6 +34,13 @@ View.init(
       allowNull: false,
       validate: { isUrl: true },
     },
+    domain: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+      validate: {
+        notContains: ['localhost', 's3.amazonaws.com'],
+      },
+    },
     referrer: {
       type: DataTypes.TEXT,
       allowNull: true,
@@ -51,11 +52,6 @@ View.init(
     tracker: {
       type: DataTypes.ENUM(...Object.values(ValidTracker)),
       allowNull: false,
-    },
-    url: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-      validate: { isUrl: true, notContains: 'localhost' },
     },
     version: {
       type: DataTypes.STRING(8),
