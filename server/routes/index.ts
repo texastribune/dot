@@ -8,6 +8,10 @@ import loggedIn from './logged-in';
 
 const router = express.Router();
 
+router.get('/', (req, res) => {
+  res.render('index');
+});
+
 router.use('/api', apiRoutes);
 router.use('/dashboard', dashboardRoutes);
 router.use('/graph', graphRoutes);

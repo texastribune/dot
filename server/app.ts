@@ -58,9 +58,6 @@ if (IS_DEV) {
   app.use(webpackDev(webpack(webpackConfig as webpack.Configuration)));
 }
 
-app.get('/', (req, res) => {
-  res.redirect(302, '/dashboard');
-});
 app.use(routes);
 app.use(
   (
