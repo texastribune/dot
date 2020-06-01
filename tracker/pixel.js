@@ -8,7 +8,7 @@
     var loc = win.location;
     var currentScript =
       doc.currentScript || doc.querySelector('script[' + attr + ']');
-    var scriptParts = currentScript.split('/');
+    var scriptParts = currentScript.getAttribute('src').split('/');
 
     var domain = e(loc.hostname);
     var version = e(scriptParts[scriptParts.length - 2]);
