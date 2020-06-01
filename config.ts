@@ -51,7 +51,7 @@ export const PUBLIC_BUILD_PATH = path.join(process.cwd(), 'public');
 export const { SENTRY_DSN, SENTRY_ENVIRONMENT } = process.env;
 export const ENABLE_SENTRY = process.env.ENABLE_SENTRY === 'true';
 
-export const TEMPLATES_PATH = path.join(process.cwd(), 'server', 'views');
+export const TEMPLATES_PATH = path.join(process.cwd(), 'views');
 
 export const TRACKER_STATIC_ALIAS = '/analytics/';
 export const TRACKER_BUILD_PATH = path.join(process.cwd(), 'analytics');
