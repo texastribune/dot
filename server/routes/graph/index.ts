@@ -21,6 +21,7 @@ router.use(
     secret: jwksRsa.expressJwtSecret({
       jwksUri: AUTH0_PUBLIC_KEY_URL,
     }),
+    credentialsRequired: false,
     algorithms: ['RS256'],
     audience: AUTH0_API_AUDIENCE,
     issuer: AUTH0_JWT_ISSUER,
