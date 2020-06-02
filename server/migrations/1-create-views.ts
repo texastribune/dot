@@ -3,7 +3,7 @@ import { ValidSource, ValidTracker } from '../../config';
 
 export default {
   up: (queryInterface: QueryInterface): Promise<void> => {
-    return queryInterface.createTable('Views', {
+    return queryInterface.createTable('views', {
       id: {
         type: DataTypes.INTEGER,
         allowNull: false,
