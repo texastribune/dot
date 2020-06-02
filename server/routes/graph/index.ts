@@ -11,7 +11,7 @@ import {
   AUTH0_PUBLIC_KEY_URL,
 } from '../../../config';
 import { EnhancedError, GraphError } from '../../errors';
-import typeDefs from './types';
+import typeDefs from './schema';
 import resolvers from './resolvers';
 
 const router = express.Router();
