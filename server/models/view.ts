@@ -1,7 +1,13 @@
-import { Model, DataTypes } from 'sequelize';
+import { Model, DataTypes, Op, literal, Filterable, col } from 'sequelize';
 
 import { ValidSource, ValidTracker } from '../../config';
 import sequelize from '../db';
+
+interface ReprintArgs {
+  startDate: string;
+  endDate: string;
+  domain?: string;
+}
 
 class View extends Model {
   public id!: number;
@@ -18,7 +24,40 @@ class View extends Model {
 
   public version!: string;
 
-  public visited_at!: Date;
+  public visitedAt!: Date;
+
+  public static async getReprints({
+    startDate,
+    endDate,
+    domain,
+  }: ReprintArgs): Promise<any> {
+    const where: Filterable['where'] = {
+      visitedAt: {
+        [Op.between]: [startDate, endDate],
+      },
+    };
+
+    if (domain) {
+      where.domain = { [Op.like]: domain };
+    }
+
+    const countQuery = View.count({ where });
+    const resultsQuery = View.findAll({
+      attributes: [
+        'canonical',
+        [literal('COUNT(canonical)::integer'), 'views'],
+      ],
+      group: ['canonical'],
+      order: [[col('views'), 'DESC']],
+      where,
+    });
+
+    const [totalViews, items] = await Promise.all([countQuery, resultsQuery]);
+    return {
+      totalViews,
+      items: items.map((item) => item.get({ plain: true })),
+    };
+  }
 }
 
 View.init(
@@ -57,13 +96,12 @@ View.init(
       type: DataTypes.STRING(8),
       allowNull: false,
     },
-    // eslint-disable-next-line @typescript-eslint/camelcase
-    visited_at: {
+    visitedAt: {
       type: DataTypes.DATE,
       allowNull: false,
     },
   },
-  { sequelize, timestamps: false }
+  { sequelize, timestamps: false, underscored: true }
 );
 
 export default View;
