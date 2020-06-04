@@ -13,7 +13,7 @@ import {
   TRACKER_BUILD_PATH,
   TRACKER_SCRIPT,
   ACCESS_IDS,
-  PING_JWT_SECRET,
+  TRACKER_JWT_SECRET,
 } from '../../../../config';
 import { TrackerEndpointError } from '../../../errors';
 import { ValidTrackerSource, ValidTrackerType } from '../../../types';
@@ -76,7 +76,7 @@ router.get('/', (req, res, next) => {
     );
   }
 
-  if (!PING_JWT_SECRET) {
+  if (!TRACKER_JWT_SECRET) {
     return next(
       new TrackerEndpointError({
         status: 500,
@@ -131,7 +131,7 @@ router.get('/', (req, res, next) => {
           source,
           type: ValidTrackerType.Script,
         },
-        PING_JWT_SECRET as string,
+        TRACKER_JWT_SECRET as string,
         { algorithm: 'HS256', noTimestamp: true },
         (jwtError, token) => {
           if (jwtError) {

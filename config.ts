@@ -44,7 +44,7 @@ export const RDS_PEM = fs.readFileSync(
   path.join(process.cwd(), 'keys', 'rds.pem')
 );
 
-export const { PING_JWT_SECRET } = process.env;
+export const { TRACKER_JWT_SECRET } = process.env;
 
 export const PUBLIC_BUILD_PATH = path.join(process.cwd(), 'public');
 

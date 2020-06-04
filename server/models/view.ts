@@ -9,7 +9,7 @@ import {
 } from 'sequelize';
 import jwt from 'jsonwebtoken';
 
-import { PING_JWT_SECRET } from '../../config'; // name?
+import { TRACKER_JWT_SECRET } from '../../config';
 import sequelize from '../db';
 import {
   ValidTrackerSource,
@@ -62,7 +62,7 @@ class View extends Model {
     const tokenPayload = await new Promise((resolve) => {
       jwt.verify(
         token,
-        PING_JWT_SECRET as string, // name?
+        TRACKER_JWT_SECRET as string,
         {
           algorithms: ['HS256'],
           ignoreExpiration: true,
