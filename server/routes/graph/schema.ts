@@ -1,22 +1,39 @@
 const schema = `
-type Reprint {
+type ViewsGroup {
   id: ID
-  canonical: String!
+  canonical: String
+  domain: String
   views: Int!
 }
 
-type Reprints {
-  items: [Reprint!]!
+type ViewsList {
+  items: [ViewsGroup!]!
   totalViews: Int!
 }
 
 
+type ReprinterGroup {
+  id: ID
+  domain: String!
+  reprints: Int!
+}
+
+type TopReprinters {
+  items: [ReprinterGroup!]!
+}
+
+
 type Query {
-  reprints(
+  viewsList(
     startDate: String!
     endDate: String!
-    domain: String
-  ): Reprints
+    canonicalFilter: String
+    domainFilter: String
+    summarizeByCanonical: Boolean
+    summarizeByDomain: Boolean
+  ): ViewsList
+
+  topReprinters: TopReprinters
 }
 `;
 

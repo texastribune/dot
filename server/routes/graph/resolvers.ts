@@ -5,8 +5,12 @@ import View from '../../models/view';
 
 const resolvers = {
   Query: {
-    async reprints(root: any, args: any) {
-      return await View.getReprints(args);
+    async viewsList(root: any, args: any) {
+      return await View.getViewsList(args);
+    },
+
+    async topReprinters() {
+      return await View.getTopReprinters();
     },
   },
 };

@@ -1,12 +1,32 @@
-import { Model, DataTypes, Op, literal, Filterable, col } from 'sequelize';
+import {
+  Model,
+  DataTypes,
+  Sequelize,
+  Op as Operation,
+  Filterable,
+  Projectable,
+  FindOptions,
+} from 'sequelize';
 
 import { ValidSource, ValidTracker } from '../../config';
 import sequelize from '../db';
 
-interface ReprintArgs {
+interface ViewsListArgs {
   startDate: string;
   endDate: string;
-  domain?: string;
+  canonicalFilter?: string;
+  domainFilter?: string;
+  summarizeByCanonical?: boolean;
+  summarizeByDomain?: boolean;
+}
+
+interface TopReprintersHash {
+  [key: string]: number;
+}
+
+interface TopReprintersItem {
+  domain: string;
+  reprints: number;
 }
 
 class View extends Model {
@@ -26,29 +46,78 @@ class View extends Model {
 
   public visitedAt!: Date;
 
-  public static async getReprints({
+  public static async getTopReprinters(): Promise<any> {
+    const results = await View.findAll({
+      attributes: [
+        [Sequelize.literal('DISTINCT domain'), 'domain'],
+        [Sequelize.literal('canonical'), 'canonical'],
+      ],
+      group: ['domain', 'canonical'],
+    });
+    const itemsHash: TopReprintersHash = {};
+    const unsortedItems: TopReprintersItem[] = [];
+
+    results.forEach(({ domain }) => {
+      if (itemsHash[domain] !== undefined) {
+        itemsHash[domain] += 1;
+      } else {
+        itemsHash[domain] = 1;
+      }
+    });
+
+    Object.entries(itemsHash).forEach(([domain, reprints]) => {
+      unsortedItems.push({ domain, reprints });
+    });
+
+    const items = unsortedItems.sort(
+      ({ reprints: firstReprints }, { reprints: secondReprints }) => {
+        if (firstReprints > secondReprints) return -1;
+        if (firstReprints < secondReprints) return 1;
+        return 0;
+      }
+    );
+    return { items };
+  }
+
+  public static async getViewsList({
     startDate,
     endDate,
-    domain,
-  }: ReprintArgs): Promise<any> {
+    canonicalFilter,
+    domainFilter,
+    summarizeByCanonical,
+    summarizeByDomain,
+  }: ViewsListArgs): Promise<any> {
     const where: Filterable['where'] = {
       visitedAt: {
-        [Op.between]: [startDate, endDate],
+        [Operation.between]: [startDate, endDate],
       },
     };
+    const attributes: Projectable['attributes'] = [
+      [Sequelize.literal('COUNT(canonical)::integer'), 'views'],
+    ];
+    let group: FindOptions['group'];
 
-    if (domain) {
-      where.domain = { [Op.like]: domain };
+    if (domainFilter) {
+      where.domain = { [Operation.like]: domainFilter };
+      attributes.push('canonical');
+      group = 'canonical';
+    } else if (canonicalFilter) {
+      where.canonical = { [Operation.like]: canonicalFilter };
+      attributes.push('domain');
+      group = 'domain';
+    } else if (summarizeByDomain) {
+      attributes.push('domain');
+      group = 'domain';
+    } else if (summarizeByCanonical) {
+      attributes.push('canonical');
+      group = 'canonical';
     }
 
     const countQuery = View.count({ where });
     const resultsQuery = View.findAll({
-      attributes: [
-        'canonical',
-        [literal('COUNT(canonical)::integer'), 'views'],
-      ],
-      group: ['canonical'],
-      order: [[col('views'), 'DESC']],
+      attributes,
+      group,
+      order: [[Sequelize.col('views'), 'DESC']],
       where,
     });
 
