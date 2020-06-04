@@ -1,4 +1,7 @@
 const schema = `
+scalar Date
+
+
 type ViewsGroup {
   id: ID
   canonical: String
@@ -25,8 +28,8 @@ type TopReprinters {
 
 type Query {
   viewsList(
-    startDate: String!
-    endDate: String!
+    startDate: Date!
+    endDate: Date!
     canonicalFilter: String
     domainFilter: String
     summarizeByCanonical: Boolean
