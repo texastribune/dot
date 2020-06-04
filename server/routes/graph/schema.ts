@@ -2,27 +2,23 @@ const schema = `
 scalar Date
 
 
-type ViewsGroup {
-  id: ID
+type ViewsItem {
+  id: ID!
   canonical: String
   domain: String
   views: Int!
 }
 
 type ViewsList {
-  items: [ViewsGroup!]!
+  items: [ViewsItem!]!
   totalViews: Int!
 }
 
 
-type ReprinterGroup {
-  id: ID
+type ReprinterItem {
+  id: ID!
   domain: String!
   reprints: Int!
-}
-
-type TopReprinters {
-  items: [ReprinterGroup!]!
 }
 
 
@@ -34,9 +30,9 @@ type Query {
     domainFilter: String
     summarizeByCanonical: Boolean
     summarizeByDomain: Boolean
-  ): ViewsList
+  ): ViewsList!
 
-  topReprinters: TopReprinters
+  topReprinters: [ReprinterItem!]!
 }
 `;
 

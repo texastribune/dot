@@ -8,6 +8,7 @@ import {
   FindOptions,
 } from 'sequelize';
 import jwt from 'jsonwebtoken';
+import { v4 as uuidv4 } from 'uuid';
 
 import { TRACKER_JWT_SECRET } from '../../config';
 import sequelize from '../db';
@@ -27,11 +28,8 @@ interface ViewsListArgs {
   summarizeByDomain?: boolean;
 }
 
-interface TopReprintersHash {
-  [key: string]: number;
-}
-
-interface TopReprintersItem {
+interface ReprintersItem {
+  id: string;
   domain: string;
   reprints: number;
 }
@@ -92,7 +90,7 @@ class View extends Model {
     return view.save();
   }
 
-  public static async getTopReprinters(): Promise<any> {
+  public static async getTopReprinters(): Promise<ReprintersItem[]> {
     const results = await View.findAll({
       attributes: [
         [Sequelize.literal('DISTINCT domain'), 'domain'],
@@ -100,8 +98,8 @@ class View extends Model {
       ],
       group: ['domain', 'canonical'],
     });
-    const itemsHash: TopReprintersHash = {};
-    const unsortedItems: TopReprintersItem[] = [];
+    const itemsHash: { [key: string]: number } = {};
+    const unsortedItems: ReprintersItem[] = [];
 
     results.forEach(({ domain }) => {
       if (itemsHash[domain] !== undefined) {
@@ -112,17 +110,16 @@ class View extends Model {
     });
 
     Object.entries(itemsHash).forEach(([domain, reprints]) => {
-      unsortedItems.push({ domain, reprints });
+      unsortedItems.push({ id: uuidv4(), domain, reprints });
     });
 
-    const items = unsortedItems.sort(
+    return unsortedItems.sort(
       ({ reprints: firstReprints }, { reprints: secondReprints }) => {
         if (firstReprints > secondReprints) return -1;
         if (firstReprints < secondReprints) return 1;
         return 0;
       }
     );
-    return { items };
   }
 
   public static async getViewsList({
@@ -159,18 +156,22 @@ class View extends Model {
       group = 'canonical';
     }
 
-    const countQuery = View.count({ where });
-    const resultsQuery = View.findAll({
-      attributes,
-      group,
-      order: [[Sequelize.col('views'), 'DESC']],
-      where,
-    });
+    const [totalViews, items] = await Promise.all([
+      View.count({ where }),
+      View.findAll({
+        attributes,
+        group,
+        order: [[Sequelize.col('views'), 'DESC']],
+        where,
+      }),
+    ]);
 
-    const [totalViews, items] = await Promise.all([countQuery, resultsQuery]);
     return {
       totalViews,
-      items: items.map((item) => item.get({ plain: true })),
+      items: items.map((item) => ({
+        ...item.get({ plain: true }),
+        id: uuidv4(),
+      })),
     };
   }
 }
