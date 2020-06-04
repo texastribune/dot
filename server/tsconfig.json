@@ -9,6 +9,6 @@
     "resolveJsonModule": true,
     "strict": true,
     "target": "esnext",
-    "typeRoots": ["../node_modules/@types", "./typings"]
+    "typeRoots": ["../node_modules/@types", "../typings", "./typings"]
   }
 }
