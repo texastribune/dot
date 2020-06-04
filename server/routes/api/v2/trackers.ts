@@ -16,7 +16,7 @@ import {
   TRACKER_JWT_SECRET,
 } from '../../../../config';
 import { TrackerEndpointError } from '../../../errors';
-import { ValidTrackerSource, ValidTrackerType } from '../../../types';
+import { ValidTrackerType } from '../../../types';
 
 const router = express.Router();
 
@@ -61,26 +61,6 @@ router.get('/', (req, res, next) => {
       new TrackerEndpointError({
         status: 400,
         message: 'Missing required query parameters',
-      })
-    );
-  }
-
-  if (
-    !Object.values(ValidTrackerSource).includes(source as ValidTrackerSource)
-  ) {
-    return next(
-      new TrackerEndpointError({
-        status: 400,
-        message: 'Invalid source',
-      })
-    );
-  }
-
-  if (!TRACKER_JWT_SECRET) {
-    return next(
-      new TrackerEndpointError({
-        status: 500,
-        message: 'Error fetching trackers',
       })
     );
   }
