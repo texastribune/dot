@@ -14,10 +14,9 @@ import {
   TRACKER_SCRIPT,
   ACCESS_IDS,
   PING_JWT_SECRET,
-  ValidSource,
-  ValidTracker,
 } from '../../../../config';
 import { TrackerEndpointError } from '../../../errors';
+import { ValidTrackerSource, ValidTrackerType } from '../../../types';
 
 const router = express.Router();
 
@@ -66,7 +65,9 @@ router.get('/', (req, res, next) => {
     );
   }
 
-  if (!Object.values(ValidSource).includes(source as ValidSource)) {
+  if (
+    !Object.values(ValidTrackerSource).includes(source as ValidTrackerSource)
+  ) {
     return next(
       new TrackerEndpointError({
         status: 400,
@@ -128,7 +129,7 @@ router.get('/', (req, res, next) => {
           version: VERSION,
           canonical,
           source,
-          tracker: ValidTracker.Script,
+          type: ValidTrackerType.Script,
         },
         PING_JWT_SECRET as string,
         { algorithm: 'HS256', noTimestamp: true },

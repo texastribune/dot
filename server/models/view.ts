@@ -7,9 +7,16 @@ import {
   Projectable,
   FindOptions,
 } from 'sequelize';
+import jwt from 'jsonwebtoken';
 
-import { ValidSource, ValidTracker } from '../../config';
+import { PING_JWT_SECRET } from '../../config'; // name?
 import sequelize from '../db';
+import {
+  ValidTrackerSource,
+  ValidTrackerType,
+  CreateViewArgs,
+  TrackerTokenPayload,
+} from '../types';
 
 interface ViewsListArgs {
   startDate: string;
@@ -38,13 +45,52 @@ class View extends Model {
 
   public referrer!: string | null;
 
-  public source!: ValidSource;
+  public source!: ValidTrackerSource;
 
-  public tracker!: ValidTracker;
+  public type!: ValidTrackerType;
 
   public version!: string;
 
   public visitedAt!: Date;
+
+  public static async createView({
+    token,
+    domain,
+    referrer,
+  }: CreateViewArgs): Promise<View> {
+    // ERROR HANDLING NEEDED
+    const tokenPayload = await new Promise((resolve) => {
+      jwt.verify(
+        token,
+        PING_JWT_SECRET as string, // name?
+        {
+          algorithms: ['HS256'],
+          ignoreExpiration: true,
+        },
+        (error, payload) => {
+          resolve(payload);
+        }
+      );
+    });
+
+    const {
+      version,
+      canonical,
+      source,
+      type,
+    } = tokenPayload as TrackerTokenPayload;
+
+    const view = await View.create({
+      canonical,
+      domain,
+      referrer,
+      source,
+      type,
+      version,
+    });
+
+    return view.save();
+  }
 
   public static async getTopReprinters(): Promise<any> {
     const results = await View.findAll({
@@ -154,11 +200,11 @@ View.init(
       allowNull: true,
     },
     source: {
-      type: DataTypes.ENUM(...Object.values(ValidSource)),
+      type: DataTypes.ENUM(...Object.values(ValidTrackerSource)),
       allowNull: false,
     },
-    tracker: {
-      type: DataTypes.ENUM(...Object.values(ValidTracker)),
+    type: {
+      type: DataTypes.ENUM(...Object.values(ValidTrackerType)),
       allowNull: false,
     },
     version: {
@@ -168,6 +214,7 @@ View.init(
     visitedAt: {
       type: DataTypes.DATE,
       allowNull: false,
+      defaultValue: DataTypes.NOW,
     },
   },
   { sequelize, timestamps: false, underscored: true }

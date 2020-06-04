@@ -1,5 +1,5 @@
 import { DataTypes, QueryInterface } from 'sequelize';
-import { ValidSource, ValidTracker } from '../../config';
+import { ValidTrackerSource, ValidTrackerType } from '../types';
 
 export default {
   up: (queryInterface: QueryInterface): Promise<void> => {
@@ -27,11 +27,11 @@ export default {
         allowNull: true,
       },
       source: {
-        type: DataTypes.ENUM(...Object.values(ValidSource)),
+        type: DataTypes.ENUM(...Object.values(ValidTrackerSource)),
         allowNull: false,
       },
-      tracker: {
-        type: DataTypes.ENUM(...Object.values(ValidTracker)),
+      type: {
+        type: DataTypes.ENUM(...Object.values(ValidTrackerType)),
         allowNull: false,
       },
       version: {
