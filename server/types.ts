@@ -1,3 +1,5 @@
+import { AccessTokenPayload } from '../shared-types';
+
 export enum ValidTrackerSource {
   Legacy = 'legacy',
   Repub = 'repub',
@@ -18,4 +20,12 @@ export interface CreateViewArgs {
   token: string;
   domain: string;
   referrer?: string;
+}
+
+export interface GQLContext {
+  user?: AccessTokenPayload;
+}
+
+export enum UserPermissions {
+  ReadViews = 'dot:view_data',
 }

@@ -11,13 +11,18 @@ import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 
 import { TRACKER_JWT_SECRET } from '../../config';
+import { AccessTokenPayload } from '../../shared-types';
+import { userPermissions } from '../utils/decorators';
 import sequelize from '../db';
 import {
   ValidTrackerSource,
   ValidTrackerType,
   CreateViewArgs,
   TrackerTokenPayload,
+  UserPermissions,
 } from '../types';
+
+type ConditionalUser = AccessTokenPayload | undefined;
 
 interface ViewsListArgs {
   startDate: string;
@@ -56,7 +61,6 @@ class View extends Model {
     domain,
     referrer,
   }: CreateViewArgs): Promise<View> {
-    // ERROR HANDLING NEEDED
     const tokenPayload = await new Promise((resolve) => {
       jwt.verify(
         token,
@@ -90,7 +94,11 @@ class View extends Model {
     return view.save();
   }
 
-  public static async getTopReprinters(): Promise<ReprintersItem[]> {
+  @userPermissions([UserPermissions.ReadViews])
+  public static async getTopReprinters(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    user: ConditionalUser
+  ): Promise<ReprintersItem[]> {
     const results = await View.findAll({
       attributes: [
         [Sequelize.literal('DISTINCT domain'), 'domain'],
@@ -122,14 +130,18 @@ class View extends Model {
     );
   }
 
-  public static async getViewsList({
-    startDate,
-    endDate,
-    canonicalFilter,
-    domainFilter,
-    summarizeByCanonical,
-    summarizeByDomain,
-  }: ViewsListArgs): Promise<any> {
+  @userPermissions([UserPermissions.ReadViews])
+  public static async getViewsList(
+    user: ConditionalUser,
+    {
+      startDate,
+      endDate,
+      canonicalFilter,
+      domainFilter,
+      summarizeByCanonical,
+      summarizeByDomain,
+    }: ViewsListArgs
+  ): Promise<any> {
     const where: Filterable['where'] = {
       visitedAt: {
         [Operation.between]: [startDate, endDate],
