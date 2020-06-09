@@ -230,7 +230,17 @@ View.init(
       defaultValue: DataTypes.NOW,
     },
   },
-  { sequelize, timestamps: false, underscored: true }
+  {
+    sequelize,
+    timestamps: false,
+    underscored: true,
+    indexes: [
+      {
+        using: 'BTREE',
+        fields: ['canonical', 'domain', 'visitedAt'],
+      },
+    ],
+  }
 );
 
 export default View;
