@@ -6,6 +6,7 @@ import express from 'express';
 import * as Sentry from '@sentry/node';
 import connectSlashes from 'connect-slashes';
 import morgan from 'morgan';
+import statuses from 'statuses';
 
 import webpackConfig from '../webpack.config';
 import {
@@ -24,7 +25,7 @@ import {
 import db from './db';
 import routes from './routes';
 import reportError from './utils/report-error';
-import { EnhancedError } from './errors';
+import { EnhancedError, AppError } from './errors';
 
 if (ENABLE_SENTRY) {
   Sentry.init({
@@ -69,6 +70,7 @@ app.use(
     if (!error.status || error.status >= 500) {
       reportError(error);
     }
+
     next(error);
   }
 );
@@ -82,12 +84,17 @@ app.use(
     next: express.NextFunction
   ) => {
     // eslint-disable-next-line no-console
-    console.error(`${error.name}: ${error.message}`, error.stack);
+    console.error(error.name);
+    // eslint-disable-next-line no-console
+    console.error(error.message);
+    // eslint-disable-next-line no-console
+    console.error(error.stack);
 
-    res.status(error.status || 500).json({
-      message: error.message,
-      error: IS_DEV ? error : {},
-    });
+    const status = error.status || 500;
+    const message =
+      error instanceof AppError ? error.message : statuses(status);
+
+    res.status(status).json({ message });
   }
 );
 
