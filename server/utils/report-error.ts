@@ -2,7 +2,7 @@ import { captureException, withScope } from '@sentry/node';
 
 import { AppError, EnhancedError } from '../errors';
 
-export default function logError(error: EnhancedError): void {
+export default function reportError(error: EnhancedError): void {
   withScope((scope) => {
     if (error.status) {
       scope.setExtra('status', error.status);

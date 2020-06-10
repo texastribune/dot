@@ -23,7 +23,7 @@ import {
 } from '../config';
 import db from './db';
 import routes from './routes';
-import logError from './utils/log-error';
+import reportError from './utils/report-error';
 import { EnhancedError } from './errors';
 
 if (ENABLE_SENTRY) {
@@ -67,7 +67,7 @@ app.use(
     next: express.NextFunction
   ) => {
     if (!error.status || error.status >= 500) {
-      logError(error);
+      reportError(error);
     }
     next(error);
   }
