@@ -7,6 +7,7 @@ import * as Sentry from '@sentry/node';
 import connectSlashes from 'connect-slashes';
 import morgan from 'morgan';
 import statuses from 'statuses';
+import axios, { AxiosError } from 'axios';
 
 import webpackConfig from '../webpack.config';
 import {
@@ -25,7 +26,7 @@ import {
 import db from './db';
 import routes from './routes';
 import reportError from './utils/report-error';
-import { EnhancedError, AppError } from './errors';
+import { EnhancedError, RequestError, AppError } from './errors';
 
 if (ENABLE_SENTRY) {
   Sentry.init({
@@ -95,6 +96,33 @@ app.use(
       error instanceof AppError ? error.message : statuses(status);
 
     res.status(status).json({ message });
+  }
+);
+
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const axiosError = error as AxiosError;
+
+    return Promise.reject(
+      new RequestError({
+        message: axiosError.message,
+        status: axiosError.response ? axiosError.response.status : undefined,
+        extra: {
+          gotResponse: !!axiosError.response,
+          code: axiosError.code,
+          data: axiosError.response ? axiosError.response.data : undefined,
+        },
+      })
+    );
+  }
+);
+
+axios.interceptors.request.use(
+  (config) => config,
+  (error) => {
+    const axiosError = error as AxiosError;
+    return Promise.reject(new RequestError({ message: axiosError.message }));
   }
 );
 

@@ -24,51 +24,54 @@ export abstract class AppError extends Error implements EnhancedError {
     extra?: AnyObject;
   }) {
     super(message);
-
     this.name = name;
     this.status = status;
     this.extra = extra;
   }
 }
 
-export class GraphError extends AppError {
+export class RequestError extends AppError {
   constructor({
     message,
-    status,
+    status = 500,
     extra,
   }: {
     message: string;
-    status: number;
-    extra?: AnyObject;
+    status?: number;
+    extra?: {
+      gotResponse: boolean;
+      code?: string;
+      data?: AnyObject;
+    };
   }) {
-    super({ message, status, extra, name: 'GraphError' });
+    super({ message, status, extra, name: 'AxiosError' });
   }
 }
 
-export class TokenEndpointError extends AppError {
-  constructor({
-    message,
-    status,
-    extra,
-  }: {
-    message: string;
-    status: number;
-    extra?: AnyObject;
-  }) {
-    super({ message, status, extra, name: 'TokenEndpointError' });
-  }
-}
+// export class TokenEndpointError extends AppError {
+//   constructor({
+//     message,
+//     status,
+//     extra,
+//   }: {
+//     message: string;
+//     status: number;
+//     extra?: AnyObject;
+//   }) {
+//     super({ message, status, extra, name: 'TokenEndpointError' });
+//   }
+// }
 
-export class TrackerEndpointError extends AppError {
-  constructor({
-    message,
-    status,
-    extra,
-  }: {
-    message: string;
-    status: number;
-    extra?: AnyObject;
-  }) {
-    super({ message, status, extra, name: 'TrackerEndpointError' });
-  }
-}
+// export class TrackerEndpointError extends AppError {
+//   constructor({
+//     message,
+//     status,
+//     extra,
+//   }: {
+//     message: string;
+//     status: number;
+//     extra?: AnyObject;
+//   }) {
+//     super({ message, status, extra, name: 'TrackerEndpointError' });
+//   }
+// }
