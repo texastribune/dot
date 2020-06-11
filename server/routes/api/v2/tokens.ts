@@ -9,7 +9,7 @@ import {
   AUTH0_REDIRECT_URI,
   AUTH0_TOKEN_URL,
 } from '../../../../config';
-import { ResponseError, SignInError } from '../../../errors';
+import { ResponseError, UnauthorizedError, Auth0Error } from '../../../errors';
 
 const router = express.Router();
 
@@ -17,48 +17,45 @@ router.get('/', async (req, res, next) => {
   const { code } = req.query;
 
   try {
-    const { data } = await axios.post<auth0.Auth0Result>(AUTH0_TOKEN_URL, {
-      code,
-      client_id: AUTH0_CLIENT_ID,
-      client_secret: AUTH0_CLIENT_SECRET,
-      grant_type: 'authorization_code',
-      redirect_uri: AUTH0_REDIRECT_URI,
-    });
+    const { data: tokens } = await axios.post<auth0.Auth0Result>(
+      AUTH0_TOKEN_URL,
+      {
+        code,
+        client_id: AUTH0_CLIENT_ID,
+        client_secret: AUTH0_CLIENT_SECRET,
+        grant_type: 'authorization_code',
+        redirect_uri: AUTH0_REDIRECT_URI,
+      }
+    );
 
-    return res.header('Cache-Control', 'no-cache').json({ tokens: data });
+    // prettier-ignore
+    return res
+      .header('Cache-Control', 'no-cache')
+      .json({ tokens });
   } catch (error) {
     if (error instanceof ResponseError) {
       const responseError = error as ResponseError<auth0.Auth0Error>;
+      const invalidCode =
+        responseError.data &&
+        responseError.data.error_description === 'Invalid authorization code';
 
-      if (responseError.extra && responseError.extra.data) {
-        if (
-          responseError.extra.data.error_description ===
-          'Invalid authorization code'
-        ) {
-          return next(
-            new SignInError({
-              message: 'Invalid authorization code',
-              status: 403,
-            })
-          );
-        }
+      if (invalidCode) {
+        return next(
+          new UnauthorizedError({
+            message: 'Invalid authorization code',
+          })
+        );
       }
 
       return next(
-        new SignInError({
-          message: 'Error retrieving Auth0 tokens',
-          status: 500,
-          extra: responseError.extra,
+        new Auth0Error({
+          message: 'Error retrieving authorization tokens',
+          extra: responseError.formatExtra(),
         })
       );
     }
 
-    return next(
-      new SignInError({
-        message: 'Error requesting Auth0 tokens',
-        status: 500,
-      })
-    );
+    return next(error);
   }
 });
 

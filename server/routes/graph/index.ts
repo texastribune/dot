@@ -10,7 +10,7 @@ import {
   AUTH0_JWT_ISSUER,
   AUTH0_PUBLIC_KEY_URL,
 } from '../../../config';
-import { EnhancedError, GraphError } from '../../errors';
+import { EnhancedError, UnauthorizedError, RateLimitError } from '../../errors';
 import typeDefs from './schema';
 import resolvers from './resolvers';
 
@@ -40,25 +40,11 @@ router.use(
     next: express.NextFunction
   ) => {
     if (error instanceof jwt.UnauthorizedError) {
-      return next(new GraphError({ message: error.message, status: 401 }));
-    }
-
-    if (
-      error instanceof jwksRsa.ArgumentError ||
-      error instanceof jwksRsa.JwksError ||
-      error instanceof jwksRsa.SigningKeyNotFoundError
-    ) {
-      return next(
-        new GraphError({
-          message: 'Error validating credentials',
-          status: 500,
-          extra: { detail: error.message },
-        })
-      );
+      return next(new UnauthorizedError({ message: 'Invalid access token' }));
     }
 
     if (error instanceof jwksRsa.JwksRateLimitError) {
-      return next(new GraphError({ message: error.message, status: 429 }));
+      return next(new RateLimitError());
     }
 
     return next(error);
