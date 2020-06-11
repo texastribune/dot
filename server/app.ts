@@ -26,7 +26,7 @@ import {
 import db from './db';
 import routes from './routes';
 import reportError from './utils/report-error';
-import { AppError, EnhancedError, ResponseError, RequestError } from './errors';
+import { AppError, EnhancedError, ResponseError } from './errors';
 
 if (ENABLE_SENTRY) {
   Sentry.init({
@@ -103,30 +103,20 @@ axios.interceptors.response.use(
   (response) => response,
   (error) => {
     const responseError = error as AxiosError;
+    const { code, response, message } = responseError;
+    const data = response ? response.data : undefined;
+    const status = response ? response.status : undefined;
+    const gotResponse = !!response;
 
     return Promise.reject(
       new ResponseError({
-        message: responseError.message,
-        status: responseError.response
-          ? responseError.response.status
-          : undefined,
-        extra: {
-          gotResponse: !!responseError.response,
-          code: responseError.code,
-          data: responseError.response
-            ? responseError.response.data
-            : undefined,
-        },
+        code,
+        data,
+        gotResponse,
+        message,
+        status,
       })
     );
-  }
-);
-
-axios.interceptors.request.use(
-  (config) => config,
-  (error) => {
-    const { message } = error as AxiosError;
-    return Promise.reject(new RequestError({ message }));
   }
 );
 
