@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import express from 'express';
 
 import {
@@ -9,7 +9,7 @@ import {
   AUTH0_REDIRECT_URI,
   AUTH0_TOKEN_URL,
 } from '../../../../config';
-import { TokenEndpointError } from '../../../errors';
+import { ResponseError, SignInError } from '../../../errors';
 
 const router = express.Router();
 
@@ -25,37 +25,40 @@ router.get('/', async (req, res, next) => {
       redirect_uri: AUTH0_REDIRECT_URI,
     });
 
-    res.header('Cache-Control', 'no-cache');
-    return res.json({ tokens: data });
+    return res.header('Cache-Control', 'no-cache').json({ tokens: data });
   } catch (error) {
-    if (error.isAxiosError) {
-      const axiosError: AxiosError<auth0.Auth0Error> = error;
-      const { response } = axiosError;
+    if (error instanceof ResponseError) {
+      const responseError = error as ResponseError<auth0.Auth0Error>;
 
-      if (
-        response &&
-        response.data.error_description === 'Invalid authorization code'
-      ) {
-        return next(
-          new TokenEndpointError({
-            message: 'Invalid authorization code',
-            status: 403,
-          })
-        );
+      if (responseError.extra && responseError.extra.data) {
+        if (
+          responseError.extra.data.error_description ===
+          'Invalid authorization code'
+        ) {
+          return next(
+            new SignInError({
+              message: 'Invalid authorization code',
+              status: 403,
+            })
+          );
+        }
       }
 
       return next(
-        new TokenEndpointError({
-          message: 'Error retrieving authorization tokens',
+        new SignInError({
+          message: 'Error retrieving Auth0 tokens',
           status: 500,
-          extra: {
-            data: response ? response.data : null,
-          },
+          extra: responseError.extra,
         })
       );
     }
 
-    return next(error);
+    return next(
+      new SignInError({
+        message: 'Error requesting Auth0 tokens',
+        status: 500,
+      })
+    );
   }
 });
 

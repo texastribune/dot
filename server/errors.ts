@@ -1,27 +1,25 @@
 /* eslint-disable max-classes-per-file */
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnyObject = { [key: string]: any };
-
 export interface EnhancedError extends Error {
   status?: number;
 }
 
-export abstract class AppError extends Error implements EnhancedError {
+// prettier-ignore
+export abstract class AppError<T = undefined> extends Error implements EnhancedError {
   public status: number;
 
-  public extra?: AnyObject;
+  public extra?: T;
 
   constructor({
     message,
     name,
     status,
-    extra = {},
+    extra,
   }: {
     message: string;
     name: string;
     status: number;
-    extra?: AnyObject;
+    extra?: T;
   }) {
     super(message);
     this.name = name;
@@ -30,48 +28,41 @@ export abstract class AppError extends Error implements EnhancedError {
   }
 }
 
-export class RequestError extends AppError {
+interface ResponseErrorExtra<T> {
+  gotResponse: boolean;
+  code?: string;
+  data?: T;
+}
+export class ResponseError<T> extends AppError<ResponseErrorExtra<T>> {
   constructor({
     message,
-    status = 500,
     extra,
+    status = 500,
   }: {
     message: string;
+    extra: ResponseErrorExtra<T>;
     status?: number;
-    extra?: {
-      gotResponse: boolean;
-      code?: string;
-      data?: AnyObject;
-    };
   }) {
-    super({ message, status, extra, name: 'AxiosError' });
+    super({ message, status, extra, name: 'AxiosResponseError' });
   }
 }
 
-// export class TokenEndpointError extends AppError {
-//   constructor({
-//     message,
-//     status,
-//     extra,
-//   }: {
-//     message: string;
-//     status: number;
-//     extra?: AnyObject;
-//   }) {
-//     super({ message, status, extra, name: 'TokenEndpointError' });
-//   }
-// }
+export class RequestError extends AppError {
+  constructor({ message }: { message: string }) {
+    super({ message, status: 500, name: 'AxiosRequestError' });
+  }
+}
 
-// export class TrackerEndpointError extends AppError {
-//   constructor({
-//     message,
-//     status,
-//     extra,
-//   }: {
-//     message: string;
-//     status: number;
-//     extra?: AnyObject;
-//   }) {
-//     super({ message, status, extra, name: 'TrackerEndpointError' });
-//   }
-// }
+export class SignInError<T> extends AppError<T> {
+  constructor({
+    message,
+    status,
+    extra,
+  }: {
+    message: string;
+    status: number;
+    extra?: T;
+  }) {
+    super({ message, status, extra, name: 'SignInError' });
+  }
+}

@@ -1,6 +1,7 @@
 import express from 'express';
 
 import View from '../models/view';
+import reportError from '../utils/report-error';
 import { CreateViewArgs } from '../types';
 import apiRoutes from './api';
 import dashboardRoutes from './dashboard';
@@ -19,7 +20,6 @@ router.get('/', (req, res) => {
 });
 
 router.get('/pixel.gif', async (req, res) => {
-  // ERROR HANDLING NEEDED
   const { token, domain, referrer } = req.query;
 
   try {
@@ -33,16 +33,17 @@ router.get('/pixel.gif', async (req, res) => {
     console.log(
       `Logged view | Canonical: ${view.canonical} | Domain: ${view.domain} | Source: ${view.source} | Type: ${view.type}`
     );
-  } catch (err) {
-    // next(err);
-  }
+  } catch (error) {
+    reportError(error);
+  } finally {
+    res.set({
+      'Cache-Control': 'no-cache',
+      'Content-Type': 'image/gif',
+      'Content-Length': gif.length,
+    });
 
-  res.set({
-    'Cache-Control': 'no-cache',
-    'Content-Type': 'image/gif',
-    'Content-Length': gif.length,
-  });
-  res.send(gif);
+    res.send(gif);
+  }
 });
 
 router.use('/api', apiRoutes);

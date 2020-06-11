@@ -26,7 +26,7 @@ import {
 import db from './db';
 import routes from './routes';
 import reportError from './utils/report-error';
-import { EnhancedError, RequestError, AppError } from './errors';
+import { AppError, EnhancedError, ResponseError, RequestError } from './errors';
 
 if (ENABLE_SENTRY) {
   Sentry.init({
@@ -102,16 +102,20 @@ app.use(
 axios.interceptors.response.use(
   (response) => response,
   (error) => {
-    const axiosError = error as AxiosError;
+    const responseError = error as AxiosError;
 
     return Promise.reject(
-      new RequestError({
-        message: axiosError.message,
-        status: axiosError.response ? axiosError.response.status : undefined,
+      new ResponseError({
+        message: responseError.message,
+        status: responseError.response
+          ? responseError.response.status
+          : undefined,
         extra: {
-          gotResponse: !!axiosError.response,
-          code: axiosError.code,
-          data: axiosError.response ? axiosError.response.data : undefined,
+          gotResponse: !!responseError.response,
+          code: responseError.code,
+          data: responseError.response
+            ? responseError.response.data
+            : undefined,
         },
       })
     );
@@ -121,8 +125,8 @@ axios.interceptors.response.use(
 axios.interceptors.request.use(
   (config) => config,
   (error) => {
-    const axiosError = error as AxiosError;
-    return Promise.reject(new RequestError({ message: axiosError.message }));
+    const { message } = error as AxiosError;
+    return Promise.reject(new RequestError({ message }));
   }
 );
 

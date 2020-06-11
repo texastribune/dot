@@ -61,7 +61,7 @@ class View extends Model {
     domain,
     referrer,
   }: CreateViewArgs): Promise<View> {
-    const tokenPayload = await new Promise((resolve) => {
+    const tokenPayload = await new Promise((resolve, reject) => {
       jwt.verify(
         token,
         TRACKER_JWT_SECRET as string,
@@ -70,7 +70,11 @@ class View extends Model {
           ignoreExpiration: true,
         },
         (error, payload) => {
-          resolve(payload);
+          if (error) {
+            reject(error);
+          } else {
+            resolve(payload);
+          }
         }
       );
     });
