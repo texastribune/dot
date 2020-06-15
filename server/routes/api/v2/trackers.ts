@@ -13,11 +13,10 @@ import {
   TRACKER_BUILD_PATH,
   TRACKER_SCRIPT,
   ACCESS_IDS,
-  PING_JWT_SECRET,
-  ValidSource,
-  ValidTracker,
+  TRACKER_JWT_SECRET,
 } from '../../../../config';
-import { TrackerEndpointError } from '../../../errors';
+import { UnauthorizedError, TrackerCreationError } from '../../../errors';
+import { ValidTrackerType } from '../../../types';
 
 const router = express.Router();
 
@@ -25,9 +24,8 @@ const router = express.Router();
 router.get('/', (req, res, next) => {
   if (!req.headers.authorization) {
     return next(
-      new TrackerEndpointError({
-        status: 401,
-        message: 'No authorization token',
+      new UnauthorizedError({
+        message: 'No authorization ID',
       })
     );
   }
@@ -43,9 +41,8 @@ router.get('/', (req, res, next) => {
 
   if (!isAllowed) {
     return next(
-      new TrackerEndpointError({
-        status: 403,
-        message: 'Invalid authorization token',
+      new UnauthorizedError({
+        message: 'Invalid authorization ID',
       })
     );
   }
@@ -59,27 +56,8 @@ router.get('/', (req, res, next) => {
 
   if (typeof canonical !== 'string' || typeof source !== 'string') {
     return next(
-      new TrackerEndpointError({
-        status: 400,
-        message: 'Missing required query parameters',
-      })
-    );
-  }
-
-  if (!Object.values(ValidSource).includes(source as ValidSource)) {
-    return next(
-      new TrackerEndpointError({
-        status: 400,
-        message: 'Invalid source',
-      })
-    );
-  }
-
-  if (!PING_JWT_SECRET) {
-    return next(
-      new TrackerEndpointError({
-        status: 500,
-        message: 'Error fetching trackers',
+      new TrackerCreationError({
+        message: 'Invalid query parameters',
       })
     );
   }
@@ -89,8 +67,7 @@ router.get('/', (req, res, next) => {
     new URL(canonical);
   } catch (err) {
     return next(
-      new TrackerEndpointError({
-        status: 400,
+      new TrackerCreationError({
         message: 'Invalid canonical URL',
       })
     );
@@ -113,51 +90,34 @@ router.get('/', (req, res, next) => {
 
   fs.readFile(latestScriptPath, 'utf8', (fileReadError, data) => {
     if (fileReadError) {
-      next(
-        new TrackerEndpointError({
-          status: 500,
-          message: 'Error fetching trackers',
-          extra: {
-            detail: fileReadError.message,
-          },
-        })
-      );
-    } else {
-      jwt.sign(
-        {
-          version: VERSION,
-          canonical,
-          source,
-          tracker: ValidTracker.Script,
-        },
-        PING_JWT_SECRET as string,
-        { algorithm: 'HS256', noTimestamp: true },
-        (jwtError, token) => {
-          if (jwtError) {
-            next(
-              new TrackerEndpointError({
-                status: 500,
-                message: 'Error fetching trackers',
-                extra: {
-                  detail: jwtError.message,
-                },
-              })
-            );
-          } else {
-            const sriAlg = 'sha256';
-            const hash = crypto
-              .createHash(sriAlg)
-              .update(data, 'utf8')
-              .digest('base64');
-
-            res.header('Cache-Control', 'no-cache');
-            res.json({
-              script: `<script src="${APP_URL}${TRACKER_STATIC_ALIAS}${VERSION}/${TRACKER_SCRIPT}" data-dot-token="${token}" data-dot-url="${APP_URL}" integrity="${sriAlg}-${hash}" crossorigin="anonymous"></script>`,
-            });
-          }
-        }
-      );
+      return next(fileReadError);
     }
+
+    return jwt.sign(
+      {
+        version: VERSION,
+        canonical,
+        source,
+        type: ValidTrackerType.Script,
+      },
+      TRACKER_JWT_SECRET as string,
+      { algorithm: 'HS256', noTimestamp: true },
+      (jwtError, token) => {
+        if (jwtError) {
+          return next(jwtError);
+        }
+
+        const sriAlg = 'sha256';
+        const hash = crypto
+          .createHash(sriAlg)
+          .update(data, 'utf8')
+          .digest('base64');
+
+        return res.header('Cache-Control', 'no-cache').json({
+          script: `<script src="${APP_URL}${TRACKER_STATIC_ALIAS}${VERSION}/${TRACKER_SCRIPT}" data-dot-token="${token}" data-dot-url="${APP_URL}" integrity="${sriAlg}-${hash}" crossorigin="anonymous"></script>`,
+        });
+      }
+    );
   });
 });
 

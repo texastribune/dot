@@ -19,8 +19,12 @@
     var src = e(currentScript.getAttribute('data-dot-url')) + '/pixel.gif?';
     src += 'domain=' + domain + '&';
     src += 'version=' + version + '&';
-    src += 'token=' + token + '&';
-    src += 'referrer=' + referrer;
+    src += 'token=' + token;
+
+    if (referrer) {
+      src += '&' + 'referrer=' + referrer;
+    }
+
     img.src = src;
 
     win.ttDotTracked = true;

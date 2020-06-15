@@ -44,7 +44,7 @@ export const RDS_PEM = fs.readFileSync(
   path.join(process.cwd(), 'keys', 'rds.pem')
 );
 
-export const { PING_JWT_SECRET } = process.env;
+export const { TRACKER_JWT_SECRET } = process.env;
 
 export const PUBLIC_BUILD_PATH = path.join(process.cwd(), 'public');
 
@@ -56,11 +56,3 @@ export const TEMPLATES_PATH = path.join(process.cwd(), 'views');
 export const TRACKER_STATIC_ALIAS = '/analytics/';
 export const TRACKER_BUILD_PATH = path.join(process.cwd(), 'analytics');
 export const TRACKER_SCRIPT = 'pixel.js';
-
-export enum ValidSource {
-  Legacy = 'legacy',
-  Repub = 'repub',
-}
-export enum ValidTracker {
-  Script = 'script',
-}

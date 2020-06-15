@@ -5,7 +5,7 @@ import { URL } from 'url';
 import { QueryInterface, QueryTypes } from 'sequelize';
 
 import View from '../models/view';
-import { ValidSource, ValidTracker } from '../../config';
+import { ValidTrackerSource, ValidTrackerType } from '../types';
 
 interface Visit {
   id: number;
@@ -51,8 +51,8 @@ export default {
             canonical,
             domain: new URL(url).hostname,
             referrer: referrer || undefined,
-            source: ValidSource.Legacy,
-            tracker: ValidTracker.Script,
+            source: ValidTrackerSource.Legacy,
+            type: ValidTrackerType.Script,
             version: '1.0.0',
             visited_at,
           })

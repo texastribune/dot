@@ -1,51 +1,70 @@
 /* eslint-disable max-classes-per-file */
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnyObject = { [key: string]: any };
-
 export interface EnhancedError extends Error {
   status?: number;
 }
 
-export abstract class AppError extends Error implements EnhancedError {
+// prettier-ignore
+export abstract class AppError<T = undefined> extends Error implements EnhancedError {
   public status: number;
 
-  public extra?: AnyObject;
+  public extra?: T;
 
   constructor({
     message,
     name,
     status,
-    extra = {},
+    extra,
   }: {
     message: string;
     name: string;
     status: number;
-    extra?: AnyObject;
+    extra?: T;
   }) {
     super(message);
-
     this.name = name;
     this.status = status;
     this.extra = extra;
   }
 }
+export class ResponseError<T> extends Error implements EnhancedError {
+  public gotResponse: boolean;
 
-export class GraphError extends AppError {
+  public code?: string;
+
+  public data?: T;
+
+  public status: number;
+
   constructor({
+    gotResponse,
+    code,
+    data,
     message,
-    status,
-    extra,
+    status = 500,
   }: {
+    gotResponse: boolean;
+    code?: string;
+    data?: T;
     message: string;
-    status: number;
-    extra?: AnyObject;
+    status?: number;
   }) {
-    super({ message, status, extra, name: 'GraphError' });
+    super(message);
+    this.name = 'AxiosResponseError';
+    this.code = code;
+    this.data = data;
+    this.gotResponse = gotResponse;
+    this.status = status;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  public formatExtra() {
+    const { code, data, gotResponse, status } = this;
+    return { code, data, gotResponse, status };
   }
 }
 
-export class TokenEndpointError extends AppError {
+export class SignInError<T> extends AppError<T> {
   constructor({
     message,
     status,
@@ -53,22 +72,41 @@ export class TokenEndpointError extends AppError {
   }: {
     message: string;
     status: number;
-    extra?: AnyObject;
+    extra?: T;
   }) {
-    super({ message, status, extra, name: 'TokenEndpointError' });
+    super({ message, status, extra, name: 'SignInError' });
   }
 }
 
-export class TrackerEndpointError extends AppError {
+export class UnauthorizedError<T> extends AppError<T> {
+  constructor({ message, extra }: { message: string; extra?: T }) {
+    super({ message, status: 401, extra, name: 'UnauthorizedError' });
+  }
+}
+
+export class TrackerCreationError<T> extends AppError<T> {
+  constructor({ message, extra }: { message: string; extra?: T }) {
+    super({ message, status: 400, extra, name: 'TrackerCreationError' });
+  }
+}
+
+export class Auth0Error<T> extends AppError<T> {
+  constructor({ message, extra }: { message: string; extra?: T }) {
+    super({ message, status: 500, extra, name: 'Auth0Error' });
+  }
+}
+
+export class RateLimitError<T> extends AppError<T> {
   constructor({
-    message,
-    status,
     extra,
   }: {
-    message: string;
-    status: number;
-    extra?: AnyObject;
-  }) {
-    super({ message, status, extra, name: 'TrackerEndpointError' });
+    extra?: T;
+  } = {}) {
+    super({
+      message: 'Too many requests',
+      status: 429,
+      extra,
+      name: 'RateLimitError',
+    });
   }
 }

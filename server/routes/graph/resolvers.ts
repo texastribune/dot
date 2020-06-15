@@ -1,15 +1,18 @@
-/* eslint-disable */
+import { GraphQLDate } from 'graphql-iso-date';
+
+import { GQLContext } from '../../types';
+import View from '../../models/view';
 
 const resolvers = {
-  Query: {
-    posts(root: any, args: any, request: any): string[] {
-      if (request.user.permissions.includes('dot:view_data')) {
-        console.log('you are allowed here :)');
-      } else {
-        console.log('you are NOT allowed here :(');
-      }
+  Date: GraphQLDate,
 
-      return ['foo', 'bar'];
+  Query: {
+    async viewsList(root: undefined, args: any, context: GQLContext) {
+      return View.getViewsList(context.user, args);
+    },
+
+    async topReprinters(root: undefined, args: undefined, context: GQLContext) {
+      return View.getTopReprinters(context.user);
     },
   },
 };

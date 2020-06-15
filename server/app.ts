@@ -6,6 +6,8 @@ import express from 'express';
 import * as Sentry from '@sentry/node';
 import connectSlashes from 'connect-slashes';
 import morgan from 'morgan';
+import statuses from 'statuses';
+import axios, { AxiosError } from 'axios';
 
 import webpackConfig from '../webpack.config';
 import {
@@ -23,8 +25,8 @@ import {
 } from '../config';
 import db from './db';
 import routes from './routes';
-import logError from './utils/log-error';
-import { EnhancedError } from './errors';
+import reportError from './utils/report-error';
+import { AppError, EnhancedError, ResponseError } from './errors';
 
 if (ENABLE_SENTRY) {
   Sentry.init({
@@ -67,8 +69,9 @@ app.use(
     next: express.NextFunction
   ) => {
     if (!error.status || error.status >= 500) {
-      logError(error);
+      reportError(error);
     }
+
     next(error);
   }
 );
@@ -82,12 +85,38 @@ app.use(
     next: express.NextFunction
   ) => {
     // eslint-disable-next-line no-console
-    console.error(`${error.name}: ${error.message}`, error.stack);
+    console.error(error.name);
+    // eslint-disable-next-line no-console
+    console.error(error.message);
+    // eslint-disable-next-line no-console
+    console.error(error.stack);
 
-    res.status(error.status || 500).json({
-      message: error.message,
-      error: IS_DEV ? error : {},
-    });
+    const status = error.status || 500;
+    const message =
+      error instanceof AppError ? error.message : statuses(status);
+
+    res.status(status).json({ message });
+  }
+);
+
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const responseError = error as AxiosError;
+    const { code, response, message } = responseError;
+    const data = response ? response.data : undefined;
+    const status = response ? response.status : undefined;
+    const gotResponse = !!response;
+
+    return Promise.reject(
+      new ResponseError({
+        code,
+        data,
+        gotResponse,
+        message,
+        status,
+      })
+    );
   }
 );
 

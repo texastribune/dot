@@ -5,3 +5,9 @@ declare module 'connect-slashes' {
 
   export = connectSlashes;
 }
+
+declare module 'statuses' {
+  function statuses(code: number): string;
+
+  export = statuses;
+}
