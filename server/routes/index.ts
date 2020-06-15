@@ -20,18 +20,19 @@ router.get('/', (req, res) => {
 });
 
 router.get('/pixel.gif', async (req, res) => {
-  const { token, domain, referrer } = req.query;
+  const { token, domain, referrer, version } = req.query;
 
   try {
     const view = await View.createView({
-      token: token as CreateViewArgs['token'],
       domain: domain as CreateViewArgs['domain'],
       referrer: referrer as CreateViewArgs['referrer'],
+      token: token as CreateViewArgs['token'],
+      version: version as CreateViewArgs['version'],
     });
 
     // eslint-disable-next-line no-console
     console.log(
-      `Logged view | Canonical: ${view.canonical} | Domain: ${view.domain} | Source: ${view.source} | Type: ${view.type}`
+      `Logged view | Canonical: ${view.canonical} | Domain: ${view.domain} | Source: ${view.source} | Type: ${view.type} | Referrer: ${view.referrer}`
     );
   } catch (error) {
     reportError(error);

@@ -90,6 +90,20 @@ export class TrackerCreationError<T> extends AppError<T> {
   }
 }
 
+export class TrackerIntegrityError<T> extends AppError<T> {
+  constructor({
+    message,
+    status = 400,
+    extra,
+  }: {
+    message: string;
+    status?: number;
+    extra?: T;
+  }) {
+    super({ message, status, extra, name: 'TrackerIntegrityError' });
+  }
+}
+
 export class Auth0Error<T> extends AppError<T> {
   constructor({ message, extra }: { message: string; extra?: T }) {
     super({ message, status: 500, extra, name: 'Auth0Error' });

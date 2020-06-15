@@ -14,6 +14,7 @@ import { TRACKER_JWT_SECRET } from '../../config';
 import { AccessTokenPayload } from '../../shared-types';
 import { userPermissions } from '../utils/decorators';
 import sequelize from '../db';
+import { TrackerIntegrityError } from '../errors';
 import {
   ValidTrackerSource,
   ValidTrackerType,
@@ -60,6 +61,7 @@ class View extends Model {
     token,
     domain,
     referrer,
+    version: queryParamVersion,
   }: CreateViewArgs): Promise<View> {
     const tokenPayload = await new Promise((resolve, reject) => {
       jwt.verify(
@@ -80,11 +82,15 @@ class View extends Model {
     });
 
     const {
-      version,
+      version: tokenVersion,
       canonical,
       source,
       type,
     } = tokenPayload as TrackerTokenPayload;
+
+    if (queryParamVersion !== tokenVersion) {
+      throw new TrackerIntegrityError({ message: 'Versions do not match' });
+    }
 
     const view = await View.create({
       canonical,
@@ -92,7 +98,7 @@ class View extends Model {
       referrer,
       source,
       type,
-      version,
+      version: tokenVersion,
     });
 
     return view.save();

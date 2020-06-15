@@ -10,16 +10,17 @@ export enum ValidTrackerType {
 }
 
 export interface TrackerTokenPayload {
-  version: string;
   canonical: string;
   source: ValidTrackerSource;
   type: ValidTrackerType;
+  version: string;
 }
 
 export interface CreateViewArgs {
-  token: string;
   domain: string;
   referrer?: string;
+  token: string;
+  version: string;
 }
 
 export interface GQLContext {
