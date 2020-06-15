@@ -1,7 +1,14 @@
 import { QueryInterface } from 'sequelize';
 
 export default {
-  up: (queryInterface: QueryInterface): Promise<void> => {
-    return queryInterface.dropTable('visit');
+  up: async (queryInterface: QueryInterface): Promise<void> => {
+    try {
+      await queryInterface.dropTable('visit');
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error(
+        'Unable to drop the "visit" table. You probably never used v1 of this app.'
+      );
+    }
   },
 };
