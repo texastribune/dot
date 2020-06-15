@@ -16,7 +16,7 @@
     var referrer = e(doc.referrer);
 
     var img = new win.Image(1, 1);
-    var src = e(currentScript.getAttribute('data-dot-url')) + '/pixel.gif?';
+    var src = currentScript.getAttribute('data-dot-url') + '/pixel.gif?';
     src += 'domain=' + domain + '&';
     src += 'version=' + version + '&';
     src += 'token=' + token;
