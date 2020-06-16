@@ -26,7 +26,7 @@ router.get('/pixel.gif', async (req, res) => {
       `Logged view | ID: ${view.id} | Canonical: ${view.canonical} | Domain: ${view.domain} | Source: ${view.source} | Type: ${view.type} | Referrer: ${view.referrer}`
     );
   } catch (error) {
-    reportError(error);
+    reportError(error, true);
   } finally {
     res.set({
       'Cache-Control': 'no-cache',
