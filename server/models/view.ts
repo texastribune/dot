@@ -133,8 +133,12 @@ class View extends Model {
 
     return unsortedItems.sort(
       ({ reprints: firstReprints }, { reprints: secondReprints }) => {
-        if (firstReprints > secondReprints) return -1;
-        if (firstReprints < secondReprints) return 1;
+        if (firstReprints > secondReprints) {
+          return -1;
+        }
+        if (firstReprints < secondReprints) {
+          return 1;
+        }
         return 0;
       }
     );

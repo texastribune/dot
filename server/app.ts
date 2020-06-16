@@ -86,13 +86,6 @@ app.use(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     next: express.NextFunction
   ) => {
-    // eslint-disable-next-line no-console
-    console.error(error.name);
-    // eslint-disable-next-line no-console
-    console.error(error.message);
-    // eslint-disable-next-line no-console
-    console.error(error.stack);
-
     const status = error.status || 500;
     const message =
       error instanceof AppError ? error.message : statuses(status);
@@ -122,9 +115,13 @@ axios.interceptors.response.use(
   }
 );
 
-db.authenticate().then(() => {
-  app.listen(PORT, () => {
-    // eslint-disable-next-line no-console
-    console.log(`Listening at port ${PORT}`);
+db.authenticate()
+  .then(() => {
+    app.listen(PORT, () => {
+      // eslint-disable-next-line no-console
+      console.log(`Listening at port ${PORT}`);
+    });
+  })
+  .catch((error) => {
+    reportError(error);
   });
-});
