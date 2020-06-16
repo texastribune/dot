@@ -16,7 +16,7 @@ import {
   TRACKER_JWT_SECRET,
 } from '../../../../config';
 import { UnauthorizedError, TrackerCreationError } from '../../../errors';
-import { ValidTrackerType } from '../../../types';
+import { ValidTrackerType, ValidTrackerSource } from '../../../types';
 
 const router = express.Router();
 
@@ -58,6 +58,16 @@ router.get('/', (req, res, next) => {
     return next(
       new TrackerCreationError({
         message: 'Invalid query parameters',
+      })
+    );
+  }
+
+  if (
+    !Object.values(ValidTrackerSource).includes(source as ValidTrackerSource)
+  ) {
+    return next(
+      new TrackerCreationError({
+        message: 'Invalid source',
       })
     );
   }
