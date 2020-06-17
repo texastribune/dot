@@ -84,8 +84,9 @@ app.use(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     next: express.NextFunction
   ) => {
-    const status = error instanceof AppError ? error.status : 500;
-    const message = error instanceof AppError ? error.message : statuses(500);
+    const status = error.status || 500;
+    const message =
+      error instanceof AppError ? error.message : statuses(status);
 
     res.status(status).json({ message });
   }

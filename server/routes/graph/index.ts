@@ -17,6 +17,7 @@ import {
   UnauthorizedError,
   RateLimitError,
 } from '../../errors';
+import reportError from '../../utils/report-error';
 import typeDefs from './schema';
 import resolvers from './resolvers';
 
@@ -39,11 +40,17 @@ router.use(
       const { originalError } = error;
 
       if (originalError && originalError instanceof AppError) {
-        return {
-          status: originalError.status,
-          message: originalError.message,
-        };
+        const { status, message } = originalError;
+
+        if (status >= 500) {
+          reportError(originalError);
+        }
+
+        return { status, message };
       }
+
+      reportError(originalError || error);
+
       return {
         status: 500,
         message: statuses(500),
