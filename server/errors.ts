@@ -110,6 +110,17 @@ export class Auth0Error<T> extends AppError<T> {
   }
 }
 
+export class ForbiddenError<T> extends AppError<T> {
+  constructor({ extra }: { extra?: T } = {}) {
+    super({
+      message: 'Insufficient permissions',
+      status: 403,
+      extra,
+      name: 'ForbiddenError',
+    });
+  }
+}
+
 export class RateLimitError<T> extends AppError<T> {
   constructor({
     extra,

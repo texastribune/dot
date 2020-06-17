@@ -3,6 +3,7 @@ import graphql from 'express-graphql';
 import jwt from 'express-jwt';
 import jwksRsa from 'jwks-rsa';
 import { makeExecutableSchema } from 'graphql-tools';
+import statuses from 'statuses';
 
 import {
   IS_DEV,
@@ -10,7 +11,12 @@ import {
   AUTH0_JWT_ISSUER,
   AUTH0_PUBLIC_KEY_URL,
 } from '../../../config';
-import { EnhancedError, UnauthorizedError, RateLimitError } from '../../errors';
+import {
+  AppError,
+  EnhancedError,
+  UnauthorizedError,
+  RateLimitError,
+} from '../../errors';
 import typeDefs from './schema';
 import resolvers from './resolvers';
 
@@ -29,6 +35,20 @@ router.use(
   graphql({
     schema: makeExecutableSchema({ typeDefs, resolvers }),
     graphiql: IS_DEV,
+    customFormatErrorFn(error) {
+      const { originalError } = error;
+
+      if (originalError && originalError instanceof AppError) {
+        return {
+          status: originalError.status,
+          message: originalError.message,
+        };
+      }
+      return {
+        status: 500,
+        message: statuses(500),
+      };
+    },
   })
 );
 

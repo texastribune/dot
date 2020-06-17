@@ -78,7 +78,7 @@ app.use(
   }
 );
 app.use(
-  '(/api*|/graph*)',
+  '/api*',
   (
     error: EnhancedError,
     req: express.Request,
@@ -86,9 +86,8 @@ app.use(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     next: express.NextFunction
   ) => {
-    const status = error.status || 500;
-    const message =
-      error instanceof AppError ? error.message : statuses(status);
+    const status = error instanceof AppError ? error.status : 500;
+    const message = error instanceof AppError ? error.message : statuses(500);
 
     res.status(status).json({ message });
   }
