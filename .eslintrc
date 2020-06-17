@@ -1,6 +1,7 @@
 {
   "ignorePatterns": [
     "tracker",
+    "analytics",
     "dist",
     "build",
     "node_modules"
