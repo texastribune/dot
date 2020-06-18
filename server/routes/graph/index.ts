@@ -38,19 +38,14 @@ router.use(
     graphiql: IS_DEV,
     customFormatErrorFn(error) {
       const { originalError } = error;
-
-      if (originalError && originalError instanceof AppError) {
-        const { status, message } = originalError;
-
-        if (status >= 500) {
-          reportError(originalError);
-        }
-
-        return { status, message };
-      }
-
       reportError(originalError || error);
 
+      if (originalError && originalError instanceof AppError) {
+        return {
+          status: originalError.status,
+          message: originalError.message,
+        };
+      }
       return {
         status: 500,
         message: statuses(500),

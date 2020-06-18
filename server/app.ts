@@ -68,10 +68,7 @@ app.use(
     res: express.Response,
     next: express.NextFunction
   ) => {
-    if (!error.status || error.status >= 500) {
-      reportError(error);
-    }
-
+    reportError(error);
     next(error);
   }
 );

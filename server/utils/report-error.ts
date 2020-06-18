@@ -19,6 +19,8 @@ export default function reportError(error: EnhancedError): void {
     // eslint-disable-next-line no-console
     console.error(error.stack);
 
-    captureException(error);
+    if (!error.status || error.status >= 500) {
+      captureException(error);
+    }
   });
 }
