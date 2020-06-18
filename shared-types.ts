@@ -9,18 +9,6 @@ export interface CreateViewArgs {
   version: string;
 }
 
-export interface ViewsItem {
-  id: string;
-  canonical?: string;
-  domain?: string;
-  views: number;
-}
-
-export interface ViewsList {
-  items: ViewsItem[];
-  totalViews: number;
-}
-
 export interface ViewsListByCanonicalArgs {
   domain?: string;
   endDate: string;
@@ -37,4 +25,16 @@ export interface ReprinterItem {
   id: string;
   domain: string;
   reprints: number;
+}
+
+export interface ViewsItem {
+  id: string;
+  canonical?: string | null;
+  domain?: string | null;
+  views: number;
+}
+
+export interface ViewsList {
+  items: ViewsItem[];
+  totalViews: number;
 }
