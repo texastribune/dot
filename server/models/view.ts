@@ -11,20 +11,20 @@ import { v4 as uuidv4 } from 'uuid';
 import { TRACKER_JWT_SECRET } from '../../config';
 import {
   AccessTokenPayload,
-  CreateViewArgs,
   ReprinterItem,
   ViewsList,
-  ViewsListByCanonicalArgs,
-  ViewsListByDomainArgs,
 } from '../../shared-types';
 import { userPermissions } from '../utils/decorators';
 import sequelize from '../db';
 import { TrackerIntegrityError } from '../errors';
 import {
+  CreateViewArgs,
   TrackerTokenPayload,
   UserPermissions,
   ValidTrackerSource,
   ValidTrackerType,
+  ViewsListByCanonicalArgs,
+  ViewsListByDomainArgs,
 } from '../types';
 
 class View extends Model {

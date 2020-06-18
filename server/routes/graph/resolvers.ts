@@ -1,12 +1,11 @@
 import { GraphQLDate } from 'graphql-iso-date';
 
+import { ReprinterItem, ViewsList } from '../../../shared-types';
 import {
-  ReprinterItem,
-  ViewsList,
+  GQLContext,
   ViewsListByCanonicalArgs,
   ViewsListByDomainArgs,
-} from '../../../shared-types';
-import { GQLContext } from '../../types';
+} from '../../types';
 import View from '../../models/view';
 
 const resolvers = {

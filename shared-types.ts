@@ -2,25 +2,6 @@ export interface AccessTokenPayload {
   permissions: string[];
 }
 
-export interface CreateViewArgs {
-  domain: string;
-  referrer?: string;
-  token: string;
-  version: string;
-}
-
-export interface ViewsListByCanonicalArgs {
-  domain?: string;
-  endDate: string;
-  startDate: string;
-}
-
-export interface ViewsListByDomainArgs {
-  canonical?: string;
-  endDate: string;
-  startDate: string;
-}
-
 export interface ReprinterItem {
   id: string;
   domain: string;
