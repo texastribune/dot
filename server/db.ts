@@ -16,11 +16,11 @@ const db = new Sequelize({
   dialect: 'postgres',
   host: DB_HOST,
   logging: IS_DEV
-    ? true
-    : (sql): void => {
+    ? (sql): void => {
         // eslint-disable-next-line no-console
         console.log(sql);
-      },
+      }
+    : false,
   password: DB_PASSWORD,
   port: DB_PORT,
   username: DB_USER,
