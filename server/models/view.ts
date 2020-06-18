@@ -9,18 +9,20 @@ import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 
 import { TRACKER_JWT_SECRET } from '../../config';
-import { AccessTokenPayload } from '../../shared-types';
+import {
+  AccessTokenPayload,
+  CreateViewArgs,
+  ReprinterItem,
+  ViewsList,
+  ViewsListByCanonicalArgs,
+  ViewsListByDomainArgs,
+} from '../../shared-types';
 import { userPermissions } from '../utils/decorators';
 import sequelize from '../db';
 import { TrackerIntegrityError } from '../errors';
 import {
-  CreateViewArgs,
-  ReprinterItem,
   TrackerTokenPayload,
   UserPermissions,
-  ViewsList,
-  ViewsListByCanonicalArgs,
-  ViewsListByDomainArgs,
   ValidTrackerSource,
   ValidTrackerType,
 } from '../types';

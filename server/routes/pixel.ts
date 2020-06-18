@@ -1,8 +1,8 @@
 import express from 'express';
 
+import { CreateViewArgs } from '../../shared-types';
 import View from '../models/view';
 import reportError from '../utils/report-error';
-import { CreateViewArgs } from '../types';
 
 const router = express.Router();
 const gif = Buffer.from(
