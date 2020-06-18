@@ -28,7 +28,6 @@ router.use(
     secret: jwksRsa.expressJwtSecret({
       jwksUri: AUTH0_PUBLIC_KEY_URL,
     }),
-    credentialsRequired: false,
     algorithms: ['RS256'],
     audience: AUTH0_API_AUDIENCE,
     issuer: AUTH0_JWT_ISSUER,
@@ -38,6 +37,7 @@ router.use(
     graphiql: IS_DEV,
     customFormatErrorFn(error) {
       const { originalError } = error;
+
       reportError(originalError || error);
 
       if (originalError && originalError instanceof AppError) {

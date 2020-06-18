@@ -25,8 +25,6 @@ import {
   ValidTrackerType,
 } from '../types';
 
-type ConditionalUser = AccessTokenPayload | undefined;
-
 class View extends Model {
   public id!: number;
 
@@ -94,7 +92,7 @@ class View extends Model {
   @userPermissions([UserPermissions.ReadViews])
   public static async getTopReprinters(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    user: ConditionalUser
+    user: AccessTokenPayload
   ): Promise<ReprinterItem[]> {
     const results = await View.findAll({
       attributes: [
@@ -133,7 +131,7 @@ class View extends Model {
 
   @userPermissions([UserPermissions.ReadViews])
   public static async getViewsListByCanonical(
-    user: ConditionalUser,
+    user: AccessTokenPayload,
     { startDate, endDate, domain }: ViewsListByCanonicalArgs
   ): Promise<ViewsList> {
     const where: Filterable['where'] = {
@@ -171,7 +169,7 @@ class View extends Model {
 
   @userPermissions([UserPermissions.ReadViews])
   public static async getViewsListByDomain(
-    user: ConditionalUser,
+    user: AccessTokenPayload,
     { startDate, endDate, canonical }: ViewsListByDomainArgs
   ): Promise<ViewsList> {
     const where: Filterable['where'] = {

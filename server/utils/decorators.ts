@@ -15,12 +15,10 @@ export function userPermissions(requiredPerms: UserPermissions[]) {
 
     // eslint-disable-next-line no-param-reassign,
     descriptor.value = function withPermissions(
-      user: AccessTokenPayload | undefined,
+      user: AccessTokenPayload,
       ...args: any[]
     ): any {
       if (
-        !user ||
-        !user.permissions ||
         !requiredPerms.every((requiredPerm) =>
           user.permissions.includes(requiredPerm)
         )

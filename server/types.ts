@@ -24,7 +24,7 @@ export enum UserPermissions {
 
 // GraphQL stuff
 export interface GQLContext {
-  user?: AccessTokenPayload;
+  user: AccessTokenPayload;
 }
 
 export interface CreateViewArgs {
