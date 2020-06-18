@@ -4,8 +4,6 @@ import {
   Sequelize,
   Op as Operation,
   Filterable,
-  Projectable,
-  FindOptions,
 } from 'sequelize';
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
@@ -16,29 +14,18 @@ import { userPermissions } from '../utils/decorators';
 import sequelize from '../db';
 import { TrackerIntegrityError } from '../errors';
 import {
-  ValidTrackerSource,
-  ValidTrackerType,
   CreateViewArgs,
+  ReprinterItem,
   TrackerTokenPayload,
   UserPermissions,
+  ViewsList,
+  ViewsListByCanonicalArgs,
+  ViewsListByDomainArgs,
+  ValidTrackerSource,
+  ValidTrackerType,
 } from '../types';
 
 type ConditionalUser = AccessTokenPayload | undefined;
-
-interface ViewsListArgs {
-  startDate: string;
-  endDate: string;
-  canonicalFilter?: string;
-  domainFilter?: string;
-  summarizeByCanonical?: boolean;
-  summarizeByDomain?: boolean;
-}
-
-interface ReprintersItem {
-  id: string;
-  domain: string;
-  reprints: number;
-}
 
 class View extends Model {
   public id!: number;
@@ -108,7 +95,7 @@ class View extends Model {
   public static async getTopReprinters(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     user: ConditionalUser
-  ): Promise<ReprintersItem[]> {
+  ): Promise<ReprinterItem[]> {
     const results = await View.findAll({
       attributes: [
         [Sequelize.literal('DISTINCT domain'), 'domain'],
@@ -117,7 +104,7 @@ class View extends Model {
       group: ['domain', 'canonical'],
     });
     const itemsHash: { [key: string]: number } = {};
-    const unsortedItems: ReprintersItem[] = [];
+    const unsortedItems: ReprinterItem[] = [];
 
     results.forEach(({ domain }) => {
       if (itemsHash[domain] !== undefined) {
@@ -145,48 +132,28 @@ class View extends Model {
   }
 
   @userPermissions([UserPermissions.ReadViews])
-  public static async getViewsList(
+  public static async getViewsListByCanonical(
     user: ConditionalUser,
-    {
-      startDate,
-      endDate,
-      canonicalFilter,
-      domainFilter,
-      summarizeByCanonical,
-      summarizeByDomain,
-    }: ViewsListArgs
-  ): Promise<any> {
+    { startDate, endDate, domain }: ViewsListByCanonicalArgs
+  ): Promise<ViewsList> {
     const where: Filterable['where'] = {
       visitedAt: {
         [Operation.between]: [startDate, endDate],
       },
     };
-    const attributes: Projectable['attributes'] = [
-      [Sequelize.literal('COUNT(canonical)::integer'), 'views'],
-    ];
-    let group: FindOptions['group'];
 
-    if (domainFilter) {
-      where.domain = { [Operation.like]: domainFilter };
-      attributes.push('canonical');
-      group = 'canonical';
-    } else if (canonicalFilter) {
-      where.canonical = { [Operation.like]: canonicalFilter };
-      attributes.push('domain');
-      group = 'domain';
-    } else if (summarizeByDomain) {
-      attributes.push('domain');
-      group = 'domain';
-    } else if (summarizeByCanonical) {
-      attributes.push('canonical');
-      group = 'canonical';
+    if (domain) {
+      where.domain = { [Operation.like]: domain };
     }
 
     const [totalViews, items] = await Promise.all([
       View.count({ where }),
       View.findAll({
-        attributes,
-        group,
+        attributes: [
+          'canonical',
+          [Sequelize.literal('COUNT(canonical)::integer'), 'views'],
+        ],
+        group: 'canonical',
         order: [[Sequelize.col('views'), 'DESC']],
         where,
       }),
@@ -195,8 +162,47 @@ class View extends Model {
     return {
       totalViews,
       items: items.map((item) => ({
-        ...item.get({ plain: true }),
         id: uuidv4(),
+        canonical: item.canonical,
+        views: item.get('views') as number,
+      })),
+    };
+  }
+
+  @userPermissions([UserPermissions.ReadViews])
+  public static async getViewsListByDomain(
+    user: ConditionalUser,
+    { startDate, endDate, canonical }: ViewsListByDomainArgs
+  ): Promise<ViewsList> {
+    const where: Filterable['where'] = {
+      visitedAt: {
+        [Operation.between]: [startDate, endDate],
+      },
+    };
+
+    if (canonical) {
+      where.canonical = { [Operation.like]: canonical };
+    }
+
+    const [totalViews, items] = await Promise.all([
+      View.count({ where }),
+      View.findAll({
+        attributes: [
+          'domain',
+          [Sequelize.literal('COUNT(domain)::integer'), 'views'],
+        ],
+        group: 'domain',
+        order: [[Sequelize.col('views'), 'DESC']],
+        where,
+      }),
+    ]);
+
+    return {
+      totalViews,
+      items: items.map((item) => ({
+        id: uuidv4(),
+        domain: item.domain,
+        views: item.get('views') as number,
       })),
     };
   }

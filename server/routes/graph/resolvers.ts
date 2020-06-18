@@ -1,17 +1,39 @@
 import { GraphQLDate } from 'graphql-iso-date';
 
-import { GQLContext } from '../../types';
+import {
+  GQLContext,
+  ReprinterItem,
+  ViewsList,
+  ViewsListByCanonicalArgs,
+  ViewsListByDomainArgs,
+} from '../../types';
 import View from '../../models/view';
 
 const resolvers = {
   Date: GraphQLDate,
 
   Query: {
-    async viewsList(root: undefined, args: any, context: GQLContext) {
-      return View.getViewsList(context.user, args);
+    async viewsListByCanonical(
+      root: undefined,
+      args: ViewsListByCanonicalArgs,
+      context: GQLContext
+    ): Promise<ViewsList> {
+      return View.getViewsListByCanonical(context.user, args);
     },
 
-    async topReprinters(root: undefined, args: undefined, context: GQLContext) {
+    async viewsListByDomain(
+      root: undefined,
+      args: ViewsListByDomainArgs,
+      context: GQLContext
+    ): Promise<ViewsList> {
+      return View.getViewsListByDomain(context.user, args);
+    },
+
+    async topReprinters(
+      root: undefined,
+      args: undefined,
+      context: GQLContext
+    ): Promise<ReprinterItem[]> {
       return View.getTopReprinters(context.user);
     },
   },

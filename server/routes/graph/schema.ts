@@ -23,14 +23,18 @@ type ReprinterItem {
 
 
 type Query {
-  viewsList(
+  viewsListByDomain(
+    canonical: String
     startDate: Date!
     endDate: Date!
-    canonicalFilter: String
-    domainFilter: String
-    summarizeByCanonical: Boolean
-    summarizeByDomain: Boolean
   ): ViewsList!
+
+  viewsListByCanonical(
+    domain: String
+    startDate: Date!
+    endDate: Date!
+  ): ViewsList!
+
 
   topReprinters: [ReprinterItem!]!
 }
