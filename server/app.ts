@@ -85,7 +85,7 @@ app.use(
     const message =
       error instanceof AppError ? error.message : statuses(status);
 
-    res.status(status).json({ message });
+    res.header('Cache-Control', 'no-cache').status(status).json({ message });
   }
 );
 
