@@ -100,9 +100,16 @@ app.use(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     next: express.NextFunction
   ) => {
-    const status = error.status || 500;
-    const message =
-      error instanceof AppError ? error.message : statuses(status);
+    let status;
+    let message;
+
+    if (error instanceof AppError) {
+      status = error.status;
+      message = error.message;
+    } else {
+      status = 500;
+      message = statuses(500);
+    }
 
     res.status(500).json({ errors: [{ status, message }] });
   }
@@ -115,13 +122,11 @@ axios.interceptors.response.use(
     const { code, response, message } = responseError;
     const data = response ? response.data : undefined;
     const status = response ? response.status : undefined;
-    const gotResponse = !!response;
 
     return Promise.reject(
       new ResponseError({
         code,
         data,
-        gotResponse,
         message,
         status,
       })

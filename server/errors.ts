@@ -28,8 +28,6 @@ export abstract class AppError<T = undefined> extends Error implements EnhancedE
   }
 }
 export class ResponseError<T> extends Error implements EnhancedError {
-  public gotResponse: boolean;
-
   public code?: string;
 
   public data?: T;
@@ -37,30 +35,27 @@ export class ResponseError<T> extends Error implements EnhancedError {
   public status: number;
 
   constructor({
-    gotResponse,
     code,
     data,
     message,
     status = 500,
   }: {
-    gotResponse: boolean;
     code?: string;
     data?: T;
     message: string;
     status?: number;
   }) {
     super(message);
-    this.name = 'AxiosResponseError';
+    this.name = 'ResponseError';
     this.code = code;
     this.data = data;
-    this.gotResponse = gotResponse;
     this.status = status;
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   public formatExtra() {
-    const { code, data, gotResponse, status } = this;
-    return { code, data, gotResponse, status };
+    const { code, data, status } = this;
+    return { code, data, status };
   }
 }
 
