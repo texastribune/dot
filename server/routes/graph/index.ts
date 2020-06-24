@@ -24,6 +24,10 @@ import resolvers from './resolvers';
 const router = express.Router();
 
 router.use(
+  (req, res, next) => {
+    res.set('Cache-Control', 'no-cache');
+    next();
+  },
   jwt({
     secret: jwksRsa.expressJwtSecret({
       jwksUri: AUTH0_PUBLIC_KEY_URL,

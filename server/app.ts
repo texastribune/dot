@@ -68,10 +68,12 @@ app.use(
     res: express.Response,
     next: express.NextFunction
   ) => {
+    res.set('Cache-Control', 'no-cache');
     reportError(error);
     next(error);
   }
 );
+
 app.use(
   '/api*',
   (
@@ -85,7 +87,24 @@ app.use(
     const message =
       error instanceof AppError ? error.message : statuses(status);
 
-    res.header('Cache-Control', 'no-cache').status(status).json({ message });
+    res.status(status).json({ message });
+  }
+);
+
+app.use(
+  '/graph*',
+  (
+    error: EnhancedError,
+    req: express.Request,
+    res: express.Response,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    next: express.NextFunction
+  ) => {
+    const status = error.status || 500;
+    const message =
+      error instanceof AppError ? error.message : statuses(status);
+
+    res.status(500).json({ errors: [{ status, message }] });
   }
 );
 
