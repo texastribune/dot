@@ -27,7 +27,7 @@ const config = {
 
   plugins: [
     new VueLoaderPlugin(),
-    new EnvironmentPlugin(['APP_URL', 'NODE_ENV']),
+    new EnvironmentPlugin(['APP_URL', 'AUTH0_DOMAIN', 'AUTH0_CLIENT_ID']),
     new WebpackAssetsManifest({
       entrypoints: true,
       output: DASHBOARD_MANIFEST_FILE_NAME,

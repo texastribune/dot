@@ -24,6 +24,8 @@ dev: build net db
 build:
 	docker build \
     --build-arg APP_URL=http://localhost:3000 \
+		--build-arg AUTH0_DOMAIN=auth-test.texastribune.org \
+		--build-arg AUTH0_CLIENT_ID=YQ7ktxaQjg0SJ4m2yMylVdF1N7KSgoqg \
    	--tag=${NS}/${APP} .
 
 net:
