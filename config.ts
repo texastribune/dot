@@ -15,10 +15,10 @@ export const ACCESS_IDS = JSON.parse(process.env.ACCESS_IDS || '{}') as {
 
 export const {
   AUTH0_DOMAIN = 'auth-test.texastribune.org',
-  AUTH0_CLIENT_ID,
-  AUTH0_CLIENT_SECRET,
-  AUTH0_API_AUDIENCE = 'https://texastribune.org/dot',
+  AUTH0_CLIENT_ID = '',
+  AUTH0_CLIENT_SECRET = '',
 } = process.env;
+export const AUTH0_API_AUDIENCE = 'https://texastribune.org/dot';
 export const AUTH0_JWT_ISSUER = `https://${AUTH0_DOMAIN}/`;
 export const AUTH0_PUBLIC_KEY_URL = `https://${AUTH0_DOMAIN}/.well-known/jwks.json`;
 export const AUTH0_REDIRECT_URI = `${APP_URL}/logged-in/`;
