@@ -13,6 +13,7 @@ import {
   AccessTokenPayload,
   ReprinterItem,
   ViewsList,
+  UserPermissions,
 } from '../../shared-types';
 import { userPermissions } from '../utils/decorators';
 import sequelize from '../db';
@@ -20,7 +21,6 @@ import { TrackerIntegrityError } from '../errors';
 import {
   CreateViewArgs,
   TrackerTokenPayload,
-  UserPermissions,
   ValidTrackerSource,
   ValidTrackerType,
   ViewsListByCanonicalArgs,

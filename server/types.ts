@@ -16,10 +16,6 @@ export interface TrackerTokenPayload {
   version: string;
 }
 
-export enum UserPermissions {
-  ReadViews = 'dot:view_data',
-}
-
 export interface GQLContext {
   user: AccessTokenPayload;
 }

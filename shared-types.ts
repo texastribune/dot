@@ -1,5 +1,9 @@
+export enum UserPermissions {
+  ReadViews = 'dot:view_data',
+}
+
 export interface AccessTokenPayload {
-  permissions: string[];
+  permissions: UserPermissions[];
 }
 
 export interface ReprinterItem {
