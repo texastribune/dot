@@ -1,0 +1,19 @@
+import { WebAuth } from 'auth0-js';
+
+import {
+  AUTH0_DOMAIN,
+  AUTH0_API_AUDIENCE,
+  AUTH0_CLIENT_ID,
+  AUTH0_REDIRECT_URI,
+} from '../config';
+
+const auth = new WebAuth({
+  audience: AUTH0_API_AUDIENCE,
+  clientID: AUTH0_CLIENT_ID,
+  domain: AUTH0_DOMAIN,
+  redirectUri: AUTH0_REDIRECT_URI,
+  responseType: 'code',
+  scope: 'openid email profile',
+});
+
+export default auth;

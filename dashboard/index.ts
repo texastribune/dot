@@ -1,10 +1,12 @@
 import Vue from 'vue';
 
-import TestComponent from './TestComponent.vue';
+import store from './store';
+import App from './App.vue';
 
 // eslint-disable-next-line no-new
 new Vue({
-  ...TestComponent,
+  ...App,
   el: '#app',
-  render: (h): Vue.VNode => h(TestComponent),
+  render: (h): Vue.VNode => h(App),
+  store,
 });
