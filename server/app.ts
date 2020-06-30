@@ -42,11 +42,13 @@ const app = express();
 app.use(Sentry.Handlers.requestHandler() as express.RequestHandler);
 app.use(
   helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-      },
-    },
+    contentSecurityPolicy: IS_DEV
+      ? undefined
+      : {
+          directives: {
+            defaultSrc: ["'self'"],
+          },
+        },
     expectCt: true,
     permittedCrossDomainPolicies: true,
   })
