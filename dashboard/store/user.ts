@@ -55,10 +55,10 @@ const actions: ActionTree<State, {}> = {
     try {
       const {
         data: { tokens },
-      } = await axios.get<{ tokens: { accessToken: string; idToken: string } }>(
-        `/api/v2/tokens/?code=${code}`
-      );
-      commit('SET_READY', tokens.accessToken);
+      } = await axios.get<{
+        tokens: { id_token: string; access_token: string };
+      }>(`/api/v2/tokens/?code=${code}`);
+      commit('SET_READY', tokens.access_token);
     } catch (error) {
       commit('SET_ERROR', error);
     }
