@@ -16,4 +16,12 @@ const auth = new WebAuth({
   scope: 'openid email profile',
 });
 
+const logIn = (): void => {
+  auth.authorize({
+    clientID: AUTH0_CLIENT_ID,
+    redirectUri: AUTH0_REDIRECT_URI,
+  });
+};
+
+export { logIn };
 export default auth;
