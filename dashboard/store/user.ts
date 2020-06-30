@@ -1,11 +1,12 @@
 /* eslint-disable no-param-reassign */
 
+import axios from 'axios';
 import jwt from 'jsonwebtoken';
 import { ActionTree, GetterTree, MutationTree, Module } from 'vuex';
 
 import { AccessTokenPayload, UserPermissions } from '../../shared-types';
 import auth from '../auth';
-import { GET_USER } from './actions';
+import { GET_TOKENS, REFRESH_TOKENS } from './actions';
 
 interface State {
   accessToken: string;
@@ -28,32 +29,42 @@ function createDefaultState(): State {
 }
 
 const mutations: MutationTree<State> = {
-  // equivalent to being logged out
   DESTROY(state: State): void {
     Object.assign(state, createDefaultState());
   },
 
-  SET_ACCESS_TOKEN(state: State, accessToken: string | null): void {
-    if (accessToken) {
-      state.accessToken = accessToken;
-      state.accessTokenPayload = jwt.decode(accessToken) as AccessTokenPayload;
-    } else {
-      state.accessToken = '';
-      state.accessTokenPayload = getInitialAccessTokenPayload();
-    }
-  },
-
-  SET_ERROR(state: State, error: Error | null): void {
+  SET_ERROR(state: State, error: Error): void {
     state.error = error;
+    state.accessToken = '';
+    state.accessTokenPayload = getInitialAccessTokenPayload();
   },
 
-  SET_LOGGED_IN(state: State, isLoggedIn: boolean): void {
-    state.isLoggedIn = isLoggedIn;
+  SET_LOGGED_OUT(state: State): void {
+    Object.assign(state, createDefaultState());
+  },
+
+  SET_READY(state: State, accessToken: string): void {
+    state.isLoggedIn = true;
+    state.accessToken = accessToken;
+    state.accessTokenPayload = jwt.decode(accessToken) as AccessTokenPayload;
   },
 };
 
 const actions: ActionTree<State, {}> = {
-  [GET_USER]: async ({ commit }): Promise<void> => {
+  [GET_TOKENS]: async ({ commit }, code): Promise<void> => {
+    try {
+      const {
+        data: { tokens },
+      } = await axios.get<{ tokens: { accessToken: string; idToken: string } }>(
+        `/api/v2/tokens/?code=${code}`
+      );
+      commit('SET_READY', tokens.accessToken);
+    } catch (error) {
+      commit('SET_ERROR', error);
+    }
+  },
+
+  [REFRESH_TOKENS]: async ({ commit }): Promise<void> => {
     try {
       await new Promise((resolve, reject) => {
         auth.checkSession(
@@ -62,9 +73,7 @@ const actions: ActionTree<State, {}> = {
             if (err) {
               reject(err);
             } else {
-              commit('SET_LOGGED_IN', true);
-              commit('SET_ACCESS_TOKEN', authResult.accessToken);
-              commit('SET_ERROR', null);
+              commit('SET_READY', authResult.accessToken);
               resolve();
             }
           }
@@ -72,10 +81,8 @@ const actions: ActionTree<State, {}> = {
       });
     } catch (error) {
       if (error.code === 'login_required') {
-        commit('DESTROY');
+        commit('SET_LOGGED_OUT');
       } else {
-        commit('SET_LOGGED_IN', true);
-        commit('SET_ACCESS_TOKEN', null);
         commit('SET_ERROR', error);
       }
     }

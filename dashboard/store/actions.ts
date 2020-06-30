@@ -1,2 +1,2 @@
-// eslint-disable-next-line import/prefer-default-export
-export const GET_USER = 'GET_USER';
+export const REFRESH_TOKENS = 'REFRESH_TOKENS';
+export const GET_TOKENS = 'GET_TOKENS';
