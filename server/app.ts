@@ -10,8 +10,6 @@ import axios, { AxiosError } from 'axios';
 
 import webpackConfig from '../webpack.config';
 import {
-  IS_DEV,
-  PORT,
   SENTRY_ENVIRONMENT,
   ENABLE_SENTRY,
   SENTRY_DSN,
@@ -19,8 +17,10 @@ import {
 import {
   DASHBOARD_STATIC_ALIAS,
   DASHBOARD_BUILD_PATH,
-  TEMPLATES_PATH,
+  IS_DEV,
+  PORT,
   PUBLIC_BUILD_PATH,
+  TEMPLATES_PATH,
   TRACKER_STATIC_ALIAS,
   TRACKER_BUILD_PATH,
 } from './config';

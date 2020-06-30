@@ -1,12 +1,13 @@
 import { Sequelize } from 'sequelize';
 
-import { IS_PROD, IS_DEV } from '../shared-config';
 import {
   DB_HOST,
   DB_NAME,
   DB_PASSWORD,
   DB_PORT,
   DB_USER,
+  IS_PROD,
+  IS_DEV,
   RDS_PEM,
 } from './config';
 
