@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { IS_DEV } from '../../../config';
+import { IS_DEV } from '../../../shared-config';
 import assetsManifest from '../../../dist/assets.json';
 
 interface Context {

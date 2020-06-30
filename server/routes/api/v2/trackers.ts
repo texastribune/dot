@@ -6,15 +6,13 @@ import { URL } from 'url';
 import express from 'express';
 import jwt from 'jsonwebtoken';
 
+import { APP_URL, VERSION, ACCESS_IDS } from '../../../../shared-config';
 import {
-  APP_URL,
-  VERSION,
   TRACKER_STATIC_ALIAS,
   TRACKER_BUILD_PATH,
   TRACKER_SCRIPT,
-  ACCESS_IDS,
   TRACKER_JWT_SECRET,
-} from '../../../../config';
+} from '../../../config';
 import { UnauthorizedError, TrackerCreationError } from '../../../errors';
 import { ValidTrackerType, ValidTrackerSource } from '../../../types';
 

@@ -8,7 +8,7 @@ import {
   AUTH0_CLIENT_SECRET,
   AUTH0_REDIRECT_URI,
   AUTH0_TOKEN_URL,
-} from '../../../../config';
+} from '../../../../shared-config';
 import { ResponseError, UnauthorizedError, Auth0Error } from '../../../errors';
 
 const router = express.Router();

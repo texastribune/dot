@@ -10,7 +10,7 @@ import {
   AUTH0_API_AUDIENCE,
   AUTH0_JWT_ISSUER,
   AUTH0_PUBLIC_KEY_URL,
-} from '../../../config';
+} from '../../../shared-config';
 import {
   AppError,
   EnhancedError,

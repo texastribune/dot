@@ -5,7 +5,7 @@ import {
   AUTH0_API_AUDIENCE,
   AUTH0_CLIENT_ID,
   AUTH0_REDIRECT_URI,
-} from '../config';
+} from '../shared-config';
 
 const auth = new WebAuth({
   audience: AUTH0_API_AUDIENCE,

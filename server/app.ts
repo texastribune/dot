@@ -12,16 +12,18 @@ import webpackConfig from '../webpack.config';
 import {
   IS_DEV,
   PORT,
+  SENTRY_ENVIRONMENT,
+  ENABLE_SENTRY,
+  SENTRY_DSN,
+} from '../shared-config';
+import {
   DASHBOARD_STATIC_ALIAS,
   DASHBOARD_BUILD_PATH,
   TEMPLATES_PATH,
   PUBLIC_BUILD_PATH,
   TRACKER_STATIC_ALIAS,
   TRACKER_BUILD_PATH,
-  SENTRY_ENVIRONMENT,
-  ENABLE_SENTRY,
-  SENTRY_DSN,
-} from '../config';
+} from './config';
 import db from './db';
 import routes from './routes';
 import pixelRoute from './routes/pixel';
