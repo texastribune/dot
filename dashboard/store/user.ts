@@ -11,7 +11,7 @@ import { GET_TOKENS, REFRESH_TOKENS } from './actions';
 interface State {
   accessToken: string;
   accessTokenPayload: AccessTokenPayload;
-  error: Error | null;
+  userError: Error | null;
   isLoggedIn: boolean;
 }
 
@@ -23,7 +23,7 @@ function createDefaultState(): State {
   return {
     accessToken: '',
     accessTokenPayload: getInitialAccessTokenPayload(),
-    error: null,
+    userError: null,
     isLoggedIn: false,
   };
 }
@@ -34,7 +34,7 @@ const mutations: MutationTree<State> = {
   },
 
   SET_ERROR(state: State, error: Error): void {
-    state.error = error;
+    state.userError = error;
     state.accessToken = '';
     state.accessTokenPayload = getInitialAccessTokenPayload();
   },
@@ -93,11 +93,13 @@ const getters: GetterTree<State, {}> = {
   canViewData: ({ accessTokenPayload: { permissions } }) =>
     permissions.includes(UserPermissions.ReadViews),
 
-  error: ({ error }) => error,
+  isAllowed: ({ accessTokenPayload: { permissions } }) => (
+    requiredPermissions: UserPermissions[]
+  ): boolean => requiredPermissions.every((perm) => permissions.includes(perm)),
+
+  userError: ({ userError }) => userError,
 
   isLoggedIn: ({ isLoggedIn }) => isLoggedIn,
-
-  isReady: ({ isLoggedIn, error }) => isLoggedIn && !error,
 };
 
 const module: Module<State, {}> = {

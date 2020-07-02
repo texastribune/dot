@@ -10,7 +10,10 @@ export default Vue.extend({
 
   async mounted() {
     await this[GET_TOKENS](this.$route.query.code);
-    this.$router.push({ name: 'overview' });
+
+    setTimeout(() => {
+      this.$router.push({ name: 'overview' });
+    }, 3000);
   },
 
   methods: {
