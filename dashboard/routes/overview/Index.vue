@@ -14,7 +14,7 @@ export default Vue.extend({
     ...mapGetters(USER_MODULE, ['isLoggedIn', 'isAllowed', 'userError']),
   },
 
-  created(): void {
+  mounted(): void {
     const { requiresLogIn, permissions: routePermissions } = this.$route
       .meta as RouteMeta;
 

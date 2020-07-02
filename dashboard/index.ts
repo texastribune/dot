@@ -1,5 +1,8 @@
 import Vue from 'vue';
+import ApolloClient from 'apollo-boost';
+import VueApollo from 'vue-apollo';
 
+import { APP_URL } from '../shared-config';
 import { NotAllowedError } from './errors';
 import { RouteMeta } from './types';
 import router from './routes';
@@ -38,9 +41,31 @@ router.onReady(() => {
   });
 });
 
+const apolloClient = new ApolloClient({
+  uri: `${APP_URL}/graph/`,
+  request: (operation): void => {
+    const accessToken = store.getters[`${USER_MODULE}/accessToken`];
+
+    if (accessToken) {
+      operation.setContext({
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+    }
+  },
+});
+
+const apolloProvider = new VueApollo({
+  defaultClient: apolloClient,
+});
+
+Vue.use(VueApollo);
+
 // eslint-disable-next-line no-new
 new Vue({
   ...App,
+  apolloProvider,
   el: '#app',
   render: (h): Vue.VNode => h(App),
   router,
