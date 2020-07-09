@@ -16,10 +16,10 @@ const auth = new WebAuth({
   scope: 'openid email profile',
 });
 
-const logIn = (): void => {
+const logIn = (next = 'overview'): void => {
   auth.authorize({
     clientID: AUTH0_CLIENT_ID,
-    redirectUri: AUTH0_REDIRECT_URI,
+    redirectUri: `${AUTH0_REDIRECT_URI}?next=${next}`,
   });
 };
 

@@ -9,7 +9,7 @@ import { RouteMeta } from '../../types';
 import { logIn } from '../../auth';
 
 export default Vue.extend({
-  name: 'OverviewRoute',
+  name: 'CanonicalDetailRoute',
 
   computed: {
     ...mapGetters(USER_MODULE, ['isLoggedIn', 'isAllowed', 'userError']),
@@ -25,7 +25,7 @@ export default Vue.extend({
     if (requiresLogIn && this.userError) {
       throw this.userError;
     } else if (requiresLogIn && !this.isLoggedIn) {
-      logIn();
+      logIn(route.name || undefined);
     } else if (!this.isAllowed(routePermissions)) {
       throw new NotAllowedError();
     }
@@ -34,5 +34,5 @@ export default Vue.extend({
 </script>
 
 <template>
-  <h1>Overview</h1>
+  <h1>Canonical Detail</h1>
 </template>
