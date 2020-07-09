@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { IS_DEV } from '../../../shared-config';
+import { IS_DEV } from '../../config';
 import assetsManifest from '../../../dist/assets.json';
 
 interface Context {
@@ -14,7 +14,7 @@ interface ProdContext extends Context {
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
+router.get('*', (req, res) => {
   if (IS_DEV) {
     const context: Context = { isDev: true };
     res.render('dashboard', context);
