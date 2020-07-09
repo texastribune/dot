@@ -133,7 +133,8 @@ class View extends Model {
   ): Promise<ViewsList> {
     const where: Filterable['where'] = {
       visitedAt: {
-        [Operation.between]: [startDate, endDate],
+        [Operation.gte]: startDate,
+        [Operation.lt]: endDate,
       },
     };
 
@@ -170,7 +171,8 @@ class View extends Model {
   ): Promise<ViewsList> {
     const where: Filterable['where'] = {
       visitedAt: {
-        [Operation.between]: [startDate, endDate],
+        [Operation.gte]: startDate,
+        [Operation.lt]: endDate,
       },
     };
 
