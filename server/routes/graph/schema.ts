@@ -3,7 +3,6 @@ scalar Date
 
 
 type ViewsItem {
-  id: ID!
   canonical: String
   domain: String
   views: Int!
@@ -16,7 +15,6 @@ type ViewsList {
 
 
 type ReprinterItem {
-  id: ID!
   domain: String!
   reprints: Int!
 }

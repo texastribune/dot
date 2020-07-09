@@ -6,7 +6,6 @@ import {
   Filterable,
 } from 'sequelize';
 import jwt from 'jsonwebtoken';
-import { v4 as uuidv4 } from 'uuid';
 
 import { TRACKER_JWT_SECRET } from '../config';
 import {
@@ -114,10 +113,6 @@ class View extends Model {
       }
     });
 
-    Object.entries(itemsHash).forEach(([domain, reprints]) => {
-      unsortedItems.push({ id: uuidv4(), domain, reprints });
-    });
-
     return unsortedItems.sort(
       ({ reprints: firstReprints }, { reprints: secondReprints }) => {
         if (firstReprints > secondReprints) {
@@ -162,7 +157,6 @@ class View extends Model {
     return {
       totalViews,
       items: items.map((item) => ({
-        id: uuidv4(),
         canonical: item.canonical,
         views: item.get('views') as number,
       })),
@@ -200,7 +194,6 @@ class View extends Model {
     return {
       totalViews,
       items: items.map((item) => ({
-        id: uuidv4(),
         domain: item.domain,
         views: item.get('views') as number,
       })),

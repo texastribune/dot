@@ -7,13 +7,11 @@ export interface AccessTokenPayload {
 }
 
 export interface ReprinterItem {
-  id: string;
   domain: string;
   reprints: number;
 }
 
 export interface ViewsItem {
-  id: string;
   canonical?: string | null;
   domain?: string | null;
   views: number;
