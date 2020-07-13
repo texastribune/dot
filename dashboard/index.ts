@@ -34,7 +34,7 @@ router.onReady(() => {
     }
 
     if (requiresLogIn && !isLoggedIn) {
-      return logIn();
+      return logIn(to.name || undefined);
     }
 
     if (!isAllowed(routePermissions)) {

@@ -17,9 +17,12 @@ const auth = new WebAuth({
 });
 
 const logIn = (next = 'overview'): void => {
+  const { search } = window.location;
+  const queryParams = search ? search.substring(1) : '';
+
   auth.authorize({
     clientID: AUTH0_CLIENT_ID,
-    redirectUri: `${AUTH0_REDIRECT_URI}?next=${next}`,
+    redirectUri: `${AUTH0_REDIRECT_URI}?next=${next}&${queryParams}`,
   });
 };
 
