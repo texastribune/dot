@@ -5,9 +5,12 @@
 import Vue from 'vue';
 import { VDatePicker } from 'vuetify/lib';
 import addDays from 'date-fns/addDays';
+import formatDate from 'date-fns/format';
 import parseISO from 'date-fns/parseISO';
 
 import getInitialDates from './get-initial-dates';
+
+const DISPLAY_DATE_FORMAT = 'MMM d, yyyy';
 
 export default Vue.extend({
   name: 'MainRoute',
@@ -16,44 +19,55 @@ export default Vue.extend({
 
   data() {
     return {
-      dates: getInitialDates(this.$route),
-      queryStartDate: '',
-      queryEndDate: '',
+      finalDates: getInitialDates(this.$route),
+      pickerDates: getInitialDates(this.$route),
     };
   },
 
   computed: {
-    bothDatesSelected(): boolean {
-      return !!this.startDate && !!this.endDate;
+    canUpdate(): boolean {
+      return this.pickerDates.length === 2;
     },
 
     startDate(): string {
-      return this.dates[0];
+      return this.finalDates[0];
     },
 
     endDate(): string {
-      if (this.dates.length === 2) {
-        return this.dates[1];
-      }
-      return '';
+      return this.finalDates[1];
+    },
+
+    displayStartDate(): string {
+      return formatDate(parseISO(this.startDate), DISPLAY_DATE_FORMAT);
+    },
+
+    displayEndDate(): string {
+      return formatDate(parseISO(this.endDate), DISPLAY_DATE_FORMAT);
+    },
+
+    queryStartDate(): string {
+      return parseISO(this.startDate).toISOString();
+    },
+
+    queryEndDate(): string {
+      return addDays(parseISO(this.endDate), 1).toISOString();
+    },
+  },
+
+  watch: {
+    finalDates(): void {
+      const { startDate, endDate } = this;
+      this.$router.push({ query: { startDate, endDate } });
     },
   },
 
   methods: {
-    updateQueryDates(): void {
-      this.queryStartDate = parseISO(this.startDate).toISOString();
-      this.queryEndDate = addDays(parseISO(this.endDate), 1).toISOString();
-    },
-
     onBtnClick(): void {
-      const { startDate, endDate } = this;
-
-      this.updateQueryDates();
-      this.$router.push({ query: { startDate, endDate } });
+      this.finalDates = this.pickerDates;
     },
 
     onPickerChange(newDates: string[]): void {
-      this.dates = newDates.sort();
+      this.pickerDates = newDates.sort();
     },
   },
 });
@@ -61,10 +75,15 @@ export default Vue.extend({
 
 <template>
   <div>
-    <v-date-picker v-model="dates" range @change="onPickerChange" />
-    <button :disabled="!bothDatesSelected" type="button" @click="onBtnClick">
+    <v-date-picker v-model="pickerDates" range @change="onPickerChange" />
+    <button :disabled="!canUpdate" type="button" @click="onBtnClick">
       Update
     </button>
-    <router-view :start-date="queryStartDate" :end-date="queryEndDate" />
+    <router-view
+      :display-start-date="displayStartDate"
+      :display-end-date="displayEndDate"
+      :query-start-date="queryStartDate"
+      :query-end-date="queryEndDate"
+    />
   </div>
 </template>
