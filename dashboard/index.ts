@@ -1,4 +1,8 @@
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
+/// <reference path="../node_modules/vuetify/types/lib.d.ts" />
+
 import Vue from 'vue';
+import Vuetify from 'vuetify/lib';
 import ApolloClient from 'apollo-boost';
 import VueApollo from 'vue-apollo';
 
@@ -61,6 +65,7 @@ const apolloProvider = new VueApollo({
 });
 
 Vue.use(VueApollo);
+Vue.use(Vuetify);
 
 // eslint-disable-next-line no-new
 new Vue({
@@ -70,4 +75,5 @@ new Vue({
   render: (h): Vue.VNode => h(App),
   router,
   store,
+  vuetify: new Vuetify(),
 });
