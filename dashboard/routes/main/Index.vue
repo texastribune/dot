@@ -19,7 +19,7 @@ import getInitialDates from './get-initial-dates';
 
 const DISPLAY_DATE_FORMAT = 'MMM d, yyyy';
 
-export default Vue.extend({
+const Component = Vue.extend({
   name: 'MainRoute',
 
   components: { VDatePicker },
@@ -85,7 +85,7 @@ export default Vue.extend({
     if (requiresLogIn && this.userError) {
       throw this.userError;
     } else if (requiresLogIn && !this.isLoggedIn) {
-      logIn();
+      logIn(route.name || undefined);
     } else if (!this.isAllowed(routePermissions)) {
       throw new NotAllowedError();
     } else {
@@ -116,6 +116,8 @@ export default Vue.extend({
     },
   },
 });
+
+export default Component;
 </script>
 
 <template>
