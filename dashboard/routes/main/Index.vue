@@ -3,10 +3,17 @@
 /// <reference path="../../../node_modules/vuetify/types/lib.d.ts" />
 
 import Vue from 'vue';
+import { mapGetters } from 'vuex';
+import { Route } from 'vue-router';
 import { VDatePicker } from 'vuetify/lib';
 import addDays from 'date-fns/addDays';
 import formatDate from 'date-fns/format';
 import parseISO from 'date-fns/parseISO';
+
+import { NotAllowedError } from '../../errors';
+import { USER_MODULE } from '../../store';
+import { RouteMeta } from '../../types';
+import { logIn } from '../../auth';
 
 import getInitialDates from './get-initial-dates';
 
@@ -18,13 +25,19 @@ export default Vue.extend({
   components: { VDatePicker },
 
   data() {
+    const finalDates: string[] = [];
+    const pickerDates: string[] = [];
+
     return {
-      finalDates: getInitialDates(this.$route),
-      pickerDates: getInitialDates(this.$route),
+      isLoading: true,
+      finalDates,
+      pickerDates,
     };
   },
 
   computed: {
+    ...mapGetters(USER_MODULE, ['isLoggedIn', 'isAllowed', 'userError']),
+
     canUpdate(): boolean {
       return this.pickerDates.length === 2;
     },
@@ -61,7 +74,39 @@ export default Vue.extend({
     },
   },
 
+  async mounted() {
+    // Vue 3: Refactor with composition API
+    const route = this.$route as Route;
+    const {
+      requiresLogIn,
+      permissions: routePermissions,
+    } = route.meta as RouteMeta;
+
+    if (requiresLogIn && this.userError) {
+      throw this.userError;
+    } else if (requiresLogIn && !this.isLoggedIn) {
+      logIn();
+    } else if (!this.isAllowed(routePermissions)) {
+      throw new NotAllowedError();
+    } else {
+      await this.prepareRoute();
+      this.isLoading = false;
+    }
+  },
+
   methods: {
+    prepareRoute(): Promise<void> {
+      return new Promise((resolve, reject) => {
+        try {
+          this.finalDates = getInitialDates(this.$route);
+          this.pickerDates = getInitialDates(this.$route);
+          resolve();
+        } catch (err) {
+          reject(err);
+        }
+      });
+    },
+
     onBtnClick(): void {
       this.finalDates = this.pickerDates;
     },
@@ -74,7 +119,7 @@ export default Vue.extend({
 </script>
 
 <template>
-  <div>
+  <div v-if="!isLoading">
     <v-date-picker v-model="pickerDates" range @change="onPickerChange" />
     <button :disabled="!canUpdate" type="button" @click="onBtnClick">
       Update
