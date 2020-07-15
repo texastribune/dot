@@ -25,12 +25,12 @@ const Component = Vue.extend({
   components: { VDatePicker },
 
   data() {
-    const finalDates: string[] = [];
-    const pickerDates: string[] = [];
+    const { startDate, endDate, error } = getInitialDates(this.$route);
+
     return {
-      isLoading: true,
-      finalDates,
-      pickerDates,
+      finalDates: [startDate, endDate],
+      pickerDates: [startDate, endDate],
+      pickerError: error,
     };
   },
 
@@ -87,26 +87,10 @@ const Component = Vue.extend({
       logIn(route.name || undefined);
     } else if (!this.isAllowed(routePermissions)) {
       throw new NotAllowedError();
-    } else {
-      await this.prepareRoute();
-      this.isLoading = false;
     }
   },
 
   methods: {
-    prepareRoute(): Promise<void> {
-      return new Promise((resolve, reject) => {
-        try {
-          const { startDate, endDate } = getInitialDates(this.$route);
-          this.finalDates = [startDate, endDate];
-          this.pickerDates = [startDate, endDate];
-          resolve();
-        } catch (err) {
-          reject(err);
-        }
-      });
-    },
-
     onBtnClick(): void {
       this.finalDates = this.pickerDates;
     },
@@ -121,7 +105,7 @@ export default Component;
 </script>
 
 <template>
-  <div v-if="!isLoading">
+  <div>
     <v-date-picker v-model="pickerDates" range @change="onPickerChange" />
     <button :disabled="!canUpdate" type="button" @click="onBtnClick">
       Update
