@@ -2,85 +2,64 @@ import { Route } from 'vue-router';
 import formatISO from 'date-fns/formatISO';
 import parseISO from 'date-fns/parseISO';
 import addWeeks from 'date-fns/addWeeks';
-import subWeeks from 'date-fns/subWeeks';
 import startOfToday from 'date-fns/startOfToday';
 
 import { InvalidDatesError } from '../../errors';
 
-// return start and end dates for the date picker
-// in current timezone and in ISO 8601 YYYY-MM-DD format
-export default function getInitialDates(route: Route): string[] {
-  const { start, end } = route.query;
+interface DatePickerValues {
+  startDate: string;
+  endDate: string;
+}
 
-  // neither query param exists
-  if (!start && !end) {
-    const todayObj = startOfToday();
-    const todayDateString = formatISO(todayObj, {
-      representation: 'date',
-    });
-    const twoWeeksAheadObj = addWeeks(todayObj, 2);
-    const twoWeeksAheadDateString = formatISO(twoWeeksAheadObj, {
-      representation: 'date',
-    });
-
-    return [todayDateString, twoWeeksAheadDateString];
-  }
+// return start and end dates for the date picker in ISO 8601 YYYY-MM-DD format
+export default function getInitialDates(route: Route): DatePickerValues {
+  const { startDate: startDateQuery, endDate: endDateQuery } = route.query;
 
   // one or both query params are arrays
-  if (Array.isArray(start) || Array.isArray(end)) {
+  if (Array.isArray(startDateQuery) || Array.isArray(endDateQuery)) {
     throw new InvalidDatesError({
       message: 'Invalid start and end date in URL',
     });
   }
 
-  // the start query param exists as a string
-  if (start && !end) {
-    // the start query param is not a valid ISO 8601 string
-    if (parseISO(start).toString() === 'Invalid Date') {
-      throw new InvalidDatesError({
-        message: 'The start date is invalid',
-      });
-    }
-
-    const startObj = parseISO(start);
-    const startDateString = formatISO(startObj, {
-      representation: 'date',
+  // either start or end is supplied, but not both
+  if ((startDateQuery && !endDateQuery) || (endDateQuery && !startDateQuery)) {
+    throw new InvalidDatesError({
+      message:
+        'If start date is supplied, end date must also be supplied (and vice versa)',
     });
-    const twoWeeksAheadObj = addWeeks(startObj, 2);
-    const twoWeeksAheadDateString = formatISO(twoWeeksAheadObj, {
-      representation: 'date',
-    });
-
-    return [startDateString, twoWeeksAheadDateString];
   }
 
-  // the end query param exists as a string
-  if (end && !start) {
-    // the end query param is not a valid ISO 8601 string
-    if (parseISO(end).toString() === 'Invalid Date') {
-      throw new InvalidDatesError({
-        message: 'The end date is invalid',
-      });
-    }
+  const todayObj = startOfToday();
+  const todayDateString = formatISO(todayObj, {
+    representation: 'date',
+  });
+  const twoWeeksAheadObj = addWeeks(todayObj, 2);
+  const twoWeeksAheadDateString = formatISO(twoWeeksAheadObj, {
+    representation: 'date',
+  });
+  const startIso = `${startDateQuery || todayDateString}T00:00:00`;
+  const endIso = `${endDateQuery || twoWeeksAheadDateString}T00:00:00`;
 
-    const endObj = parseISO(end);
-    const endDateString = formatISO(endObj, {
-      representation: 'date',
+  // the query-param dates are not properly ISO 8601 formatted
+  if (
+    parseISO(startIso).toString() === 'Invalid Date' ||
+    parseISO(endIso).toString() === 'Invalid Date'
+  ) {
+    throw new InvalidDatesError({
+      message: 'The provided dates are not valid ISO 8601',
     });
-    const twoWeeksBeforeObj = subWeeks(endObj, 2);
-    const twoWeeksBeforeDateString = formatISO(twoWeeksBeforeObj, {
-      representation: 'date',
-    });
-
-    return [twoWeeksBeforeDateString, endDateString];
   }
 
-  // start start query param is greater than or equal to the end one
-  if (start >= end) {
+  // start date is greater than or equal to the end one
+  if (startIso >= endIso) {
     throw new InvalidDatesError({
       message: "The start date can't be greater than or equal to the end date",
     });
   }
 
-  return [start, end];
+  return {
+    startDate: startDateQuery || todayDateString,
+    endDate: endDateQuery || twoWeeksAheadDateString,
+  };
 }

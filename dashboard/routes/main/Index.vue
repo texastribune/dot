@@ -27,7 +27,6 @@ const Component = Vue.extend({
   data() {
     const finalDates: string[] = [];
     const pickerDates: string[] = [];
-
     return {
       isLoading: true,
       finalDates,
@@ -98,8 +97,9 @@ const Component = Vue.extend({
     prepareRoute(): Promise<void> {
       return new Promise((resolve, reject) => {
         try {
-          this.finalDates = getInitialDates(this.$route);
-          this.pickerDates = getInitialDates(this.$route);
+          const { startDate, endDate } = getInitialDates(this.$route);
+          this.finalDates = [startDate, endDate];
+          this.pickerDates = [startDate, endDate];
           resolve();
         } catch (err) {
           reject(err);
