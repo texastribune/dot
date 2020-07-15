@@ -4,6 +4,7 @@
 
 import Vue from 'vue';
 import { mapGetters } from 'vuex';
+import { VProgressCircular } from 'vuetify/lib';
 import gql from 'graphql-tag';
 
 import { ViewsList } from '../../../shared-types';
@@ -21,6 +22,10 @@ interface ComponentData {
 
 export default Vue.extend({
   name: 'OverviewRoute',
+
+  components: {
+    VProgressCircular,
+  },
 
   props: {
     displayStartDate: {
@@ -89,5 +94,15 @@ export default Vue.extend({
 </script>
 
 <template>
-  <h1>Overview</h1>
+  <div>
+    <h1>Overview</h1>
+    <v-progress-circular
+      v-if="$apollo.loading"
+      :width="3"
+      :size="50"
+      color="#539bae"
+      indeterminate
+    />
+    <p v-else-if="viewsListByCanonical.items.length">Data loaded!</p>
+  </div>
 </template>
