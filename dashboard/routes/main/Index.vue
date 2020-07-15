@@ -1,7 +1,4 @@
 <script lang="ts">
-// eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
-/// <reference path="../../../node_modules/vuetify/types/lib.d.ts" />
-
 import Vue from 'vue';
 import { VDatePicker } from 'vuetify/lib';
 import addDays from 'date-fns/addDays';
