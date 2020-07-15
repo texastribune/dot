@@ -1,4 +1,4 @@
-import { GraphQLDate } from 'graphql-iso-date';
+import { GraphQLDateTime } from 'graphql-iso-date';
 
 import { ReprinterItem, ViewsList } from '../../../shared-types';
 import {
@@ -9,7 +9,7 @@ import {
 import View from '../../models/view';
 
 const resolvers = {
-  Date: GraphQLDate,
+  DateTime: GraphQLDateTime,
 
   Query: {
     async viewsListByCanonical(

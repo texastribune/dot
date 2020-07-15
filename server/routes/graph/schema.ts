@@ -1,5 +1,5 @@
 const schema = `
-scalar Date
+scalar DateTime
 
 
 type ViewsItem {
@@ -23,14 +23,14 @@ type ReprinterItem {
 type Query {
   viewsListByDomain(
     canonical: String
-    startDate: Date!
-    endDate: Date!
+    startDate: DateTime!
+    endDate: DateTime!
   ): ViewsList!
 
   viewsListByCanonical(
     domain: String
-    startDate: Date!
-    endDate: Date!
+    startDate: DateTime!
+    endDate: DateTime!
   ): ViewsList!
 
 
