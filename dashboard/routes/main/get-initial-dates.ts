@@ -9,27 +9,12 @@ import { InvalidDatesError } from '../../errors';
 interface DatePickerValues {
   startDate: string;
   endDate: string;
+  error?: InvalidDatesError<undefined>;
 }
 
 // return start and end dates for the date picker in ISO 8601 YYYY-MM-DD format
 export default function getInitialDates(route: Route): DatePickerValues {
   const { startDate: startDateQuery, endDate: endDateQuery } = route.query;
-
-  // one or both query params are arrays
-  if (Array.isArray(startDateQuery) || Array.isArray(endDateQuery)) {
-    throw new InvalidDatesError({
-      message: 'Invalid start and end date in URL',
-    });
-  }
-
-  // either start or end is supplied, but not both
-  if ((startDateQuery && !endDateQuery) || (endDateQuery && !startDateQuery)) {
-    throw new InvalidDatesError({
-      message:
-        'If start date is supplied, end date must also be supplied (and vice versa)',
-    });
-  }
-
   const todayObj = startOfToday();
   const todayDateString = formatISO(todayObj, {
     representation: 'date',
@@ -38,28 +23,56 @@ export default function getInitialDates(route: Route): DatePickerValues {
   const twoWeeksAheadDateString = formatISO(twoWeeksAheadObj, {
     representation: 'date',
   });
-  const startIso = `${startDateQuery || todayDateString}T00:00:00`;
-  const endIso = `${endDateQuery || twoWeeksAheadDateString}T00:00:00`;
+  const startIso = `${startDateQuery}T00:00:00`;
+  const endIso = `${endDateQuery}T00:00:00`;
+  const errorFallback = {
+    startDate: todayDateString,
+    endDate: twoWeeksAheadDateString,
+  };
+
+  // one or both query params are arrays
+  if (Array.isArray(startDateQuery) || Array.isArray(endDateQuery)) {
+    return {
+      ...errorFallback,
+      error: new InvalidDatesError({
+        message: 'Invalid start and end date in URL',
+      }),
+    };
+  }
+
+  // either start or end is supplied, but not both
+  if ((startDateQuery && !endDateQuery) || (endDateQuery && !startDateQuery)) {
+    return {
+      ...errorFallback,
+      error: new InvalidDatesError({
+        message: 'You must supply both start date and end date',
+      }),
+    };
+  }
 
   // the query-param dates are not properly ISO 8601 formatted
   if (
-    parseISO(startIso).toString() === 'Invalid Date' ||
-    parseISO(endIso).toString() === 'Invalid Date'
+    parseISO(startDateQuery).toString() === 'Invalid Date' ||
+    parseISO(endDateQuery).toString() === 'Invalid Date'
   ) {
-    throw new InvalidDatesError({
-      message: 'The provided dates are not valid ISO 8601',
-    });
+    return {
+      ...errorFallback,
+      error: new InvalidDatesError({
+        message: 'The provided dates are not valid ISO 8601',
+      }),
+    };
   }
 
   // start date is greater than or equal to the end one
   if (startIso >= endIso) {
-    throw new InvalidDatesError({
-      message: "The start date can't be greater than or equal to the end date",
-    });
+    return {
+      ...errorFallback,
+      error: new InvalidDatesError({
+        message:
+          "The start date can't be greater than or equal to the end date",
+      }),
+    };
   }
 
-  return {
-    startDate: startDateQuery || todayDateString,
-    endDate: endDateQuery || twoWeeksAheadDateString,
-  };
+  return { startDate: startDateQuery, endDate: endDateQuery };
 }
