@@ -92,9 +92,6 @@ const actions: ActionTree<State, {}> = {
 const getters: GetterTree<State, {}> = {
   accessToken: ({ accessToken }) => accessToken,
 
-  canViewData: ({ accessTokenPayload: { permissions } }) =>
-    permissions.includes(UserPermissions.ReadViews),
-
   isAllowed: ({ accessTokenPayload: { permissions } }) => (
     requiredPermissions: UserPermissions[]
   ): boolean => requiredPermissions.every((perm) => permissions.includes(perm)),
@@ -102,6 +99,8 @@ const getters: GetterTree<State, {}> = {
   isLoggedIn: ({ isLoggedIn }) => isLoggedIn,
 
   userError: ({ userError }) => userError,
+
+  userIsReady: ({ isLoggedIn, userError }) => isLoggedIn && !userError,
 };
 
 const module: Module<State, {}> = {

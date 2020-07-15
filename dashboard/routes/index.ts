@@ -27,6 +27,10 @@ const routes: RouteConfig[] = [
     path: '/',
     component: Main,
     pathToRegexpOptions: { strict: true },
+    meta: buildRouteMeta({
+      requiresLogIn: true,
+      permissions: [UserPermissions.ReadViews],
+    }),
     children: [
       {
         path: '',

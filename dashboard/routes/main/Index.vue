@@ -3,17 +3,10 @@
 /// <reference path="../../../node_modules/vuetify/types/lib.d.ts" />
 
 import Vue from 'vue';
-import { mapGetters } from 'vuex';
-import { Route } from 'vue-router';
 import { VDatePicker } from 'vuetify/lib';
 import addDays from 'date-fns/addDays';
 import formatDate from 'date-fns/format';
 import parseISO from 'date-fns/parseISO';
-
-import { NotAllowedError } from '../../errors';
-import { USER_MODULE } from '../../store';
-import { RouteMeta } from '../../types';
-import { logIn } from '../../auth';
 
 import getInitialDates from './get-initial-dates';
 
@@ -35,8 +28,6 @@ const Component = Vue.extend({
   },
 
   computed: {
-    ...mapGetters(USER_MODULE, ['isLoggedIn', 'isAllowed', 'userError']),
-
     canUpdate(): boolean {
       return this.pickerDates.length === 2;
     },
@@ -71,23 +62,6 @@ const Component = Vue.extend({
       const { startDate, endDate } = this;
       this.$router.push({ query: { startDate, endDate } });
     },
-  },
-
-  async mounted() {
-    // Vue 3: Refactor with composition API
-    const route = this.$route as Route;
-    const {
-      requiresLogIn,
-      permissions: routePermissions,
-    } = route.meta as RouteMeta;
-
-    if (requiresLogIn && this.userError) {
-      throw this.userError;
-    } else if (requiresLogIn && !this.isLoggedIn) {
-      logIn(route.name || undefined);
-    } else if (!this.isAllowed(routePermissions)) {
-      throw new NotAllowedError();
-    }
   },
 
   methods: {

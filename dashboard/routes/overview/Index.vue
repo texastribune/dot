@@ -3,9 +3,11 @@
 /// <reference path="../../../node_modules/vue-apollo/types/vue.d.ts" />
 
 import Vue from 'vue';
+import { mapGetters } from 'vuex';
 import gql from 'graphql-tag';
 
 import { ViewsList } from '../../../shared-types';
+import { USER_MODULE } from '../../store';
 
 interface QueryVariables {
   startDate: string;
@@ -55,6 +57,10 @@ export default Vue.extend({
     };
   },
 
+  computed: {
+    ...mapGetters(USER_MODULE, ['userIsReady']),
+  },
+
   apollo: {
     viewsListByCanonical: {
       query: gql`
@@ -73,6 +79,9 @@ export default Vue.extend({
           startDate: this.queryStartDate,
           endDate: this.queryEndDate,
         };
+      },
+      skip(): boolean {
+        return !this.userIsReady;
       },
     },
   },
