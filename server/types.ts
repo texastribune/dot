@@ -3,6 +3,7 @@ import { AccessTokenPayload } from '../shared-types';
 export enum ValidTrackerSource {
   Legacy = 'legacy',
   Repub = 'repub',
+  Rss = 'rss',
 }
 
 export interface TrackerTokenPayload {
