@@ -7,8 +7,12 @@ import { mapGetters } from 'vuex';
 import { VProgressCircular } from 'vuetify/lib';
 import gql from 'graphql-tag';
 
-import { ViewsList } from '../../../shared-types';
 import { USER_MODULE } from '../../store';
+import {
+  ViewsList,
+  ViewsItemByDomain,
+  ViewsItemByCanonical,
+} from '../../../shared-types';
 
 interface QueryVariables {
   startDate: string;
@@ -16,8 +20,8 @@ interface QueryVariables {
 }
 
 interface ComponentData {
-  viewsListByCanonical: ViewsList;
-  viewsListByDomain: ViewsList;
+  viewsListByCanonical: ViewsList<ViewsItemByCanonical>;
+  viewsListByDomain: ViewsList<ViewsItemByDomain>;
 }
 
 export default Vue.extend({
@@ -73,8 +77,10 @@ export default Vue.extend({
           viewsListByCanonical(startDate: $startDate, endDate: $endDate) {
             totalViews
             items {
-              canonical
               views
+              ... on ViewsItemByCanonical {
+                canonical
+              }
             }
           }
         }

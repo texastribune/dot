@@ -17,7 +17,7 @@ export default {
       },
       domain: {
         type: DataTypes.TEXT,
-        allowNull: false,
+        allowNull: true,
         validate: {
           notContains: ['localhost', 's3.amazonaws.com'],
         },

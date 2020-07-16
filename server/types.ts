@@ -28,7 +28,7 @@ export interface CreateViewArgs {
 }
 
 export interface ViewsListByCanonicalArgs {
-  domain?: string;
+  domain?: string | null;
   endDate: string;
   startDate: string;
 }
