@@ -1,5 +1,5 @@
 import { DataTypes, QueryInterface } from 'sequelize';
-import { ValidTrackerSource, ValidTrackerType } from '../types';
+import { ValidTrackerSource } from '../types';
 
 export default {
   up: (queryInterface: QueryInterface): Promise<void> => {
@@ -22,20 +22,8 @@ export default {
           notContains: ['localhost', 's3.amazonaws.com'],
         },
       },
-      referrer: {
-        type: DataTypes.TEXT,
-        allowNull: true,
-      },
       source: {
         type: DataTypes.ENUM(...Object.values(ValidTrackerSource)),
-        allowNull: false,
-      },
-      type: {
-        type: DataTypes.ENUM(...Object.values(ValidTrackerType)),
-        allowNull: false,
-      },
-      version: {
-        type: DataTypes.STRING(8),
         allowNull: false,
       },
       // eslint-disable-next-line @typescript-eslint/camelcase

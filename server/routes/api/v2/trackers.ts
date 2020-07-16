@@ -16,7 +16,7 @@ import {
   VERSION,
 } from '../../../config';
 import { UnauthorizedError, TrackerCreationError } from '../../../errors';
-import { ValidTrackerType, ValidTrackerSource } from '../../../types';
+import { ValidTrackerSource } from '../../../types';
 
 const router = express.Router();
 
@@ -108,7 +108,6 @@ router.get('/', (req, res, next) => {
         version: VERSION,
         canonical,
         source,
-        type: ValidTrackerType.Script,
       },
       TRACKER_JWT_SECRET as string,
       { algorithm: 'HS256', noTimestamp: true },

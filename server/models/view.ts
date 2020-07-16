@@ -1,3 +1,5 @@
+import { URL } from 'url';
+
 import {
   Model,
   DataTypes,
@@ -17,12 +19,9 @@ import {
 } from '../../shared-types';
 import { userPermissions } from '../utils/decorators';
 import sequelize from '../db';
-import { TrackerIntegrityError } from '../errors';
 import {
-  CreateViewArgs,
   TrackerTokenPayload,
   ValidTrackerSource,
-  ValidTrackerType,
   ViewsListByCanonicalArgs,
   ViewsListByDomainArgs,
 } from '../types';
@@ -34,22 +33,17 @@ class View extends Model {
 
   public domain!: string | null;
 
-  public referrer!: string | null;
-
   public source!: ValidTrackerSource;
-
-  public type!: ValidTrackerType;
-
-  public version!: string;
 
   public visitedAt!: Date;
 
   public static async createView({
     token,
-    domain,
-    referrer,
-    version: queryParamVersion,
-  }: CreateViewArgs): Promise<View> {
+    url,
+  }: {
+    token: string;
+    url: string;
+  }): Promise<View> {
     const tokenPayload = await new Promise((resolve, reject) => {
       jwt.verify(
         token,
@@ -68,24 +62,11 @@ class View extends Model {
       );
     });
 
-    const {
-      version: tokenVersion,
-      canonical,
-      source,
-      type,
-    } = tokenPayload as TrackerTokenPayload;
-
-    if (queryParamVersion !== tokenVersion) {
-      throw new TrackerIntegrityError({ message: 'Versions do not match' });
-    }
-
+    const { canonical, source } = tokenPayload as TrackerTokenPayload;
     const view = await View.create({
       canonical,
-      domain,
-      referrer,
       source,
-      type,
-      version: tokenVersion,
+      domain: url ? new URL(url).hostname : null,
     });
 
     return view.save();
@@ -190,20 +171,8 @@ View.init(
         notContains: ['localhost', 's3.amazonaws.com'],
       },
     },
-    referrer: {
-      type: DataTypes.TEXT,
-      allowNull: true,
-    },
     source: {
       type: DataTypes.ENUM(...Object.values(ValidTrackerSource)),
-      allowNull: false,
-    },
-    type: {
-      type: DataTypes.ENUM(...Object.values(ValidTrackerType)),
-      allowNull: false,
-    },
-    version: {
-      type: DataTypes.STRING(8),
       allowNull: false,
     },
     visitedAt: {
