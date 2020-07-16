@@ -1,5 +1,3 @@
-import { URL } from 'url';
-
 import {
   Model,
   DataTypes,
@@ -39,10 +37,10 @@ class View extends Model {
 
   public static async createView({
     token,
-    url,
+    domain,
   }: {
     token: string;
-    url: string;
+    domain: string;
   }): Promise<View> {
     const tokenPayload = await new Promise((resolve, reject) => {
       jwt.verify(
@@ -66,7 +64,7 @@ class View extends Model {
     const view = await View.create({
       canonical,
       source,
-      domain: url ? new URL(url).hostname : null,
+      domain: domain || null,
     });
 
     return view.save();

@@ -10,11 +10,11 @@ const gif = Buffer.from(
 );
 
 router.get('/pixel.gif', async (req, res) => {
-  const { token, url } = req.query;
+  const { token, domain } = req.query;
 
   try {
     const view = await View.createView({
-      url: url as string,
+      domain: domain as string,
       token: token as string,
     });
 
