@@ -50,7 +50,7 @@ export default {
           canonical,
           domain: new URL(url).hostname,
           source: ValidTrackerSource.Legacy,
-          visited_at,
+          visitedAt: visited_at,
         }));
 
         await View.bulkCreate(viewsToInsert, { validate: true, transaction });
