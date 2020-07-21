@@ -1,7 +1,5 @@
 /* eslint-disable no-await-in-loop, no-console */
 
-import fs from 'fs';
-
 import validate from 'validator';
 
 import { QueryInterface, QueryTypes } from 'sequelize';
@@ -32,9 +30,8 @@ export default {
     }
 
     const MAX_ROWS = 10000;
-    const invalidVisits: Visit[] = [];
+    const transaction = await queryInterface.sequelize.transaction();
     let offset = 0;
-    let total = 0;
 
     try {
       while (offset < visitsCount) {
@@ -45,6 +42,7 @@ export default {
           }
         );
         const visits = visitsQuery as Visit[];
+        const invalidVisits: Visit[] = [];
 
         visits.forEach((visit) => {
           const validCanonical = validate.isURL(visit.canonical);
@@ -58,28 +56,27 @@ export default {
           }
         });
 
+        if (invalidVisits.length) {
+          const invalidVisitIds = invalidVisits.map(({ id }) => id);
+          console.log(`Deleting ${invalidVisits.length} invalid visits`);
+
+          await queryInterface.sequelize.query(
+            'DELETE FROM visit WHERE id IN (?)',
+            {
+              type: QueryTypes.DELETE,
+              replacements: [invalidVisitIds],
+              transaction,
+            }
+          );
+        }
+
         offset += MAX_ROWS;
-        total += invalidVisits.length;
-        console.log(`Found ${total} invalid visits so far`);
       }
 
-      if (invalidVisits.length) {
-        console.log(`There are ${invalidVisits.length} invalid visits`);
-        fs.writeFileSync('invalid-visits.json', JSON.stringify(invalidVisits));
-
-        const invalidVisitIds = invalidVisits.map(({ id }) => id);
-
-        await queryInterface.sequelize.query(
-          'DELETE FROM visit WHERE id IN (?)',
-          {
-            type: QueryTypes.DELETE,
-            replacements: [invalidVisitIds],
-          }
-        );
-      }
-
+      await transaction.commit();
       console.log('Success!');
     } catch (error) {
+      await transaction.rollback();
       console.error(error);
     }
   },
