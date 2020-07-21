@@ -35,7 +35,7 @@ class View extends Model {
 
   public visitedAt!: Date;
 
-  public static async createView({
+  public static async createViewFromToken({
     token,
     domain,
   }: {
