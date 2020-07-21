@@ -34,6 +34,7 @@ export default {
     const MAX_ROWS = 10000;
     const invalidVisits: Visit[] = [];
     let offset = 0;
+    let total = 0;
 
     try {
       while (offset < visitsCount) {
@@ -58,6 +59,8 @@ export default {
         });
 
         offset += MAX_ROWS;
+        total += invalidVisits.length;
+        console.log(`Found ${total} invalid visits so far`);
       }
 
       if (invalidVisits.length) {
