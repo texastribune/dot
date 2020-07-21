@@ -2,7 +2,6 @@ import express from 'express';
 
 import View from '../models/view';
 import reportError from '../utils/report-error';
-import { CreateViewArgs } from '../types';
 
 const router = express.Router();
 const gif = Buffer.from(
@@ -11,19 +10,17 @@ const gif = Buffer.from(
 );
 
 router.get('/pixel.gif', async (req, res) => {
-  const { token, domain, referrer, version } = req.query;
+  const { token, domain } = req.query;
 
   try {
-    const view = await View.createView({
-      domain: domain as CreateViewArgs['domain'],
-      referrer: referrer as CreateViewArgs['referrer'],
-      token: token as CreateViewArgs['token'],
-      version: version as CreateViewArgs['version'],
+    const view = await View.createViewFromToken({
+      domain: domain as string,
+      token: token as string,
     });
 
     // eslint-disable-next-line no-console
     console.log(
-      `Logged view | ID: ${view.id} | Canonical: ${view.canonical} | Domain: ${view.domain} | Source: ${view.source} | Type: ${view.type} | Referrer: ${view.referrer}`
+      `Logged view | ID: ${view.id} | Canonical: ${view.canonical} | Domain: ${view.domain} | Source: ${view.source}`
     );
   } catch (error) {
     reportError(error);

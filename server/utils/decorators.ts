@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { AccessTokenPayload } from '../../shared-types';
-import { UserPermissions } from '../types';
+import { AccessTokenPayload, UserPermissions } from '../../shared-types';
 import { ForbiddenError } from '../errors';
 
 // eslint-disable-next-line import/prefer-default-export

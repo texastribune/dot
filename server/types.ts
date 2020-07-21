@@ -3,36 +3,21 @@ import { AccessTokenPayload } from '../shared-types';
 export enum ValidTrackerSource {
   Legacy = 'legacy',
   Repub = 'repub',
-}
-
-export enum ValidTrackerType {
-  Script = 'script',
+  Rss = 'rss',
 }
 
 export interface TrackerTokenPayload {
   canonical: string;
   source: ValidTrackerSource;
-  type: ValidTrackerType;
   version: string;
-}
-
-export enum UserPermissions {
-  ReadViews = 'dot:view_data',
 }
 
 export interface GQLContext {
   user: AccessTokenPayload;
 }
 
-export interface CreateViewArgs {
-  domain: string;
-  referrer?: string;
-  token: string;
-  version: string;
-}
-
 export interface ViewsListByCanonicalArgs {
-  domain?: string;
+  domain?: string | null;
   endDate: string;
   startDate: string;
 }

@@ -1,4 +1,4 @@
-import { RDS_PEM } from '../config';
+import { RDS_PEM } from './config';
 
 export default {
   development: {

@@ -6,23 +6,20 @@ import {
   Filterable,
 } from 'sequelize';
 import jwt from 'jsonwebtoken';
-import { v4 as uuidv4 } from 'uuid';
 
-import { TRACKER_JWT_SECRET } from '../../config';
+import { TRACKER_JWT_SECRET } from '../config';
 import {
   AccessTokenPayload,
-  ReprinterItem,
+  ViewsItemByCanonical,
+  ViewsItemByDomain,
   ViewsList,
+  UserPermissions,
 } from '../../shared-types';
 import { userPermissions } from '../utils/decorators';
 import sequelize from '../db';
-import { TrackerIntegrityError } from '../errors';
 import {
-  CreateViewArgs,
   TrackerTokenPayload,
-  UserPermissions,
   ValidTrackerSource,
-  ValidTrackerType,
   ViewsListByCanonicalArgs,
   ViewsListByDomainArgs,
 } from '../types';
@@ -32,24 +29,19 @@ class View extends Model {
 
   public canonical!: string;
 
-  public domain!: string;
-
-  public referrer!: string | null;
+  public domain!: string | null;
 
   public source!: ValidTrackerSource;
 
-  public type!: ValidTrackerType;
-
-  public version!: string;
-
   public visitedAt!: Date;
 
-  public static async createView({
+  public static async createViewFromToken({
     token,
     domain,
-    referrer,
-    version: queryParamVersion,
-  }: CreateViewArgs): Promise<View> {
+  }: {
+    token: string;
+    domain: string;
+  }): Promise<View> {
     const tokenPayload = await new Promise((resolve, reject) => {
       jwt.verify(
         token,
@@ -68,81 +60,31 @@ class View extends Model {
       );
     });
 
-    const {
-      version: tokenVersion,
-      canonical,
-      source,
-      type,
-    } = tokenPayload as TrackerTokenPayload;
-
-    if (queryParamVersion !== tokenVersion) {
-      throw new TrackerIntegrityError({ message: 'Versions do not match' });
-    }
-
+    const { canonical, source } = tokenPayload as TrackerTokenPayload;
     const view = await View.create({
       canonical,
-      domain,
-      referrer,
       source,
-      type,
-      version: tokenVersion,
+      domain: domain || null,
     });
 
     return view.save();
   }
 
   @userPermissions([UserPermissions.ReadViews])
-  public static async getTopReprinters(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    user: AccessTokenPayload
-  ): Promise<ReprinterItem[]> {
-    const results = await View.findAll({
-      attributes: [
-        [Sequelize.literal('DISTINCT domain'), 'domain'],
-        [Sequelize.literal('canonical'), 'canonical'],
-      ],
-      group: ['domain', 'canonical'],
-    });
-    const itemsHash: { [key: string]: number } = {};
-    const unsortedItems: ReprinterItem[] = [];
-
-    results.forEach(({ domain }) => {
-      if (itemsHash[domain] !== undefined) {
-        itemsHash[domain] += 1;
-      } else {
-        itemsHash[domain] = 1;
-      }
-    });
-
-    Object.entries(itemsHash).forEach(([domain, reprints]) => {
-      unsortedItems.push({ id: uuidv4(), domain, reprints });
-    });
-
-    return unsortedItems.sort(
-      ({ reprints: firstReprints }, { reprints: secondReprints }) => {
-        if (firstReprints > secondReprints) {
-          return -1;
-        }
-        if (firstReprints < secondReprints) {
-          return 1;
-        }
-        return 0;
-      }
-    );
-  }
-
-  @userPermissions([UserPermissions.ReadViews])
   public static async getViewsListByCanonical(
     user: AccessTokenPayload,
     { startDate, endDate, domain }: ViewsListByCanonicalArgs
-  ): Promise<ViewsList> {
+  ): Promise<ViewsList<ViewsItemByCanonical>> {
     const where: Filterable['where'] = {
       visitedAt: {
-        [Operation.between]: [startDate, endDate],
+        [Operation.gte]: startDate,
+        [Operation.lt]: endDate,
       },
     };
 
-    if (domain) {
+    if (domain === null) {
+      where.domain = { [Operation.is]: null };
+    } else if (domain) {
       where.domain = { [Operation.like]: domain };
     }
 
@@ -162,7 +104,6 @@ class View extends Model {
     return {
       totalViews,
       items: items.map((item) => ({
-        id: uuidv4(),
         canonical: item.canonical,
         views: item.get('views') as number,
       })),
@@ -173,10 +114,11 @@ class View extends Model {
   public static async getViewsListByDomain(
     user: AccessTokenPayload,
     { startDate, endDate, canonical }: ViewsListByDomainArgs
-  ): Promise<ViewsList> {
+  ): Promise<ViewsList<ViewsItemByDomain>> {
     const where: Filterable['where'] = {
       visitedAt: {
-        [Operation.between]: [startDate, endDate],
+        [Operation.gte]: startDate,
+        [Operation.lt]: endDate,
       },
     };
 
@@ -200,7 +142,6 @@ class View extends Model {
     return {
       totalViews,
       items: items.map((item) => ({
-        id: uuidv4(),
         domain: item.domain,
         views: item.get('views') as number,
       })),
@@ -223,25 +164,13 @@ View.init(
     },
     domain: {
       type: DataTypes.TEXT,
-      allowNull: false,
+      allowNull: true,
       validate: {
         notContains: ['localhost', 's3.amazonaws.com'],
       },
     },
-    referrer: {
-      type: DataTypes.TEXT,
-      allowNull: true,
-    },
     source: {
       type: DataTypes.ENUM(...Object.values(ValidTrackerSource)),
-      allowNull: false,
-    },
-    type: {
-      type: DataTypes.ENUM(...Object.values(ValidTrackerType)),
-      allowNull: false,
-    },
-    version: {
-      type: DataTypes.STRING(8),
       allowNull: false,
     },
     visitedAt: {

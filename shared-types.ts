@@ -1,21 +1,24 @@
+export enum UserPermissions {
+  ReadViews = 'dot:view_data',
+}
+
 export interface AccessTokenPayload {
-  permissions: string[];
+  permissions: UserPermissions[];
 }
 
-export interface ReprinterItem {
-  id: string;
-  domain: string;
-  reprints: number;
-}
-
-export interface ViewsItem {
-  id: string;
-  canonical?: string | null;
-  domain?: string | null;
+interface ViewsItem {
   views: number;
 }
 
-export interface ViewsList {
-  items: ViewsItem[];
+export interface ViewsItemByDomain extends ViewsItem {
+  domain: string | null;
+}
+
+export interface ViewsItemByCanonical extends ViewsItem {
+  canonical: string;
+}
+
+export interface ViewsList<T extends ViewsItem> {
+  items: T[];
   totalViews: number;
 }

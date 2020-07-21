@@ -1,13 +1,21 @@
 const schema = `
-scalar Date
+scalar DateTime
 
 
-type ViewsItem {
-  id: ID!
-  canonical: String
-  domain: String
+interface ViewsItem {
   views: Int!
 }
+
+type ViewsItemByCanonical implements ViewsItem {
+  views: Int!
+  canonical: String!
+}
+
+type ViewsItemByDomain implements ViewsItem {
+  views: Int!
+  domain: String
+}
+
 
 type ViewsList {
   items: [ViewsItem!]!
@@ -15,28 +23,18 @@ type ViewsList {
 }
 
 
-type ReprinterItem {
-  id: ID!
-  domain: String!
-  reprints: Int!
-}
-
-
 type Query {
   viewsListByDomain(
     canonical: String
-    startDate: Date!
-    endDate: Date!
+    startDate: DateTime!
+    endDate: DateTime!
   ): ViewsList!
 
   viewsListByCanonical(
     domain: String
-    startDate: Date!
-    endDate: Date!
+    startDate: DateTime!
+    endDate: DateTime!
   ): ViewsList!
-
-
-  topReprinters: [ReprinterItem!]!
 }
 `;
 

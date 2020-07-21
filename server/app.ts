@@ -10,18 +10,20 @@ import axios, { AxiosError } from 'axios';
 
 import webpackConfig from '../webpack.config';
 import {
-  IS_DEV,
-  PORT,
-  DASHBOARD_STATIC_ALIAS,
-  DASHBOARD_BUILD_PATH,
-  TEMPLATES_PATH,
-  PUBLIC_BUILD_PATH,
-  TRACKER_STATIC_ALIAS,
-  TRACKER_BUILD_PATH,
   SENTRY_ENVIRONMENT,
   ENABLE_SENTRY,
   SENTRY_DSN,
-} from '../config';
+} from '../shared-config';
+import {
+  DASHBOARD_STATIC_ALIAS,
+  DASHBOARD_BUILD_PATH,
+  IS_DEV,
+  PORT,
+  PUBLIC_BUILD_PATH,
+  TEMPLATES_PATH,
+  TRACKER_STATIC_ALIAS,
+  TRACKER_BUILD_PATH,
+} from './config';
 import db from './db';
 import routes from './routes';
 import pixelRoute from './routes/pixel';
@@ -40,11 +42,13 @@ const app = express();
 app.use(Sentry.Handlers.requestHandler() as express.RequestHandler);
 app.use(
   helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-      },
-    },
+    contentSecurityPolicy: IS_DEV
+      ? undefined
+      : {
+          directives: {
+            defaultSrc: ["'self'"],
+          },
+        },
     expectCt: true,
     permittedCrossDomainPolicies: true,
   })

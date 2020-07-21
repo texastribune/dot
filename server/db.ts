@@ -9,7 +9,7 @@ import {
   IS_PROD,
   IS_DEV,
   RDS_PEM,
-} from '../config';
+} from './config';
 
 const db = new Sequelize({
   database: DB_NAME,

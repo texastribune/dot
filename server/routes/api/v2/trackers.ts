@@ -6,17 +6,17 @@ import { URL } from 'url';
 import express from 'express';
 import jwt from 'jsonwebtoken';
 
+import { APP_URL } from '../../../../shared-config';
 import {
-  APP_URL,
-  VERSION,
+  ACCESS_IDS,
   TRACKER_STATIC_ALIAS,
   TRACKER_BUILD_PATH,
   TRACKER_SCRIPT,
-  ACCESS_IDS,
   TRACKER_JWT_SECRET,
-} from '../../../../config';
+  VERSION,
+} from '../../../config';
 import { UnauthorizedError, TrackerCreationError } from '../../../errors';
-import { ValidTrackerType, ValidTrackerSource } from '../../../types';
+import { ValidTrackerSource } from '../../../types';
 
 const router = express.Router();
 
@@ -108,7 +108,6 @@ router.get('/', (req, res, next) => {
         version: VERSION,
         canonical,
         source,
-        type: ValidTrackerType.Script,
       },
       TRACKER_JWT_SECRET as string,
       { algorithm: 'HS256', noTimestamp: true },

@@ -5,10 +5,10 @@ import express from 'express';
 
 import {
   AUTH0_CLIENT_ID,
-  AUTH0_CLIENT_SECRET,
   AUTH0_REDIRECT_URI,
   AUTH0_TOKEN_URL,
-} from '../../../../config';
+} from '../../../../shared-config';
+import { AUTH0_CLIENT_SECRET } from '../../../config';
 import { ResponseError, UnauthorizedError, Auth0Error } from '../../../errors';
 
 const router = express.Router();

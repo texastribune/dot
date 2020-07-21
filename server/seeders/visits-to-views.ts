@@ -5,7 +5,7 @@ import { URL } from 'url';
 import { QueryInterface, QueryTypes } from 'sequelize';
 
 import View from '../models/view';
-import { ValidTrackerSource, ValidTrackerType } from '../types';
+import { ValidTrackerSource } from '../types';
 
 interface Visit {
   id: number;
@@ -46,17 +46,12 @@ export default {
           }
         );
         const visits = visitsQuery as Visit[];
-        const viewsToInsert = visits.map(
-          ({ canonical, referrer, url, visited_at }) => ({
-            canonical,
-            domain: new URL(url).hostname,
-            referrer: referrer || undefined,
-            source: ValidTrackerSource.Legacy,
-            type: ValidTrackerType.Script,
-            version: '1.0.0',
-            visited_at,
-          })
-        );
+        const viewsToInsert = visits.map(({ canonical, url, visited_at }) => ({
+          canonical,
+          domain: new URL(url).hostname,
+          source: ValidTrackerSource.Legacy,
+          visitedAt: visited_at,
+        }));
 
         await View.bulkCreate(viewsToInsert, { validate: true, transaction });
 

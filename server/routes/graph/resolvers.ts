@@ -1,6 +1,12 @@
-import { GraphQLDate } from 'graphql-iso-date';
+/*  eslint-disable no-underscore-dangle */
 
-import { ReprinterItem, ViewsList } from '../../../shared-types';
+import { GraphQLDateTime } from 'graphql-iso-date';
+
+import {
+  ViewsList,
+  ViewsItemByCanonical,
+  ViewsItemByDomain,
+} from '../../../shared-types';
 import {
   GQLContext,
   ViewsListByCanonicalArgs,
@@ -9,14 +15,28 @@ import {
 import View from '../../models/view';
 
 const resolvers = {
-  Date: GraphQLDate,
+  DateTime: GraphQLDateTime,
+
+  ViewsItem: {
+    __resolveType(
+      obj: ViewsItemByCanonical | ViewsItemByDomain
+    ): string | null {
+      if ('canonical' in obj) {
+        return 'ViewsItemByCanonical';
+      }
+      if ('domain' in obj) {
+        return 'ViewsItemByDomain';
+      }
+      return null;
+    },
+  },
 
   Query: {
     async viewsListByCanonical(
       root: undefined,
       args: ViewsListByCanonicalArgs,
       context: GQLContext
-    ): Promise<ViewsList> {
+    ): Promise<ViewsList<ViewsItemByCanonical>> {
       return View.getViewsListByCanonical(context.user, args);
     },
 
@@ -24,16 +44,8 @@ const resolvers = {
       root: undefined,
       args: ViewsListByDomainArgs,
       context: GQLContext
-    ): Promise<ViewsList> {
+    ): Promise<ViewsList<ViewsItemByDomain>> {
       return View.getViewsListByDomain(context.user, args);
-    },
-
-    async topReprinters(
-      root: undefined,
-      args: undefined,
-      context: GQLContext
-    ): Promise<ReprinterItem[]> {
-      return View.getTopReprinters(context.user);
     },
   },
 };
