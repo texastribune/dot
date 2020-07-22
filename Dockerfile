@@ -15,4 +15,4 @@ COPY . /app/
 
 RUN npm run build
 
-ENTRYPOINT ["/app/shell/docker-entrypoint.sh"]
+ENTRYPOINT ["npm", "start"]
