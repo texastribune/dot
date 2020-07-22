@@ -1,4 +1,4 @@
-FROM node:12-stretch
+FROM node:12-alpine
 
 RUN mkdir /app
 WORKDIR /app
