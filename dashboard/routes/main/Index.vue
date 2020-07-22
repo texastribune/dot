@@ -1,4 +1,7 @@
 <script lang="ts">
+/* eslint-disable @typescript-eslint/triple-slash-reference, spaced-comment */
+/// <reference path="../../../node_modules/vuetify/types/lib.d.ts" />
+
 import Vue from 'vue';
 import { VDatePicker } from 'vuetify/lib';
 import addDays from 'date-fns/addDays';
@@ -77,13 +80,12 @@ export default Component;
 
 <template>
   <div>
+    <h1>Texas Tribune pixel tracker</h1>
     <v-date-picker v-model="pickerDates" range @change="onPickerChange" />
     <button :disabled="!canUpdate" type="button" @click="onBtnClick">
       Update
     </button>
     <router-view
-      :display-start-date="displayStartDate"
-      :display-end-date="displayEndDate"
       :query-start-date="queryStartDate"
       :query-end-date="queryEndDate"
     />
