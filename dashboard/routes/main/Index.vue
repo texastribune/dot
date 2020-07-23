@@ -1,4 +1,7 @@
 <script lang="ts">
+/* eslint-disable @typescript-eslint/triple-slash-reference, spaced-comment */
+/// <reference path="../../../node_modules/vuetify/types/lib.d.ts" />
+
 import Vue from 'vue';
 import { VDatePicker } from 'vuetify/lib';
 import addDays from 'date-fns/addDays';
@@ -56,9 +59,14 @@ const Component = Vue.extend({
 
   watch: {
     finalDates(): void {
-      const { startDate, endDate } = this;
-      this.$router.push({ query: { startDate, endDate } });
+      this.updateQueryParams();
     },
+  },
+
+  mounted(): void {
+    if (this.pickerError) {
+      this.updateQueryParams();
+    }
   },
 
   methods: {
@@ -69,6 +77,11 @@ const Component = Vue.extend({
     onPickerChange(newDates: string[]): void {
       this.pickerDates = newDates.sort();
     },
+
+    updateQueryParams(): void {
+      const { startDate, endDate } = this;
+      this.$router.replace({ query: { startDate, endDate } });
+    },
   },
 });
 
@@ -77,15 +90,16 @@ export default Component;
 
 <template>
   <div>
+    <h1>Texas Tribune pixel tracker</h1>
     <v-date-picker v-model="pickerDates" range @change="onPickerChange" />
     <button :disabled="!canUpdate" type="button" @click="onBtnClick">
       Update
     </button>
     <router-view
-      :display-start-date="displayStartDate"
-      :display-end-date="displayEndDate"
-      :query-start-date="queryStartDate"
-      :query-end-date="queryEndDate"
+      :gql-start-date="queryStartDate"
+      :gql-end-date="queryEndDate"
+      :query-param-start-date="startDate"
+      :query-param-end-date="endDate"
     />
   </div>
 </template>

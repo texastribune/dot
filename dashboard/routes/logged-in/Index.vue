@@ -16,14 +16,13 @@ export default Vue.extend({
     await this[GET_TOKENS](route.query.code);
 
     setTimeout(() => {
-      // extract out Auth0 query params
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { next, code, state, ...restQueryParams } = route.query;
+      const { next } = route.query;
 
-      router.push({
-        name: route.query.next as string,
-        query: restQueryParams,
-      });
+      if (Array.isArray(next)) {
+        return router.push({ name: 'overview' });
+      }
+      const { name, params, query } = JSON.parse(next);
+      return router.push({ name, params, query });
     }, 3000);
   },
 

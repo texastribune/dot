@@ -1,10 +1,10 @@
 <script lang="ts">
-// eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
+/* eslint-disable vue/valid-v-slot, @typescript-eslint/triple-slash-reference, spaced-comment */
 /// <reference path="../../../node_modules/vue-apollo/types/vue.d.ts" />
 
 import Vue from 'vue';
 import { mapGetters } from 'vuex';
-import { VProgressCircular } from 'vuetify/lib';
+import { DataTableHeader } from 'vuetify';
 import gql from 'graphql-tag';
 
 import { USER_MODULE } from '../../store';
@@ -13,6 +13,11 @@ import {
   ViewsItemByDomain,
   ViewsItemByCanonical,
 } from '../../../shared-types';
+import ViewsTable, {
+  ViewsTableItem,
+  formatViewsTableItems,
+  contentHeader,
+} from '../../components/ViewsTable.vue';
 
 interface QueryVariables {
   startDate: string;
@@ -20,6 +25,8 @@ interface QueryVariables {
 }
 
 interface ComponentData {
+  canonicalHeader: DataTableHeader;
+  domainHeader: DataTableHeader;
   viewsListByCanonical: ViewsList<ViewsItemByCanonical>;
   viewsListByDomain: ViewsList<ViewsItemByDomain>;
 }
@@ -27,27 +34,25 @@ interface ComponentData {
 export default Vue.extend({
   name: 'OverviewRoute',
 
-  components: {
-    VProgressCircular,
-  },
+  components: { ViewsTable },
 
   props: {
-    displayStartDate: {
+    gqlStartDate: {
       type: String,
       required: true,
     },
 
-    displayEndDate: {
+    gqlEndDate: {
       type: String,
       required: true,
     },
 
-    queryStartDate: {
+    queryParamStartDate: {
       type: String,
       required: true,
     },
 
-    queryEndDate: {
+    queryParamEndDate: {
       type: String,
       required: true,
     },
@@ -55,10 +60,23 @@ export default Vue.extend({
 
   data(): ComponentData {
     return {
+      canonicalHeader: {
+        ...contentHeader,
+        text: 'Canonical',
+        sortable: false,
+      },
+
+      domainHeader: {
+        ...contentHeader,
+        text: 'Domain',
+        sortable: false,
+      },
+
       viewsListByCanonical: {
         items: [],
         totalViews: 0,
       },
+
       viewsListByDomain: {
         items: [],
         totalViews: 0,
@@ -68,6 +86,24 @@ export default Vue.extend({
 
   computed: {
     ...mapGetters(USER_MODULE, ['userIsReady']),
+
+    totalViews(): number {
+      return this.viewsListByCanonical.totalViews;
+    },
+
+    canonicalList(): ViewsTableItem[] {
+      return formatViewsTableItems<{ canonical: string }, 'canonical'>(
+        this.viewsListByCanonical.items,
+        'canonical'
+      );
+    },
+
+    domainsList(): ViewsTableItem[] {
+      return formatViewsTableItems<{ domain: string | null }, 'domain'>(
+        this.viewsListByDomain.items,
+        'domain'
+      );
+    },
   },
 
   apollo: {
@@ -87,8 +123,33 @@ export default Vue.extend({
       `,
       variables(): QueryVariables {
         return {
-          startDate: this.queryStartDate,
-          endDate: this.queryEndDate,
+          startDate: this.gqlStartDate,
+          endDate: this.gqlEndDate,
+        };
+      },
+      skip(): boolean {
+        return !this.userIsReady;
+      },
+    },
+
+    viewsListByDomain: {
+      query: gql`
+        query ViewsListByDomain($startDate: DateTime!, $endDate: DateTime!) {
+          viewsListByDomain(startDate: $startDate, endDate: $endDate) {
+            totalViews
+            items {
+              views
+              ... on ViewsItemByDomain {
+                domain
+              }
+            }
+          }
+        }
+      `,
+      variables(): QueryVariables {
+        return {
+          startDate: this.gqlStartDate,
+          endDate: this.gqlEndDate,
         };
       },
       skip(): boolean {
@@ -101,14 +162,50 @@ export default Vue.extend({
 
 <template>
   <div>
-    <h1>Overview</h1>
-    <v-progress-circular
-      v-if="$apollo.loading"
-      :width="3"
-      :size="50"
-      color="#539bae"
-      indeterminate
-    />
-    <p v-else-if="viewsListByCanonical.items.length">Data loaded!</p>
+    <views-table
+      :content-header="canonicalHeader"
+      :is-loading="$apollo.queries.viewsListByCanonical.loading"
+      :items="canonicalList"
+      :total-views="totalViews"
+    >
+      <template #content="{ content }">
+        <router-link
+          :to="{
+            name: 'canonicalDetail',
+            params: {
+              canonical: content,
+            },
+            query: {
+              startDate: queryParamStartDate,
+              endDate: queryParamEndDate,
+            },
+          }"
+          >{{ content }}</router-link
+        >
+      </template>
+    </views-table>
+
+    <views-table
+      :content-header="domainHeader"
+      :is-loading="$apollo.queries.viewsListByDomain.loading"
+      :items="domainsList"
+      :total-views="totalViews"
+    >
+      <template #content="{ content }">
+        <router-link
+          :to="{
+            name: 'domainDetail',
+            params: {
+              domain: content,
+            },
+            query: {
+              startDate: queryParamStartDate,
+              endDate: queryParamEndDate,
+            },
+          }"
+          >{{ content }}</router-link
+        >
+      </template>
+    </views-table>
   </div>
 </template>

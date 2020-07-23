@@ -1,7 +1,4 @@
 <script lang="ts">
-// eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
-/// <reference path="../node_modules/vuetify/types/lib.d.ts" />
-
 import Vue from 'vue';
 import { Route } from 'vue-router';
 import { mapActions, mapGetters } from 'vuex';
@@ -33,7 +30,7 @@ export default Vue.extend({
     if (requiresLogIn && this.userError) {
       throw this.userError;
     } else if (requiresLogIn && !this.isLoggedIn) {
-      logIn(route.name || undefined);
+      logIn(route);
     } else if (!this.isAllowed(routePermissions)) {
       throw new NotAllowedError();
     }
