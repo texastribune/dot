@@ -1,4 +1,7 @@
-FROM node:12-stretch
+FROM node:12-alpine
+
+# add bash for dev
+RUN apk add --no-cache bash
 
 RUN mkdir /app
 WORKDIR /app
@@ -15,4 +18,4 @@ COPY . /app/
 
 RUN npm run build
 
-ENTRYPOINT ["/app/shell/docker-entrypoint.sh"]
+ENTRYPOINT ["npm", "start"]
