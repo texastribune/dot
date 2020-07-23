@@ -4,13 +4,11 @@
 
 import Vue from 'vue';
 import { VDatePicker } from 'vuetify/lib';
-import addDays from 'date-fns/addDays';
-import formatDate from 'date-fns/format';
-import parseISO from 'date-fns/parseISO';
+import moment from 'moment-timezone';
 
 import getInitialDates from './get-initial-dates';
 
-const DISPLAY_DATE_FORMAT = 'MMM d, yyyy';
+const DISPLAY_DATE_FORMAT = 'MMM DD, YYYY';
 
 const Component = Vue.extend({
   name: 'MainRoute',
@@ -41,19 +39,23 @@ const Component = Vue.extend({
     },
 
     displayStartDate(): string {
-      return formatDate(parseISO(this.startDate), DISPLAY_DATE_FORMAT);
+      return moment(this.startDate).format(DISPLAY_DATE_FORMAT);
     },
 
     displayEndDate(): string {
-      return formatDate(parseISO(this.endDate), DISPLAY_DATE_FORMAT);
+      return moment(this.endDate).format(DISPLAY_DATE_FORMAT);
     },
 
     queryStartDate(): string {
-      return parseISO(this.startDate).toISOString();
+      return moment.tz(this.startDate, 'America/Chicago').utc().format();
     },
 
     queryEndDate(): string {
-      return addDays(parseISO(this.endDate), 1).toISOString();
+      return moment
+        .tz(this.endDate, 'America/Chicago')
+        .add(1, 'day')
+        .utc()
+        .format();
     },
   },
 
