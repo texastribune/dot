@@ -1,5 +1,5 @@
 FROM node:6.11.1
-MAINTAINER tech@texastribune.org
+LABEL maintainer="Texas Tribune <tech@texastribune.org>"
 
 RUN mkdir /app
 WORKDIR /app
