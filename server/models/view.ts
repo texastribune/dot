@@ -93,7 +93,7 @@ class View extends Model {
       View.findAll({
         attributes: [
           'canonical',
-          [Sequelize.literal('COUNT(canonical)::integer'), 'views'],
+          [Sequelize.literal('COUNT(*)::integer'), 'views'],
         ],
         group: 'canonical',
         order: [[Sequelize.col('views'), 'DESC']],
@@ -131,7 +131,7 @@ class View extends Model {
       View.findAll({
         attributes: [
           'domain',
-          [Sequelize.literal('COUNT(domain)::integer'), 'views'],
+          [Sequelize.literal('COUNT(*)::integer'), 'views'],
         ],
         group: 'domain',
         order: [[Sequelize.col('views'), 'DESC']],
