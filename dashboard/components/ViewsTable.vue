@@ -94,31 +94,28 @@ export default Vue.extend({
       indeterminate
     />
 
-    <v-text-field
-      v-model="search"
-      append-icon="mdi-magnify"
-      label="Search"
-      single-line
-      hide-details
-    />
+    <div v-if="!isLoading && items.length">
+      <v-text-field
+        v-model="search"
+        append-icon="mdi-magnify"
+        label="Search"
+        single-line
+        hide-details
+      />
 
-    <p>
-      Total views: <strong>{{ formatViews(totalViews) }}</strong>
-    </p>
+      <p>
+        Total views: <strong>{{ formatViews(totalViews) }}</strong>
+      </p>
 
-    <v-data-table
-      v-if="items.length"
-      :headers="headers"
-      :items="items"
-      :search="search"
-    >
-      <template #item.content="{ item: { content } }">
-        <slot name="content" :content="content"></slot>
-      </template>
+      <v-data-table :headers="headers" :items="items" :search="search">
+        <template #item.content="{ item: { content } }">
+          <slot name="content" :content="content"></slot>
+        </template>
 
-      <template #item.views="{ item: { views } }">
-        <span>{{ formatViews(views) }}</span>
-      </template>
-    </v-data-table>
+        <template #item.views="{ item: { views } }">
+          <span>{{ formatViews(views) }}</span>
+        </template>
+      </v-data-table>
+    </div>
   </div>
 </template>
