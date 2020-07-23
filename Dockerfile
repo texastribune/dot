@@ -1,5 +1,8 @@
 FROM node:12-alpine
 
+# add bash for dev
+RUN apk add --no-cache bash
+
 RUN mkdir /app
 WORKDIR /app
 
