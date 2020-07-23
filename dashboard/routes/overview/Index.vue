@@ -37,12 +37,22 @@ export default Vue.extend({
   components: { ViewsTable },
 
   props: {
-    queryStartDate: {
+    gqlStartDate: {
       type: String,
       required: true,
     },
 
-    queryEndDate: {
+    gqlEndDate: {
+      type: String,
+      required: true,
+    },
+
+    queryParamStartDate: {
+      type: String,
+      required: true,
+    },
+
+    queryParamEndDate: {
       type: String,
       required: true,
     },
@@ -113,8 +123,8 @@ export default Vue.extend({
       `,
       variables(): QueryVariables {
         return {
-          startDate: this.queryStartDate,
-          endDate: this.queryEndDate,
+          startDate: this.gqlStartDate,
+          endDate: this.gqlEndDate,
         };
       },
       skip(): boolean {
@@ -138,8 +148,8 @@ export default Vue.extend({
       `,
       variables(): QueryVariables {
         return {
-          startDate: this.queryStartDate,
-          endDate: this.queryEndDate,
+          startDate: this.gqlStartDate,
+          endDate: this.gqlEndDate,
         };
       },
       skip(): boolean {
@@ -165,6 +175,10 @@ export default Vue.extend({
             params: {
               canonical: content,
             },
+            query: {
+              startDate: queryParamStartDate,
+              endDate: queryParamEndDate,
+            },
           }"
           >{{ content }}</router-link
         >
@@ -183,6 +197,10 @@ export default Vue.extend({
             name: 'domainDetail',
             params: {
               domain: content,
+            },
+            query: {
+              startDate: queryParamStartDate,
+              endDate: queryParamEndDate,
             },
           }"
           >{{ content }}</router-link

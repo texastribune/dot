@@ -59,9 +59,14 @@ const Component = Vue.extend({
 
   watch: {
     finalDates(): void {
-      const { startDate, endDate } = this;
-      this.$router.push({ query: { startDate, endDate } });
+      this.updateQueryParams();
     },
+  },
+
+  mounted(): void {
+    if (this.pickerError) {
+      this.updateQueryParams();
+    }
   },
 
   methods: {
@@ -71,6 +76,11 @@ const Component = Vue.extend({
 
     onPickerChange(newDates: string[]): void {
       this.pickerDates = newDates.sort();
+    },
+
+    updateQueryParams(): void {
+      const { startDate, endDate } = this;
+      this.$router.replace({ query: { startDate, endDate } });
     },
   },
 });
@@ -86,8 +96,10 @@ export default Component;
       Update
     </button>
     <router-view
-      :query-start-date="queryStartDate"
-      :query-end-date="queryEndDate"
+      :gql-start-date="queryStartDate"
+      :gql-end-date="queryEndDate"
+      :query-param-start-date="startDate"
+      :query-param-end-date="endDate"
     />
   </div>
 </template>

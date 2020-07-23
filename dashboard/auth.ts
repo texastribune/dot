@@ -1,4 +1,5 @@
 import { WebAuth } from 'auth0-js';
+import { Route } from 'vue-router';
 
 import {
   AUTH0_DOMAIN,
@@ -16,13 +17,19 @@ const auth = new WebAuth({
   scope: 'openid email profile',
 });
 
-const logIn = (next = 'overview'): void => {
-  const { search } = window.location;
-  const queryParams = search ? search.substring(1) : '';
+const logIn = (route: Route): void => {
+  const { name, query, params } = route;
+  const next = encodeURIComponent(
+    JSON.stringify({
+      name: name || 'overview',
+      query,
+      params,
+    })
+  );
 
   auth.authorize({
     clientID: AUTH0_CLIENT_ID,
-    redirectUri: `${AUTH0_REDIRECT_URI}?next=${next}&${queryParams}`,
+    redirectUri: `${AUTH0_REDIRECT_URI}?next=${next}`,
   });
 };
 

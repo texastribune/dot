@@ -30,7 +30,7 @@ export default Vue.extend({
     if (requiresLogIn && this.userError) {
       throw this.userError;
     } else if (requiresLogIn && !this.isLoggedIn) {
-      logIn(route.name || undefined);
+      logIn(route);
     } else if (!this.isAllowed(routePermissions)) {
       throw new NotAllowedError();
     }
