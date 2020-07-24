@@ -5,6 +5,8 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { EnvironmentPlugin } = require('webpack');
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
+const MomentTimezoneDataPlugin = require('moment-timezone-data-webpack-plugin');
 
 const IS_DEV = process.env.NODE_ENV === 'development';
 const DASHBOARD_BUILD_PATH = path.join(process.cwd(), 'dist');
@@ -27,6 +29,12 @@ const config = {
 
   plugins: [
     new VueLoaderPlugin(),
+    new MomentLocalesPlugin(),
+    new MomentTimezoneDataPlugin({
+      startYear: 2017,
+      endYear: new Date().getFullYear(),
+      matchZones: 'America/Chicago',
+    }),
     new EnvironmentPlugin(['APP_URL', 'AUTH0_DOMAIN', 'AUTH0_CLIENT_ID']),
     new WebpackAssetsManifest({
       entrypoints: true,
