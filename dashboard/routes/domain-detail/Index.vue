@@ -1,10 +1,13 @@
 <script lang="ts">
 /* eslint-disable vue/valid-v-slot, @typescript-eslint/triple-slash-reference, spaced-comment */
 /// <reference path="../../../node_modules/vue-apollo/types/vue.d.ts" />
+/* eslint-disable vue/valid-v-slot, @typescript-eslint/triple-slash-reference, spaced-comment */
+/// <reference path="../../../node_modules/vue-meta/types/vue.d.ts" />
 
 import Vue from 'vue';
 import { mapGetters } from 'vuex';
 import { DataTableHeader } from 'vuetify';
+import { MetaInfo } from 'vue-meta';
 import gql from 'graphql-tag';
 
 import { USER_MODULE } from '../../store';
@@ -71,6 +74,10 @@ export default Vue.extend({
         'canonical'
       );
     },
+
+    routeDomain(): string {
+      return this.$route.params.domain;
+    },
   },
 
   apollo: {
@@ -100,7 +107,7 @@ export default Vue.extend({
         return {
           startDate: this.gqlStartDate,
           endDate: this.gqlEndDate,
-          domain: this.$route.params.domain,
+          domain: this.routeDomain,
         };
       },
       skip(): boolean {
@@ -108,20 +115,31 @@ export default Vue.extend({
       },
     },
   },
+
+  metaInfo(): MetaInfo {
+    return {
+      title: this.canonicalsList.length
+        ? `Domain detail: ${this.routeDomain}`
+        : 'Invalid domain',
+    };
+  },
 });
 </script>
 
 <template>
-  <main>
+  <section>
     <views-table
       :content-header="header"
       :is-loading="$apollo.queries.viewsListByCanonical.loading"
       :items="canonicalsList"
       :total-views="totalViews"
     >
+      <template #heading>
+        <h3>{{ routeDomain }}</h3>
+      </template>
       <template #content="{ content }">
         {{ content }}
       </template>
     </views-table>
-  </main>
+  </section>
 </template>

@@ -18,6 +18,10 @@ export default Vue.extend({
       return 'Oops! Something went wrong.';
     },
   },
+
+  metaInfo: {
+    title: 'Error',
+  },
 });
 </script>
 

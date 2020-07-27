@@ -29,6 +29,10 @@ export default Vue.extend({
   methods: {
     ...mapActions(USER_MODULE, [GET_TOKENS]),
   },
+
+  metaInfo: {
+    title: 'Logged In',
+  },
 });
 </script>
 
