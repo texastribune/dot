@@ -27,18 +27,20 @@ export default Vue.extend({
   },
 
   mounted() {
-    const route = this.$route as Route;
-    const {
-      requiresLogIn,
-      permissions: routePermissions,
-    } = route.meta as RouteMeta;
+    if (!this.appError) {
+      const route = this.$route as Route;
+      const {
+        requiresLogIn,
+        permissions: routePermissions,
+      } = route.meta as RouteMeta;
 
-    if (requiresLogIn && this.userError) {
-      throw this.userError;
-    } else if (requiresLogIn && !this.isLoggedIn) {
-      logIn(route);
-    } else if (!this.isAllowed(routePermissions)) {
-      throw new NotAllowedError();
+      if (requiresLogIn && this.userError) {
+        throw this.userError;
+      } else if (requiresLogIn && !this.isLoggedIn) {
+        logIn(route);
+      } else if (!this.isAllowed(routePermissions)) {
+        throw new NotAllowedError();
+      }
     }
   },
 
