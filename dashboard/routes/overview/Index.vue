@@ -1,6 +1,8 @@
 <script lang="ts">
 /* eslint-disable vue/valid-v-slot, @typescript-eslint/triple-slash-reference, spaced-comment */
 /// <reference path="../../../node_modules/vue-apollo/types/vue.d.ts" />
+/* eslint-disable vue/valid-v-slot, @typescript-eslint/triple-slash-reference, spaced-comment */
+/// <reference path="../../../node_modules/vue-meta/types/vue.d.ts" />
 
 import Vue from 'vue';
 import { mapGetters } from 'vuex';
@@ -157,55 +159,69 @@ export default Vue.extend({
       },
     },
   },
+
+  metaInfo: {
+    title: 'Overview',
+  },
 });
 </script>
 
 <template>
   <div>
-    <views-table
-      :content-header="canonicalHeader"
-      :is-loading="$apollo.queries.viewsListByCanonical.loading"
-      :items="canonicalList"
-      :total-views="totalViews"
-    >
-      <template #content="{ content }">
-        <router-link
-          :to="{
-            name: 'canonicalDetail',
-            params: {
-              canonical: content,
-            },
-            query: {
-              startDate: queryParamStartDate,
-              endDate: queryParamEndDate,
-            },
-          }"
-          >{{ content }}</router-link
-        >
-      </template>
-    </views-table>
+    <section>
+      <views-table
+        :content-header="canonicalHeader"
+        :is-loading="$apollo.queries.viewsListByCanonical.loading"
+        :items="canonicalList"
+        :total-views="totalViews"
+      >
+        <template #heading>
+          <h3>Summary by canonical URL</h3>
+        </template>
+        <template #content="{ content }">
+          <router-link
+            :to="{
+              name: 'canonicalDetail',
+              params: {
+                canonical: content,
+              },
+              query: {
+                startDate: queryParamStartDate,
+                endDate: queryParamEndDate,
+              },
+            }"
+            >{{ content }}</router-link
+          >
+        </template>
+      </views-table>
+    </section>
 
-    <views-table
-      :content-header="domainHeader"
-      :is-loading="$apollo.queries.viewsListByDomain.loading"
-      :items="domainsList"
-      :total-views="totalViews"
-    >
-      <template #content="{ content }">
-        <router-link
-          :to="{
-            name: 'domainDetail',
-            params: {
-              domain: content,
-            },
-            query: {
-              startDate: queryParamStartDate,
-              endDate: queryParamEndDate,
-            },
-          }"
-          >{{ content }}</router-link
-        >
-      </template>
-    </views-table>
+    <section>
+      <views-table
+        :content-header="domainHeader"
+        :is-loading="$apollo.queries.viewsListByDomain.loading"
+        :items="domainsList"
+        :total-views="totalViews"
+      >
+        <template #heading>
+          <h3>Summary by domain</h3>
+        </template>
+        <template #content="{ content }">
+          <router-link
+            :to="{
+              name: 'domainDetail',
+              params: {
+                domain: content,
+              },
+              query: {
+                startDate: queryParamStartDate,
+                endDate: queryParamEndDate,
+              },
+            }"
+            >{{ content }}</router-link
+          >
+        </template>
+      </views-table>
+    </section>
   </div>
 </template>

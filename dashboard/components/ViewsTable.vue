@@ -3,7 +3,15 @@
 /// <reference path="../../node_modules/vuetify/types/lib.d.ts" />
 
 import Vue, { PropType } from 'vue';
-import { VProgressCircular, VDataTable, VTextField } from 'vuetify/lib';
+import {
+  VProgressCircular,
+  VDataTable,
+  VTextField,
+  VCard,
+  VCardTitle,
+  VCardText,
+  VSpacer,
+} from 'vuetify/lib';
 import { DataTableHeader } from 'vuetify';
 
 interface ComponentData {
@@ -34,6 +42,10 @@ export default Vue.extend({
     VProgressCircular,
     VDataTable,
     VTextField,
+    VCard,
+    VCardTitle,
+    VCardText,
+    VSpacer,
   },
 
   props: {
@@ -94,18 +106,22 @@ export default Vue.extend({
       indeterminate
     />
 
-    <div v-if="!isLoading && items.length">
-      <v-text-field
-        v-model="search"
-        append-icon="mdi-magnify"
-        label="Search"
-        single-line
-        hide-details
-      />
-
-      <p>
-        Total views: <strong>{{ formatViews(totalViews) }}</strong>
-      </p>
+    <v-card v-else>
+      <v-card-title v-if="items.length">
+        <slot name="heading"></slot>
+        <v-spacer />
+        <v-text-field
+          v-model="search"
+          label="Search the below table"
+          single-line
+          hide-details
+        />
+        <v-card-text>
+          <p>
+            Total views: <strong>{{ formatViews(totalViews) }}</strong>
+          </p>
+        </v-card-text>
+      </v-card-title>
 
       <v-data-table :headers="headers" :items="items" :search="search">
         <template #item.content="{ item: { content } }">
@@ -116,6 +132,6 @@ export default Vue.extend({
           <span>{{ formatViews(views) }}</span>
         </template>
       </v-data-table>
-    </div>
+    </v-card>
   </div>
 </template>

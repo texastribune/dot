@@ -1,7 +1,13 @@
 <script lang="ts">
+/* eslint-disable @typescript-eslint/triple-slash-reference, spaced-comment */
+/// <reference path="../node_modules/vuetify/types/lib.d.ts" />
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
+/// <reference path="../node_modules/vue-meta/types/vue.d.ts" />
+
 import Vue from 'vue';
 import { Route } from 'vue-router';
 import { mapActions, mapGetters } from 'vuex';
+import { VApp } from 'vuetify/lib';
 
 import { NotAllowedError } from './errors';
 import { RouteMeta } from './types';
@@ -13,7 +19,7 @@ import ErrorView from './ErrorView.vue';
 export default Vue.extend({
   name: 'App',
 
-  components: { ErrorView },
+  components: { ErrorView, VApp },
 
   computed: {
     ...mapGetters(CONTEXT_MODULE, ['appError']),
@@ -43,10 +49,18 @@ export default Vue.extend({
   errorCaptured(error) {
     this[SET_APP_ERROR](error);
   },
+
+  metaInfo: {
+    titleTemplate: '%s | Dot',
+  },
 });
 </script>
 
 <template>
-  <error-view v-if="appError" />
-  <router-view v-else />
+  <div style="max-width: 1200px; margin: 0 auto;">
+    <v-app>
+      <error-view v-if="appError" />
+      <router-view v-else />
+    </v-app>
+  </div>
 </template>
