@@ -48,16 +48,6 @@ export default Vue.extend({
       type: String,
       required: true,
     },
-
-    queryParamStartDate: {
-      type: String,
-      required: true,
-    },
-
-    queryParamEndDate: {
-      type: String,
-      required: true,
-    },
   },
 
   data(): ComponentData {
@@ -168,15 +158,16 @@ export default Vue.extend({
 
 <template>
   <div>
-    <section>
+    <div class="mb-16">
       <views-table
+        search-form-label="canonical URLs"
         :content-header="canonicalHeader"
         :is-loading="$apollo.queries.viewsListByCanonical.loading"
         :items="canonicalList"
         :total-views="totalViews"
       >
-        <template #heading>
-          <h3>Summary by canonical URL</h3>
+        <template #heading="{ classes }">
+          <h2 :class="classes">Summary by canonical URL</h2>
         </template>
         <template #content="{ content }">
           <router-link
@@ -185,43 +176,34 @@ export default Vue.extend({
               params: {
                 canonical: content,
               },
-              query: {
-                startDate: queryParamStartDate,
-                endDate: queryParamEndDate,
-              },
             }"
             >{{ content }}</router-link
           >
         </template>
       </views-table>
-    </section>
+    </div>
 
-    <section>
-      <views-table
-        :content-header="domainHeader"
-        :is-loading="$apollo.queries.viewsListByDomain.loading"
-        :items="domainsList"
-        :total-views="totalViews"
-      >
-        <template #heading>
-          <h3>Summary by domain</h3>
-        </template>
-        <template #content="{ content }">
-          <router-link
-            :to="{
-              name: 'domainDetail',
-              params: {
-                domain: content,
-              },
-              query: {
-                startDate: queryParamStartDate,
-                endDate: queryParamEndDate,
-              },
-            }"
-            >{{ content }}</router-link
-          >
-        </template>
-      </views-table>
-    </section>
+    <views-table
+      search-form-label="republisher domains"
+      :content-header="domainHeader"
+      :is-loading="$apollo.queries.viewsListByDomain.loading"
+      :items="domainsList"
+      :total-views="totalViews"
+    >
+      <template #heading="{ classes }">
+        <h2 :class="classes">Summary by domain</h2>
+      </template>
+      <template #content="{ content }">
+        <router-link
+          :to="{
+            name: 'domainDetail',
+            params: {
+              domain: content,
+            },
+          }"
+          >{{ content }}</router-link
+        >
+      </template>
+    </views-table>
   </div>
 </template>

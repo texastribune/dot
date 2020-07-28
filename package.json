@@ -19,6 +19,7 @@
     "url": "https://github.com/texastribune/dot/issues"
   },
   "dependencies": {
+    "@mdi/js": "^5.4.45",
     "@sentry/node": "^5.15.4",
     "apollo-boost": "^0.4.9",
     "auth0-js": "^9.13.3",

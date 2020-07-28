@@ -3,8 +3,16 @@
 /// <reference path="../../../node_modules/vuetify/types/lib.d.ts" />
 
 import Vue from 'vue';
-import { VDatePicker, VAppBar, VDialog, VTextField, VBtn } from 'vuetify/lib';
+import {
+  VDatePicker,
+  VDialog,
+  VTextField,
+  VBtn,
+  VContainer,
+  VMain,
+} from 'vuetify/lib';
 import moment from 'moment-timezone';
+import { mdiCalendar } from '@mdi/js';
 
 import getInitialDates from './get-initial-dates';
 
@@ -15,20 +23,23 @@ const Component = Vue.extend({
 
   components: {
     VDatePicker,
-    VAppBar,
     VDialog,
     VTextField,
     VBtn,
+    VContainer,
+    VMain,
   },
 
   data() {
     const { startDate, endDate, error } = getInitialDates(this.$route);
 
     return {
+      defaultDates: [startDate, endDate],
       finalDates: [startDate, endDate],
       pickerDates: [startDate, endDate],
       pickerError: error,
       modalIsVisible: false,
+      calendarIcon: mdiCalendar,
     };
   },
 
@@ -78,20 +89,33 @@ const Component = Vue.extend({
     },
   },
 
-  mounted(): void {
-    if (this.pickerError) {
-      this.updateQueryParams();
+  beforeRouteUpdate(to, from, next) {
+    const { startDate, endDate } = to.query;
+
+    if (
+      !startDate ||
+      !endDate ||
+      Array.isArray(startDate) ||
+      Array.isArray(endDate)
+    ) {
+      this.finalDates = [...this.defaultDates];
+    } else {
+      this.finalDates = [startDate, endDate];
     }
+
+    this.pickerDates = [...this.finalDates];
+    next();
   },
 
   methods: {
     onUpdateClick(): void {
-      this.finalDates = this.pickerDates;
-      this.updateQueryParams();
+      const [startDate, endDate] = this.pickerDates;
+      this.$router.push({ query: { startDate, endDate } });
       this.closeModal();
     },
 
     onCancelClick(): void {
+      this.pickerDates = [...this.defaultDates];
       this.closeModal();
     },
 
@@ -105,17 +129,8 @@ const Component = Vue.extend({
       });
     },
 
-    showModal(): void {
-      this.modalIsVisible = true;
-    },
-
     closeModal(): void {
       this.modalIsVisible = false;
-    },
-
-    updateQueryParams(): void {
-      const { startDate, endDate } = this;
-      this.$router.replace({ query: { startDate, endDate } });
     },
   },
 });
@@ -124,19 +139,11 @@ export default Component;
 </script>
 
 <template>
-  <div>
-    <v-app-bar app color="indigo" dark>
-      <h1>
-        <router-link :to="{ name: 'overview' }"
-          >Texas Tribune pixel tracker</router-link
-        >
-      </h1>
-    </v-app-bar>
-
-    <section>
+  <v-container>
+    <section class="mt-16">
       <h2>Date range</h2>
 
-      <v-dialog v-model="modalIsVisible" width="290px">
+      <v-dialog v-model="modalIsVisible" persistent width="290px">
         <template #activator="{ on, attrs }">
           <v-text-field
             ref="input"
@@ -145,7 +152,11 @@ export default Component;
             v-bind="attrs"
             v-on="on"
             @keyup.enter="on.click"
-          />
+          >
+            <template #prepend>
+              <v-icon>{{ calendarIcon }}</v-icon>
+            </template>
+          </v-text-field>
         </template>
 
         <v-date-picker v-model="pickerDates" range @change="onPickerChange">
@@ -161,13 +172,11 @@ export default Component;
       </v-dialog>
     </section>
 
-    <main>
+    <v-main>
       <router-view
         :gql-start-date="queryStartDate"
         :gql-end-date="queryEndDate"
-        :query-param-start-date="startDate"
-        :query-param-end-date="endDate"
       />
-    </main>
-  </div>
+    </v-main>
+  </v-container>
 </template>

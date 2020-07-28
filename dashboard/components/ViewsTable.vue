@@ -3,19 +3,13 @@
 /// <reference path="../../node_modules/vuetify/types/lib.d.ts" />
 
 import Vue, { PropType } from 'vue';
-import {
-  VProgressCircular,
-  VDataTable,
-  VTextField,
-  VCard,
-  VCardTitle,
-  VCardText,
-  VSpacer,
-} from 'vuetify/lib';
+import { VProgressCircular, VDataTable, VTextField } from 'vuetify/lib';
 import { DataTableHeader } from 'vuetify';
+import { mdiMagnify } from '@mdi/js';
 
 interface ComponentData {
   search: string;
+  searchIcon: string;
 }
 
 export interface ViewsTableItem {
@@ -42,10 +36,6 @@ export default Vue.extend({
     VProgressCircular,
     VDataTable,
     VTextField,
-    VCard,
-    VCardTitle,
-    VCardText,
-    VSpacer,
   },
 
   props: {
@@ -64,6 +54,11 @@ export default Vue.extend({
       required: true,
     },
 
+    searchFormLabel: {
+      type: String,
+      required: true,
+    },
+
     totalViews: {
       type: Number,
       required: true,
@@ -71,7 +66,10 @@ export default Vue.extend({
   },
 
   data(): ComponentData {
-    return { search: '' };
+    return {
+      search: '',
+      searchIcon: mdiMagnify,
+    };
   },
 
   computed: {
@@ -97,31 +95,32 @@ export default Vue.extend({
 </script>
 
 <template>
-  <div>
-    <v-progress-circular
-      v-if="isLoading"
-      :width="3"
-      :size="50"
-      color="#539bae"
-      indeterminate
-    />
+  <section>
+    <div class="mb-2">
+      <slot name="heading" :classes="['headline, font-weight-bold']"></slot>
+    </div>
 
-    <v-card v-else>
-      <v-card-title v-if="items.length">
-        <slot name="heading"></slot>
-        <v-spacer />
-        <v-text-field
-          v-model="search"
-          label="Search the below table"
-          single-line
-          hide-details
-        />
-        <v-card-text>
-          <p>
-            Total views: <strong>{{ formatViews(totalViews) }}</strong>
-          </p>
-        </v-card-text>
-      </v-card-title>
+    <div class="text-center">
+      <v-progress-circular
+        v-if="isLoading"
+        :width="3"
+        :size="50"
+        indeterminate
+      />
+    </div>
+
+    <template v-if="!isLoading">
+      <p class="text-subtitle-1">
+        Page views: <strong>{{ formatViews(totalViews) }}</strong>
+      </p>
+
+      <form role="search" :aria-label="searchFormLabel">
+        <v-text-field v-model="search" label="Search" single-line hide-details>
+          <template #append>
+            <v-icon>{{ searchIcon }}</v-icon>
+          </template></v-text-field
+        >
+      </form>
 
       <v-data-table :headers="headers" :items="items" :search="search">
         <template #item.content="{ item: { content } }">
@@ -132,6 +131,6 @@ export default Vue.extend({
           <span>{{ formatViews(views) }}</span>
         </template>
       </v-data-table>
-    </v-card>
-  </div>
+    </template>
+  </section>
 </template>

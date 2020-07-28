@@ -118,28 +118,25 @@ export default Vue.extend({
 
   metaInfo(): MetaInfo {
     return {
-      title: this.domainsList.length
-        ? `Canonical detail: ${this.routeCanonical}`
-        : 'Invalid canonical',
+      title: `Canonical detail: ${this.routeCanonical}`,
     };
   },
 });
 </script>
 
 <template>
-  <section>
-    <views-table
-      :content-header="header"
-      :is-loading="$apollo.queries.viewsListByDomain.loading"
-      :items="domainsList"
-      :total-views="totalViews"
-    >
-      <template #heading>
-        <h3>{{ routeCanonical }}</h3>
-      </template>
-      <template #content="{ content }">
-        {{ content }}
-      </template>
-    </views-table>
-  </section>
+  <views-table
+    search-form-label="domains that republished route canonical URL"
+    :content-header="header"
+    :is-loading="$apollo.queries.viewsListByDomain.loading"
+    :items="domainsList"
+    :total-views="totalViews"
+  >
+    <template #heading="{ classes }">
+      <h1 :class="classes">{{ routeCanonical }}</h1>
+    </template>
+    <template #content="{ content }">
+      {{ content }}
+    </template>
+  </views-table>
 </template>

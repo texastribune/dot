@@ -7,7 +7,7 @@
 import Vue from 'vue';
 import { Route } from 'vue-router';
 import { mapActions, mapGetters } from 'vuex';
-import { VApp } from 'vuetify/lib';
+import { VApp, VAppBar } from 'vuetify/lib';
 
 import { NotAllowedError } from './errors';
 import { RouteMeta } from './types';
@@ -19,7 +19,7 @@ import ErrorView from './ErrorView.vue';
 export default Vue.extend({
   name: 'App',
 
-  components: { ErrorView, VApp },
+  components: { ErrorView, VApp, VAppBar },
 
   computed: {
     ...mapGetters(CONTEXT_MODULE, ['appError']),
@@ -59,10 +59,17 @@ export default Vue.extend({
 </script>
 
 <template>
-  <div style="max-width: 1200px; margin: 0 auto;">
-    <v-app>
-      <error-view v-if="appError" />
-      <router-view v-else />
-    </v-app>
-  </div>
+  <v-app style="background-color: #f9f9f9;">
+    <v-app-bar app absolute dark dense class="primary">
+      <router-link
+        :to="{ name: 'overview' }"
+        class="headline white--text"
+        style="text-decoration: none;"
+        >Texas Tribune pixel tracker</router-link
+      >
+    </v-app-bar>
+
+    <error-view v-if="appError" />
+    <router-view v-else />
+  </v-app>
 </template>

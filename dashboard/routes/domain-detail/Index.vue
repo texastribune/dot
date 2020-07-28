@@ -118,28 +118,25 @@ export default Vue.extend({
 
   metaInfo(): MetaInfo {
     return {
-      title: this.canonicalsList.length
-        ? `Domain detail: ${this.routeDomain}`
-        : 'Invalid domain',
+      title: `Domain detail: ${this.routeDomain}`,
     };
   },
 });
 </script>
 
 <template>
-  <section>
-    <views-table
-      :content-header="header"
-      :is-loading="$apollo.queries.viewsListByCanonical.loading"
-      :items="canonicalsList"
-      :total-views="totalViews"
-    >
-      <template #heading>
-        <h3>{{ routeDomain }}</h3>
-      </template>
-      <template #content="{ content }">
-        {{ content }}
-      </template>
-    </views-table>
-  </section>
+  <views-table
+    :search-form-label="`canonical URLs republished by ${routeDomain}`"
+    :content-header="header"
+    :is-loading="$apollo.queries.viewsListByCanonical.loading"
+    :items="canonicalsList"
+    :total-views="totalViews"
+  >
+    <template #heading="{ classes }">
+      <h1 :class="classes">{{ routeDomain }}</h1>
+    </template>
+    <template #content="{ content }">
+      {{ content }}
+    </template>
+  </views-table>
 </template>
