@@ -23,7 +23,7 @@ router.onReady(() => {
 
   router.beforeEach((to, from, next) => {
     const isLoggedIn = store.getters[`${USER_MODULE}/isLoggedIn`];
-    const isAllowed = store.getters[`${USER_MODULE}/isAllowed`];
+    const userHasPerms = store.getters[`${USER_MODULE}/userHasPerms`];
     const userError = store.getters[`${USER_MODULE}/userError`];
     const {
       requiresLogIn,
@@ -38,7 +38,7 @@ router.onReady(() => {
       return logIn(to);
     }
 
-    if (!isAllowed(routePermissions)) {
+    if (!userHasPerms(routePermissions)) {
       return next(new NotAllowedError());
     }
 

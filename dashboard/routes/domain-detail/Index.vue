@@ -62,7 +62,7 @@ export default Vue.extend({
   },
 
   computed: {
-    ...mapGetters(USER_MODULE, ['userIsReady']),
+    ...mapGetters(USER_MODULE, ['isLoggedIn']),
 
     totalViews(): number {
       return this.viewsListByCanonical.totalViews;
@@ -111,14 +111,16 @@ export default Vue.extend({
         };
       },
       skip(): boolean {
-        return !this.userIsReady;
+        return !this.isLoggedIn;
       },
     },
   },
 
   metaInfo(): MetaInfo {
     return {
-      title: `Domain detail: ${this.routeDomain}`,
+      title: `Domain detail ${
+        this.canonicalsList.length ? `: ${this.routeDomain}` : ''
+      }`,
     };
   },
 });
