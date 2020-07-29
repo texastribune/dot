@@ -176,7 +176,10 @@ export default Vue.extend({
               params: {
                 canonical: content,
               },
-              query: $route.query,
+              query: {
+                startDate: $route.query.startDate || undefined,
+                endDate: $route.query.startDate || undefined,
+              },
             }"
             >{{ content }}</router-link
           >
@@ -201,7 +204,10 @@ export default Vue.extend({
             params: {
               domain: content,
             },
-            query: $route.query,
+            query: {
+              startDate: $route.query.startDate || undefined,
+              endDate: $route.query.startDate || undefined,
+            },
           }"
           >{{ content }}</router-link
         >

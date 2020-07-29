@@ -10,6 +10,7 @@ import {
   VBtn,
   VContainer,
   VMain,
+  VAlert,
 } from 'vuetify/lib';
 import moment from 'moment-timezone';
 import { mdiCalendar } from '@mdi/js';
@@ -28,6 +29,7 @@ const Component = Vue.extend({
     VBtn,
     VContainer,
     VMain,
+    VAlert,
   },
 
   data() {
@@ -153,6 +155,17 @@ export default Component;
   <v-container>
     <section class="mt-16">
       <h2>Date range</h2>
+
+      <v-alert
+        v-if="pickerError"
+        type="error"
+        transition="scale-transition"
+        class="mt-4"
+        dismissible
+      >
+        {{ pickerError.message }}. Falling back to default date range of two
+        weeks from today.
+      </v-alert>
 
       <v-dialog v-model="modalIsVisible" persistent width="290px">
         <template #activator="{ on, attrs }">

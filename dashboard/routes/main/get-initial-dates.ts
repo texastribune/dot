@@ -36,7 +36,8 @@ export default function getInitialDates(route: Route): DatePickerValues {
     return {
       ...fallback,
       error: new InvalidDatesError({
-        message: 'You must provide both startDate and endDate',
+        message:
+          'If you provide a start date, you must also provide an end date',
       }),
     };
   }
@@ -45,7 +46,7 @@ export default function getInitialDates(route: Route): DatePickerValues {
     return {
       ...fallback,
       error: new InvalidDatesError({
-        message: 'The provided startDate and/or endDate is not valid',
+        message: 'The provided dates have invalid formatting',
       }),
     };
   }
@@ -54,7 +55,8 @@ export default function getInitialDates(route: Route): DatePickerValues {
     return {
       ...fallback,
       error: new InvalidDatesError({
-        message: "The startDate can't be greater than or equal to the endDate",
+        message:
+          "The start date can't be greater than or equal to the end date",
       }),
     };
   }
