@@ -7,19 +7,20 @@
 import Vue from 'vue';
 import { Route } from 'vue-router';
 import { mapActions, mapGetters } from 'vuex';
-import { VApp, VAppBar, VOverlay, VProgressCircular } from 'vuetify/lib';
+import { VApp, VAppBar, VOverlay } from 'vuetify/lib';
 
 import { NotAllowedError } from './errors';
 import { RouteMeta } from './types';
 import { logIn } from './auth';
 import { CONTEXT_MODULE, USER_MODULE } from './store';
 import { SET_APP_ERROR } from './store/actions';
+import LoadingWheel from './components/LoadingWheel.vue';
 import ErrorView from './ErrorView.vue';
 
 export default Vue.extend({
   name: 'App',
 
-  components: { ErrorView, VApp, VAppBar, VOverlay, VProgressCircular },
+  components: { ErrorView, VApp, VAppBar, VOverlay, LoadingWheel },
 
   computed: {
     ...mapGetters(CONTEXT_MODULE, ['appError', 'appIsLoading']),
@@ -88,12 +89,7 @@ export default Vue.extend({
       aria-hidden="true"
       light
     >
-      <v-progress-circular
-        color="primary"
-        :width="3"
-        :size="50"
-        indeterminate
-      />
+      <loading-wheel />
     </v-overlay>
 
     <v-app-bar app absolute dark dense class="primary">

@@ -3,9 +3,11 @@
 /// <reference path="../../node_modules/vuetify/types/lib.d.ts" />
 
 import Vue, { PropType } from 'vue';
-import { VProgressCircular, VDataTable, VTextField } from 'vuetify/lib';
+import { VDataTable, VTextField } from 'vuetify/lib';
 import { DataTableHeader } from 'vuetify';
 import { mdiMagnify } from '@mdi/js';
+
+import LoadingWheel from './LoadingWheel.vue';
 
 interface ComponentData {
   search: string;
@@ -33,9 +35,9 @@ export default Vue.extend({
   name: 'ViewsTable',
 
   components: {
-    VProgressCircular,
     VDataTable,
     VTextField,
+    LoadingWheel,
   },
 
   props: {
@@ -101,12 +103,7 @@ export default Vue.extend({
     </div>
 
     <div class="text-center">
-      <v-progress-circular
-        v-if="isLoading"
-        :width="3"
-        :size="50"
-        indeterminate
-      />
+      <loading-wheel v-if="isLoading" />
     </div>
 
     <template v-if="!isLoading">
