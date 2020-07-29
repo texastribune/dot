@@ -7,35 +7,43 @@ import { InvalidDatesError } from '../../errors';
 interface DatePickerValues {
   startDate: string;
   endDate: string;
+  defaultStartDate: string;
+  defaultEndDate: string;
   error?: InvalidDatesError<undefined>;
 }
 
-// return start and end dates for the date picker in ISO 8601 YYYY-MM-DD format
+const todayObj = moment().startOf('day');
+const todayDateString = moment(todayObj).format('YYYY-MM-DD');
+const twoWeeksAheadObj = moment(todayObj).add(2, 'weeks');
+const twoWeeksAheadDateString = moment(twoWeeksAheadObj).format('YYYY-MM-DD');
+const fallback = {
+  defaultStartDate: todayDateString,
+  defaultEndDate: twoWeeksAheadDateString,
+  startDate: todayDateString,
+  endDate: twoWeeksAheadDateString,
+};
+
 export default function getInitialDates(route: Route): DatePickerValues {
-  const { startDate: startDateQuery, endDate: endDateQuery } = route.query;
+  const { startDate, endDate } = route.query;
+  const startIso = `${startDate}T00:00:00`;
+  const endIso = `${endDate}T00:00:00`;
 
-  const startIso = `${startDateQuery}T00:00:00`;
-  const endIso = `${endDateQuery}T00:00:00`;
+  if (!startDate && !endDate) {
+    return fallback;
+  }
 
-  const todayObj = moment().startOf('day');
-  const todayDateString = moment(todayObj).format('YYYY-MM-DD');
-
-  const twoWeeksAheadObj = moment(todayObj).add(2, 'weeks');
-  const twoWeeksAheadDateString = moment(twoWeeksAheadObj).format('YYYY-MM-DD');
-
-  const errorFallback = {
-    startDate: todayDateString,
-    endDate: twoWeeksAheadDateString,
-  };
-
-  if (
-    !moment(startIso).isValid() ||
-    !moment(endIso).isValid() ||
-    Array.isArray(startDateQuery) ||
-    Array.isArray(endDateQuery)
-  ) {
+  if ((startDate && !endDate) || (!startDate && endDate)) {
     return {
-      ...errorFallback,
+      ...fallback,
+      error: new InvalidDatesError({
+        message: 'You must provide both startDate and endDate',
+      }),
+    };
+  }
+
+  if (!moment(startIso).isValid() || !moment(endIso).isValid()) {
+    return {
+      ...fallback,
       error: new InvalidDatesError({
         message: 'The provided startDate and/or endDate is not valid',
       }),
@@ -44,24 +52,16 @@ export default function getInitialDates(route: Route): DatePickerValues {
 
   if (startIso >= endIso) {
     return {
-      ...errorFallback,
+      ...fallback,
       error: new InvalidDatesError({
         message: "The startDate can't be greater than or equal to the endDate",
       }),
     };
   }
 
-  if ((startDateQuery && !endDateQuery) || (!startDateQuery && endDateQuery)) {
-    return {
-      ...errorFallback,
-      error: new InvalidDatesError({
-        message: 'You must provie both startDate and endDate',
-      }),
-    };
-  }
-
   return {
-    startDate: startDateQuery,
-    endDate: endDateQuery,
+    ...fallback,
+    startDate: startDate as string,
+    endDate: endDate as string,
   };
 }

@@ -31,10 +31,16 @@ const Component = Vue.extend({
   },
 
   data() {
-    const { startDate, endDate, error } = getInitialDates(this.$route);
+    const {
+      startDate,
+      endDate,
+      defaultStartDate,
+      defaultEndDate,
+      error,
+    } = getInitialDates(this.$route);
 
     return {
-      defaultDates: [startDate, endDate],
+      defaultDates: [defaultStartDate, defaultEndDate],
       finalDates: [startDate, endDate],
       pickerDates: [startDate, endDate],
       pickerError: error,
@@ -89,21 +95,22 @@ const Component = Vue.extend({
     },
   },
 
+  mounted(): void {
+    if (this.pickerError) {
+      this.$router.replace({ query: {} });
+    }
+  },
+
   beforeRouteUpdate(to, from, next) {
     const { startDate, endDate } = to.query;
 
-    if (
-      !startDate ||
-      !endDate ||
-      Array.isArray(startDate) ||
-      Array.isArray(endDate)
-    ) {
+    if (!startDate && !endDate) {
       this.finalDates = [...this.defaultDates];
     } else {
-      this.finalDates = [startDate, endDate];
+      this.finalDates = [startDate as string, endDate as string];
     }
 
-    this.pickerDates = [...this.finalDates];
+    this.resetPicker();
     next();
   },
 
@@ -115,7 +122,7 @@ const Component = Vue.extend({
     },
 
     onCancelClick(): void {
-      this.pickerDates = [...this.defaultDates];
+      this.resetPicker();
       this.closeModal();
     },
 
@@ -131,6 +138,10 @@ const Component = Vue.extend({
 
     closeModal(): void {
       this.modalIsVisible = false;
+    },
+
+    resetPicker(): void {
+      this.pickerDates = [...this.finalDates];
     },
   },
 });

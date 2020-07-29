@@ -176,6 +176,7 @@ export default Vue.extend({
               params: {
                 canonical: content,
               },
+              query: $route.query,
             }"
             >{{ content }}</router-link
           >
@@ -200,6 +201,7 @@ export default Vue.extend({
             params: {
               domain: content,
             },
+            query: $route.query,
           }"
           >{{ content }}</router-link
         >
