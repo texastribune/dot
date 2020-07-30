@@ -1,16 +1,32 @@
 doctype html
 html
   head
-    title Dot
+    title Loading ... | Dot
+
     meta(
       name='viewport',
       content='width=device-width, initial-scale=1.0'
     )
+
     unless isDev
       each stylesheet in stylesheets
         link(rel='stylesheet', type='text/css', href=stylesheet)
 
-  body
+    style(type='text/css').
+      .fade-enter-active, .fade-leave-active {
+        transition: opacity .75s;
+      }
+      .fade-enter, .fade-leave-to {
+        opacity: 0;
+      }
+      .has-bg {
+        background-color: #f9f9f9;
+      }
+      .has-blur {
+        backdrop-filter: blur(5px);
+      }
+
+  body.has-bg
     #app
 
   if isDev
