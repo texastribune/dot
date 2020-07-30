@@ -1,6 +1,8 @@
 <script lang="ts">
 /* eslint-disable vue/valid-v-slot, @typescript-eslint/triple-slash-reference, spaced-comment */
 /// <reference path="../../../node_modules/vue-apollo/types/vue.d.ts" />
+/* eslint-disable vue/valid-v-slot, @typescript-eslint/triple-slash-reference, spaced-comment */
+/// <reference path="../../../node_modules/vue-meta/types/vue.d.ts" />
 
 import Vue from 'vue';
 import { mapGetters } from 'vuex';
@@ -46,16 +48,6 @@ export default Vue.extend({
       type: String,
       required: true,
     },
-
-    queryParamStartDate: {
-      type: String,
-      required: true,
-    },
-
-    queryParamEndDate: {
-      type: String,
-      required: true,
-    },
   },
 
   data(): ComponentData {
@@ -85,7 +77,7 @@ export default Vue.extend({
   },
 
   computed: {
-    ...mapGetters(USER_MODULE, ['userIsReady']),
+    ...mapGetters(USER_MODULE, ['isLoggedIn']),
 
     totalViews(): number {
       return this.viewsListByCanonical.totalViews;
@@ -128,7 +120,7 @@ export default Vue.extend({
         };
       },
       skip(): boolean {
-        return !this.userIsReady;
+        return !this.isLoggedIn;
       },
     },
 
@@ -153,44 +145,58 @@ export default Vue.extend({
         };
       },
       skip(): boolean {
-        return !this.userIsReady;
+        return !this.isLoggedIn;
       },
     },
+  },
+
+  metaInfo: {
+    title: 'Overview',
   },
 });
 </script>
 
 <template>
   <div>
-    <views-table
-      :content-header="canonicalHeader"
-      :is-loading="$apollo.queries.viewsListByCanonical.loading"
-      :items="canonicalList"
-      :total-views="totalViews"
-    >
-      <template #content="{ content }">
-        <router-link
-          :to="{
-            name: 'canonicalDetail',
-            params: {
-              canonical: content,
-            },
-            query: {
-              startDate: queryParamStartDate,
-              endDate: queryParamEndDate,
-            },
-          }"
-          >{{ content }}</router-link
-        >
-      </template>
-    </views-table>
+    <div class="mb-16">
+      <views-table
+        search-form-label="canonical URLs"
+        :content-header="canonicalHeader"
+        :is-loading="$apollo.queries.viewsListByCanonical.loading"
+        :items="canonicalList"
+        :total-views="totalViews"
+      >
+        <template #heading="{ classes }">
+          <h2 :class="classes">Summary by canonical URL</h2>
+        </template>
+        <template #content="{ content }">
+          <router-link
+            :to="{
+              name: 'canonicalDetail',
+              params: {
+                canonical: content,
+              },
+              query: {
+                startDate: $route.query.startDate || undefined,
+                endDate: $route.query.startDate || undefined,
+              },
+            }"
+            >{{ content }}</router-link
+          >
+        </template>
+      </views-table>
+    </div>
 
     <views-table
+      search-form-label="republisher domains"
       :content-header="domainHeader"
       :is-loading="$apollo.queries.viewsListByDomain.loading"
       :items="domainsList"
       :total-views="totalViews"
     >
+      <template #heading="{ classes }">
+        <h2 :class="classes">Summary by domain</h2>
+      </template>
       <template #content="{ content }">
         <router-link
           :to="{
@@ -199,8 +205,8 @@ export default Vue.extend({
               domain: content,
             },
             query: {
-              startDate: queryParamStartDate,
-              endDate: queryParamEndDate,
+              startDate: $route.query.startDate || undefined,
+              endDate: $route.query.startDate || undefined,
             },
           }"
           >{{ content }}</router-link

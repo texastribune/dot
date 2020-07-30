@@ -2,9 +2,10 @@
 /// <reference path="../node_modules/vuetify/types/lib.d.ts" />
 
 import Vue from 'vue';
-import Vuetify from 'vuetify/lib';
+import Vuetify, { VIcon } from 'vuetify/lib';
 import ApolloClient from 'apollo-boost';
 import VueApollo from 'vue-apollo';
+import VueMeta from 'vue-meta';
 
 import { APP_URL } from '../shared-config';
 import { NotAllowedError } from './errors';
@@ -22,7 +23,7 @@ router.onReady(() => {
 
   router.beforeEach((to, from, next) => {
     const isLoggedIn = store.getters[`${USER_MODULE}/isLoggedIn`];
-    const isAllowed = store.getters[`${USER_MODULE}/isAllowed`];
+    const userHasPerms = store.getters[`${USER_MODULE}/userHasPerms`];
     const userError = store.getters[`${USER_MODULE}/userError`];
     const {
       requiresLogIn,
@@ -37,7 +38,7 @@ router.onReady(() => {
       return logIn(to);
     }
 
-    if (!isAllowed(routePermissions)) {
+    if (!userHasPerms(routePermissions)) {
       return next(new NotAllowedError());
     }
 
@@ -66,6 +67,8 @@ const apolloProvider = new VueApollo({
 
 Vue.use(VueApollo);
 Vue.use(Vuetify);
+Vue.use(VueMeta);
+Vue.component('VIcon', VIcon);
 
 // eslint-disable-next-line no-new
 new Vue({
@@ -75,5 +78,9 @@ new Vue({
   render: (h): Vue.VNode => h(App),
   router,
   store,
-  vuetify: new Vuetify(),
+  vuetify: new Vuetify({
+    icons: {
+      iconfont: 'mdiSvg',
+    },
+  }),
 });

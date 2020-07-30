@@ -19,6 +19,7 @@
     "url": "https://github.com/texastribune/dot/issues"
   },
   "dependencies": {
+    "@mdi/js": "^5.4.45",
     "@sentry/node": "^5.15.4",
     "apollo-boost": "^0.4.9",
     "auth0-js": "^9.13.3",
@@ -45,6 +46,7 @@
     "validator": "^13.0.0",
     "vue": "^2.6.11",
     "vue-apollo": "^3.0.3",
+    "vue-meta": "^2.4.0",
     "vue-router": "^3.3.4",
     "vuetify": "^2.3.4",
     "vuex": "^3.5.1",

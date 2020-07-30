@@ -35,6 +35,7 @@ const mutations: MutationTree<State> = {
 
   SET_ERROR(state: State, error: Error): void {
     state.userError = error;
+    state.isLoggedIn = false;
     state.accessToken = '';
     state.accessTokenPayload = getInitialAccessTokenPayload();
   },
@@ -92,15 +93,13 @@ const actions: ActionTree<State, {}> = {
 const getters: GetterTree<State, {}> = {
   accessToken: ({ accessToken }) => accessToken,
 
-  isAllowed: ({ accessTokenPayload: { permissions } }) => (
+  userHasPerms: ({ accessTokenPayload: { permissions } }) => (
     requiredPermissions: UserPermissions[]
   ): boolean => requiredPermissions.every((perm) => permissions.includes(perm)),
 
   isLoggedIn: ({ isLoggedIn }) => isLoggedIn,
 
   userError: ({ userError }) => userError,
-
-  userIsReady: ({ isLoggedIn, userError }) => isLoggedIn && !userError,
 };
 
 const module: Module<State, {}> = {

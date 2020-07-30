@@ -1,10 +1,13 @@
 <script lang="ts">
 /* eslint-disable vue/valid-v-slot, @typescript-eslint/triple-slash-reference, spaced-comment */
 /// <reference path="../../../node_modules/vue-apollo/types/vue.d.ts" />
+/* eslint-disable vue/valid-v-slot, @typescript-eslint/triple-slash-reference, spaced-comment */
+/// <reference path="../../../node_modules/vue-meta/types/vue.d.ts" />
 
 import Vue from 'vue';
 import { mapGetters } from 'vuex';
 import { DataTableHeader } from 'vuetify';
+import { MetaInfo } from 'vue-meta';
 import gql from 'graphql-tag';
 
 import { USER_MODULE } from '../../store';
@@ -59,7 +62,7 @@ export default Vue.extend({
   },
 
   computed: {
-    ...mapGetters(USER_MODULE, ['userIsReady']),
+    ...mapGetters(USER_MODULE, ['isLoggedIn']),
 
     totalViews(): number {
       return this.viewsListByCanonical.totalViews;
@@ -70,6 +73,10 @@ export default Vue.extend({
         this.viewsListByCanonical.items,
         'canonical'
       );
+    },
+
+    routeDomain(): string {
+      return this.$route.params.domain;
     },
   },
 
@@ -100,28 +107,38 @@ export default Vue.extend({
         return {
           startDate: this.gqlStartDate,
           endDate: this.gqlEndDate,
-          domain: this.$route.params.domain,
+          domain: this.routeDomain,
         };
       },
       skip(): boolean {
-        return !this.userIsReady;
+        return !this.isLoggedIn;
       },
     },
+  },
+
+  metaInfo(): MetaInfo {
+    return {
+      title: `Domain detail ${
+        this.canonicalsList.length ? `: ${this.routeDomain}` : ''
+      }`,
+    };
   },
 });
 </script>
 
 <template>
-  <main>
-    <views-table
-      :content-header="header"
-      :is-loading="$apollo.queries.viewsListByCanonical.loading"
-      :items="canonicalsList"
-      :total-views="totalViews"
-    >
-      <template #content="{ content }">
-        {{ content }}
-      </template>
-    </views-table>
-  </main>
+  <views-table
+    :search-form-label="`canonical URLs republished by ${routeDomain}`"
+    :content-header="header"
+    :is-loading="$apollo.queries.viewsListByCanonical.loading"
+    :items="canonicalsList"
+    :total-views="totalViews"
+  >
+    <template #heading="{ classes }">
+      <h1 :class="classes">{{ routeDomain }}</h1>
+    </template>
+    <template #content="{ content }">
+      {{ content }}
+    </template>
+  </views-table>
 </template>

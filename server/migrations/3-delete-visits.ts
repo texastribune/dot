@@ -6,9 +6,7 @@ export default {
       await queryInterface.dropTable('visit');
     } catch (err) {
       // eslint-disable-next-line no-console
-      console.error(
-        'Unable to drop the "visit" table. You probably never used v1 of this app.'
-      );
+      console.error('Unable to drop the "visit" table');
     }
   },
 };
