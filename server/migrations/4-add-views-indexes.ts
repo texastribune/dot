@@ -25,6 +25,8 @@ export default {
 
       transaction.commit();
     } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('Unable to index the "views" table');
       transaction.rollback();
     }
   },
