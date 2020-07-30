@@ -5,12 +5,10 @@
 /// <reference path="../../../node_modules/vue-meta/types/vue.d.ts" />
 
 import Vue from 'vue';
-import { mapGetters } from 'vuex';
 import { DataTableHeader } from 'vuetify';
 import { MetaInfo } from 'vue-meta';
 import gql from 'graphql-tag';
 
-import { USER_MODULE } from '../../store';
 import { ViewsList, ViewsItemByDomain } from '../../../shared-types';
 import ViewsTable, {
   ViewsTableItem,
@@ -62,8 +60,6 @@ export default Vue.extend({
   },
 
   computed: {
-    ...mapGetters(USER_MODULE, ['isLoggedIn']),
-
     totalViews(): number {
       return this.viewsListByDomain.totalViews;
     },
@@ -109,9 +105,6 @@ export default Vue.extend({
           endDate: this.gqlEndDate,
           canonical: this.routeCanonical,
         };
-      },
-      skip(): boolean {
-        return !this.isLoggedIn;
       },
     },
   },

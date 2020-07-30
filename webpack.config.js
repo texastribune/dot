@@ -24,7 +24,7 @@ const config = {
     chunkFilename: '[name].chunk.[contenthash].js',
     filename: IS_DEV ? '[name].js' : '[name].[contenthash].js',
     path: DASHBOARD_BUILD_PATH,
-    publicPath: DASHBOARD_STATIC_ALIAS,
+    publicPath: IS_DEV ? '/' : DASHBOARD_STATIC_ALIAS,
   },
 
   plugins: [

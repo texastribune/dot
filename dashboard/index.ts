@@ -12,38 +12,35 @@ import { NotAllowedError } from './errors';
 import { RouteMeta } from './types';
 import router from './routes';
 import store, { USER_MODULE, CONTEXT_MODULE } from './store';
-import { SET_APP_ERROR } from './store/actions';
+import { SET_APP_ERROR, SET_APP_IS_LOADING } from './store/actions';
 import { logIn } from './auth';
 import App from './App.vue';
 
-router.onReady(() => {
-  router.onError((error) => {
-    store.dispatch(`${CONTEXT_MODULE}/${SET_APP_ERROR}`, error);
-  });
+router.onError((error) => {
+  store.dispatch(`${CONTEXT_MODULE}/${SET_APP_ERROR}`, error);
+});
 
-  router.beforeEach((to, from, next) => {
-    const isLoggedIn = store.getters[`${USER_MODULE}/isLoggedIn`];
-    const userHasPerms = store.getters[`${USER_MODULE}/userHasPerms`];
-    const userError = store.getters[`${USER_MODULE}/userError`];
-    const {
-      requiresLogIn,
-      permissions: routePermissions,
-    } = to.meta as RouteMeta;
+router.beforeEach((to, from, next) => {
+  store.dispatch(`${CONTEXT_MODULE}/${SET_APP_IS_LOADING}`, true);
 
-    if (requiresLogIn && userError) {
-      return next(userError);
-    }
+  const isLoggedIn = store.getters[`${USER_MODULE}/isLoggedIn`];
+  const userHasPerms = store.getters[`${USER_MODULE}/userHasPerms`];
+  const userError = store.getters[`${USER_MODULE}/userError`];
+  const { requiresLogIn, permissions: routePermissions } = to.meta as RouteMeta;
 
-    if (requiresLogIn && !isLoggedIn) {
-      return logIn(to);
-    }
+  if (requiresLogIn && userError) {
+    next(userError);
+  } else if (requiresLogIn && !isLoggedIn) {
+    logIn(to);
+  } else if (!userHasPerms(routePermissions)) {
+    next(new NotAllowedError());
+  } else {
+    next();
+  }
+});
 
-    if (!userHasPerms(routePermissions)) {
-      return next(new NotAllowedError());
-    }
-
-    return next();
-  });
+router.afterEach(() => {
+  store.dispatch(`${CONTEXT_MODULE}/${SET_APP_IS_LOADING}`, false);
 });
 
 const apolloClient = new ApolloClient({

@@ -3,11 +3,7 @@ import VueRouter, { RouteConfig } from 'vue-router';
 
 import { UserPermissions } from '../../shared-types';
 import { RouteMeta } from '../types';
-import CanonicalDetail from './canonical-detail/Index.vue';
-import DomainDetail from './domain-detail/Index.vue';
 import LoggedIn from './logged-in/Index.vue';
-import Main from './main/Index.vue';
-import Overview from './overview/Index.vue';
 
 Vue.use(VueRouter);
 
@@ -25,7 +21,8 @@ const routes: RouteConfig[] = [
   },
   {
     path: '/',
-    component: Main,
+    component: (): Promise<typeof import('*.vue')> =>
+      import(/* webpackChunkName: "main-route" */ './main/Index.vue'),
     pathToRegexpOptions: { strict: true },
     meta: buildRouteMeta({
       requiresLogIn: true,
@@ -35,7 +32,10 @@ const routes: RouteConfig[] = [
       {
         path: '',
         name: 'overview',
-        component: Overview,
+        component: (): Promise<typeof import('*.vue')> =>
+          import(
+            /* webpackChunkName: "overview-route" */ './overview/Index.vue'
+          ),
         pathToRegexpOptions: { strict: true },
         meta: buildRouteMeta({
           requiresLogIn: true,
@@ -45,7 +45,10 @@ const routes: RouteConfig[] = [
       {
         path: 'canonical/:canonical/',
         name: 'canonicalDetail',
-        component: CanonicalDetail,
+        component: (): Promise<typeof import('*.vue')> =>
+          import(
+            /* webpackChunkName: "canonical-detail-route" */ './canonical-detail/Index.vue'
+          ),
         pathToRegexpOptions: { strict: true },
         meta: buildRouteMeta({
           requiresLogIn: true,
@@ -55,7 +58,10 @@ const routes: RouteConfig[] = [
       {
         path: 'domain/:domain/',
         name: 'domainDetail',
-        component: DomainDetail,
+        component: (): Promise<typeof import('*.vue')> =>
+          import(
+            /* webpackChunkName: "domain-detail-route" */ './domain-detail/Index.vue'
+          ),
         pathToRegexpOptions: { strict: true },
         meta: buildRouteMeta({
           requiresLogIn: true,
