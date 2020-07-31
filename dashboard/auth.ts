@@ -30,7 +30,6 @@ const logIn = (route: Route): void => {
   auth.authorize({
     clientID: AUTH0_CLIENT_ID,
     redirectUri: `${AUTH0_REDIRECT_URI}?next=${next}`,
-    prompt: 'login',
   });
 };
 
