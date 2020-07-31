@@ -1,4 +1,4 @@
-FROM node:6.11.1
+FROM node:14.7.0
 LABEL maintainer="Texas Tribune <tech@texastribune.org>"
 
 RUN mkdir /app
