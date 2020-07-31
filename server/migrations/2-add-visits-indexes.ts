@@ -26,8 +26,9 @@ export default {
       transaction.commit();
     } catch (err) {
       // eslint-disable-next-line no-console
-      console.error('Unable to index the "visit" table');
+      console.error(err);
       transaction.rollback();
+      throw err;
     }
   },
 };
