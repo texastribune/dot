@@ -84,7 +84,7 @@ const Component = Vue.extend({
       return this.pickerDates.length === 2;
     },
 
-    inputValue(): string {
+    rangeSentence(): string {
       return `${this.displayStartDate} through ${this.displayEndDate}`;
     },
   },
@@ -92,6 +92,7 @@ const Component = Vue.extend({
   watch: {
     modalIsVisible(isVisible: boolean): void {
       if (!isVisible) {
+        this.resetPicker();
         this.focusOnInput();
       }
     },
@@ -123,11 +124,6 @@ const Component = Vue.extend({
       this.closeModal();
     },
 
-    onCancelClick(): void {
-      this.resetPicker();
-      this.closeModal();
-    },
-
     onPickerChange(newDates: string[]): void {
       this.pickerDates = newDates.sort();
     },
@@ -154,7 +150,9 @@ export default Component;
 <template>
   <v-container>
     <section class="mt-16">
-      <h2>Date range</h2>
+      <h2>
+        Date range<span class="is-sr-only">: {{ rangeSentence }}</span>
+      </h2>
 
       <v-alert
         v-if="pickerError"
@@ -167,11 +165,12 @@ export default Component;
         weeks from today.
       </v-alert>
 
-      <v-dialog v-model="modalIsVisible" persistent width="290px">
+      <v-dialog v-model="modalIsVisible" width="290px" eager>
         <template #activator="{ on, attrs }">
           <v-text-field
             ref="input"
-            :value="inputValue"
+            aria-label="Update date range"
+            :value="rangeSentence"
             readonly
             v-bind="attrs"
             v-on="on"
@@ -184,7 +183,7 @@ export default Component;
         </template>
 
         <v-date-picker v-model="pickerDates" range @change="onPickerChange">
-          <v-btn text color="primary" @click="onCancelClick">Cancel</v-btn>
+          <v-btn text color="primary" @click="closeModal">Cancel</v-btn>
           <v-btn
             text
             color="primary"
