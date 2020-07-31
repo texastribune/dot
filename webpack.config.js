@@ -35,7 +35,12 @@ const config = {
       endYear: new Date().getFullYear(),
       matchZones: 'America/Chicago',
     }),
-    new EnvironmentPlugin(['APP_URL', 'AUTH0_DOMAIN', 'AUTH0_CLIENT_ID']),
+    new EnvironmentPlugin([
+      'APP_URL',
+      'AUTH0_DOMAIN',
+      'AUTH0_CLIENT_ID',
+      'VUETIFY_NONCE',
+    ]),
     new WebpackAssetsManifest({
       entrypoints: true,
       output: DASHBOARD_MANIFEST_FILE_NAME,

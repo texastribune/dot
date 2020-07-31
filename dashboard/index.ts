@@ -7,7 +7,7 @@ import ApolloClient from 'apollo-boost';
 import VueApollo from 'vue-apollo';
 import VueMeta from 'vue-meta';
 
-import { APP_URL } from '../shared-config';
+import { APP_URL, VUETIFY_NONCE } from '../shared-config';
 import { NotAllowedError } from './errors';
 import { RouteMeta } from './types';
 import router from './routes';
@@ -78,6 +78,11 @@ new Vue({
   vuetify: new Vuetify({
     icons: {
       iconfont: 'mdiSvg',
+    },
+    theme: {
+      options: {
+        cspNonce: VUETIFY_NONCE,
+      },
     },
   }),
 });

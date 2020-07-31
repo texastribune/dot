@@ -13,6 +13,7 @@ import {
   SENTRY_ENVIRONMENT,
   ENABLE_SENTRY,
   SENTRY_DSN,
+  VUETIFY_NONCE,
 } from '../shared-config';
 import {
   DASHBOARD_STATIC_ALIAS,
@@ -47,6 +48,7 @@ app.use(
       : {
           directives: {
             defaultSrc: ["'self'"],
+            styleSrc: ["'self'", `'nonce-${VUETIFY_NONCE}'`],
           },
         },
     expectCt: true,
