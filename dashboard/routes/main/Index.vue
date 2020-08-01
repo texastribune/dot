@@ -174,7 +174,7 @@ export default Component;
             readonly
             v-bind="attrs"
             v-on="on"
-            @keyup.enter="on.click"
+            @keydown.enter="on.click"
           >
             <template #prepend>
               <v-icon>{{ calendarIcon }}</v-icon>
