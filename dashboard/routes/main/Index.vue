@@ -161,8 +161,8 @@ export default Component;
         class="mt-4"
         dismissible
       >
-        {{ pickerError.message }}. Falling back to default date range of two
-        weeks from today.
+        {{ pickerError.message }}. Falling back to default date range of last
+        two weeks.
       </v-alert>
 
       <v-dialog v-model="modalIsVisible" width="290px" eager>

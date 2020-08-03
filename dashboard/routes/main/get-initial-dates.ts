@@ -14,13 +14,13 @@ interface DatePickerValues {
 
 const todayObj = moment().startOf('day');
 const todayDateString = moment(todayObj).format('YYYY-MM-DD');
-const twoWeeksAheadObj = moment(todayObj).add(2, 'weeks');
-const twoWeeksAheadDateString = moment(twoWeeksAheadObj).format('YYYY-MM-DD');
+const twoWeeksBeforeObj = moment(todayObj).subtract(2, 'weeks');
+const twoWeeksBeforeDateString = moment(twoWeeksBeforeObj).format('YYYY-MM-DD');
 const fallback = {
-  defaultStartDate: todayDateString,
-  defaultEndDate: twoWeeksAheadDateString,
-  startDate: todayDateString,
-  endDate: twoWeeksAheadDateString,
+  defaultStartDate: twoWeeksBeforeDateString,
+  defaultEndDate: todayDateString,
+  startDate: twoWeeksBeforeDateString,
+  endDate: todayDateString,
 };
 
 export default function getInitialDates(route: Route): DatePickerValues {
