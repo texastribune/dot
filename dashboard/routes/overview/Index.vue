@@ -168,7 +168,7 @@ export default Vue.extend({
               },
               query: {
                 startDate: $route.query.startDate || undefined,
-                endDate: $route.query.startDate || undefined,
+                endDate: $route.query.endDate || undefined,
               },
             }"
             >{{ content }}</router-link
@@ -196,7 +196,7 @@ export default Vue.extend({
             },
             query: {
               startDate: $route.query.startDate || undefined,
-              endDate: $route.query.startDate || undefined,
+              endDate: $route.query.endDate || undefined,
             },
           }"
           >{{ content }}</router-link
