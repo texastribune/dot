@@ -21,7 +21,7 @@ export default Vue.extend({
 
     message(): string {
       if (this.appError instanceof AppError) {
-        return this.appError.message;
+        return `${this.appError.message}.`;
       }
       return 'We\'re working hard to fix the problem.';
     },
