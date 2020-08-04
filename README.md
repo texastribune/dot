@@ -72,6 +72,8 @@ If you have questions about this, please contact agibson@texastribune.org.
 
 This app is semantically versioned and uses the [`release-it`](https://github.com/release-it/release-it) package to create releases. You must have the proper repository permissions as well as the `GITHUB_TOKEN=<personal access token>` in your terminal environment.
 
+The `master` branch represents the current major version. All new releases, save patches to previous releases, should be made from `master`. The `next` branch represents the next major version. All pre-releases for the next major version should be made from this branch.
+
 ## Deploying to production
 
 We recommended building an image from the included Dockerfile, then running that image inside a container on the production server. For more information about how to do this, please contact agibson@texastribune.org.
