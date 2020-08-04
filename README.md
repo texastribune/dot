@@ -56,27 +56,63 @@ To run the app locally:
 2. `make -f Makefile.dev`: Build the Docker image locally, and run a container with `bash` as the entrypoint.
 3. `npm run build`: Compile JavaScript using Webpack and TypeScript.
 4. `npm run start:watch`: Run the app, using Nodemon to watch for Node file changes and Webpack Dev Middleware to watch for front-end file changes.
+5. Visit `/dashboard/`.
 
 Other commands:
 
 - `npm run lint`: Run ESlint checks on `.js`, `.ts` and `.vue` files.
 - `npm run release`: Create a tagged GitHub release. Run this command _outside_ of the Docker container.
 
-## Reading API data
+## How Dot works
 
-Only certain users are authorized to read from this app's GraphQL API. This is handled via [Auth0 permissions](https://auth0.com/docs/authorization/guides/manage-permissions).
+Applications (most likely your CMS) that want to distribute tracking scripts along with republishable articles need to make an API call to acquire the markup for the script. This request should be made from the server as it involves an authorization secret.
 
-If you have questions about this, please contact agibson@texastribune.org.
+```
+GET /api/v2/trackers/?canonical=<canonical>&source=<source>
+Authorization: Bearer <access ID>
+```
+
+- _Canonical_: The canonical URL of the article
+- _Source_: A value describing from where the article is being distributed. This is an enum whose currently allowed values are `rss` and `repub`.
+- _Access ID_: One of the values in the `ACCESS_IDS` environment variable
+
+A successful request will return a fully formed script tag to include in the markup of the republishable article. It includes a data attribute whose value is a JSON Web Token containing some metadata about the article. The generation of this JWT is why an authorization header is required: It is hashed with a secret, meaning the data it contains can't be tampered with. This helps ensure the integrity of collected page views.
+
+The script tag also contains a [subresource-integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity) hash. This hash, among other reasons, is why this app has hard semantic versioning.
+
+Once the tracking script is embedded in republishers' source code, it will create a 1x1 image on each page load. The request for this pixel will include a query parameter with the issued JWT. This data is decoded on the server and inserted into Postgres.
+
+A GraphQL API reads from the database and provides JSON that powers the dashboard.
+
+## Accessing API data
+
+Only certain users are authorized to read from this app's GraphQL API. This is handled via [Auth0 permissions](https://auth0.com/docs/authorization/guides/manage-permissions). Once granted, the necessary permissions will appear in users' access tokens.
+
+## Migrations
+
+We use Sequelize to handle migrations. Note that, if you're running these locally, you'll want to do an `npm run build` first. This ensures that the migration files are compiled from TypeScript to plain JavaScript.
+
+### Schema migrations
+
+Schema-migration scripts are located in `server/migrations/`. To run schema migrations up to a certain point, do `npx sequelize-cli db:migrate --to <name-of-migration>.js`. Or, to run them all, simply do `npx sequelize-cli db:migrate`.
+
+### Data migrations
+
+Data-migration scripts, called "seeders" in the Sequelize world, are located in `server/seeders/`. To run a script, do `npx sequelize-cli db:seed --seed <name-of-seed>.js`.
 
 ## Releases
 
-This app is semantically versioned and uses the [`release-it`](https://github.com/release-it/release-it) package to create releases. You must have the proper repository permissions as well as the `GITHUB_TOKEN=<personal access token>` in your terminal environment.
+This app is semantically versioned and uses the [`release-it`](https://github.com/release-it/release-it) package to create releases. You must have full repository permissions as well as `GITHUB_TOKEN=<personal access token>` in your terminal environment _outside_ of the Docker container.
+
+To create a release, run `npm run release` outside of Docker. Answer "yes" to all the questions that follow. During the release, the contents of `tracker/pixel.js` will be copied and placed in `analytics/<version>/pixel.js`, where Express can serve them. This ensures we have a script-per-app-version and can thus continue serving old versions while providing them with a valid SRI hash.
 
 The `master` branch represents the current major version. All new releases, save patches to previous releases, should be made from `master`. The `next` branch represents the next major version. All pre-releases for the next major version should be made from this branch.
 
 ## Deploying to production
 
-We recommended building an image from the included Dockerfile, then running that image inside a container on the production server. For more information about how to do this, please contact agibson@texastribune.org.
+We recommended building an image from the included Dockerfile, then running that image inside a container on the production server. You should provide a command that overrides the default entrypoint and enters you into a bash shell. From there, you can run database migrations.
+
+For more information/to get a sample production Makefile, please contact agibson@texastribune.org.
 
 ## License
 
