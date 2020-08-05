@@ -26,7 +26,7 @@ router.get('/pixel.gif', async (req, res) => {
     reportError(error);
   } finally {
     res.set({
-      'Cache-Control': 'no-cache',
+      'Cache-Control': 'no-store',
       'Content-Type': 'image/gif',
       'Content-Length': gif.length,
     });

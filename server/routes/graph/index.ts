@@ -25,7 +25,7 @@ const router = express.Router();
 
 router.use(
   (req, res, next) => {
-    res.set('Cache-Control', 'no-cache');
+    res.set('Cache-Control', 'no-store');
     next();
   },
   jwt({

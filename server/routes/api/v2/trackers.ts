@@ -122,7 +122,7 @@ router.get('/', (req, res, next) => {
           .update(data, 'utf8')
           .digest('base64');
 
-        return res.header('Cache-Control', 'no-cache').json({
+        return res.header('Cache-Control', 'no-store').json({
           script: `<script src="${APP_URL}${TRACKER_STATIC_ALIAS}${VERSION}/${TRACKER_SCRIPT}" data-dot-token="${token}" data-dot-url="${APP_URL}" integrity="${sriAlg}-${hash}" crossorigin="anonymous"></script>`,
         });
       }

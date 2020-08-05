@@ -66,7 +66,10 @@ app.use(
   TRACKER_STATIC_ALIAS,
   express.static(TRACKER_BUILD_PATH, {
     setHeaders(res) {
-      res.set({ 'Access-Control-Allow-Origin': '*' });
+      res.set({
+        'Access-Control-Allow-Origin': '*',
+        'Cache-Control': 'no-store',
+      });
     },
   })
 );
@@ -86,7 +89,7 @@ app.use(
     res: express.Response,
     next: express.NextFunction
   ) => {
-    res.set('Cache-Control', 'no-cache');
+    res.set('Cache-Control', 'no-store');
     reportError(error);
     next(error);
   }

@@ -30,7 +30,7 @@ router.get('/', async (req, res, next) => {
 
     // prettier-ignore
     return res
-      .header('Cache-Control', 'no-cache')
+      .header('Cache-Control', 'no-store')
       .json({ tokens });
   } catch (error) {
     if (error instanceof ResponseError) {
