@@ -27,9 +27,8 @@ const db = new Sequelize({
   dialectOptions: IS_PROD
     ? {
         ssl: {
-          require: true,
-          rejectUnauthorized: false,
-          crt: RDS_PEM.toString(),
+          rejectUnauthorized: true,
+          ca: [RDS_PEM],
         },
       }
     : undefined,

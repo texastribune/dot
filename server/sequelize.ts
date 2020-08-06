@@ -23,9 +23,8 @@ export default {
     dialect: 'postgres',
     dialectOptions: {
       ssl: {
-        require: true,
-        rejectUnauthorized: false,
-        crt: RDS_PEM.toString(),
+        rejectUnauthorized: true,
+        ca: [RDS_PEM],
       },
     },
   },

@@ -26,7 +26,7 @@ export const {
 } = process.env;
 export const PUBLIC_BUILD_PATH = path.join(process.cwd(), 'public');
 export const RDS_PEM = fs.readFileSync(
-  path.join(process.cwd(), 'keys', 'rds.pem')
+  path.join(process.cwd(), 'keys', 'rds-combined-ca-bundle.pem')
 );
 export const TEMPLATES_PATH = path.join(process.cwd(), 'views');
 export const { TRACKER_JWT_SECRET } = process.env;
