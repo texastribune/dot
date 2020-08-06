@@ -1,6 +1,6 @@
 NS:=texastribune
 APP:=dot
-DOCKER_ENV_FILE?=env
+DOCKER_ENV_FILE?=env-docker
 NET=${APP}_net
 S3_SOURCE=s3://dot-postgres-exports/pg.dump
 DATABASE_URL?=postgres://postgres:postgres@dot-db:5432/dot
@@ -22,7 +22,11 @@ dev: build net db
 		--name=${APP} ${NS}/${APP}
 
 build:
-	docker build -t ${NS}/${APP} .
+	docker build \
+    --build-arg APP_URL=http://localhost:3000 \
+		--build-arg AUTH0_DOMAIN=auth-test.texastribune.org \
+		--build-arg AUTH0_CLIENT_ID=YQ7ktxaQjg0SJ4m2yMylVdF1N7KSgoqg \
+   	--tag=${NS}/${APP} .
 
 net:
 	-docker network create ${NET}
@@ -35,7 +39,8 @@ db: net
 		--net=${NET} \
 		--volume=${APP}_db-vol:/var/lib/postgresql/data \
 		--name=dot-db \
-		postgres:9.6
+    --env=POSTGRES_PASSWORD=postgres \
+		postgres:11
 	sleep 5
 
 db-refresh: db

@@ -1,110 +1,119 @@
-**Note for non-Texas Tribune users**: We're happy to answer questions about this app, but there are no current plans to adopt a release schedule or offer official support. We will certainly be making improvements as time goes on, though, so check back.
+# Dot: The Texas Tribune's pixel tracker
 
-# Dot
-The Texas Tribune's pixel tracking tool.
+This app produces a small, non-invasive tracking script that we distribute with our content. It sends back data about who is republishing our articles, which we visualize in a dashboard.
 
+## Technology used
 
-## How it works
-A tiny script creates a 1x1 image on the hosting page. Attached to the image `src` are query parameters with meta about that page. Thus, when the client makes a request for the `src`, it sends along those parameters and records them in a PostgreSQL database. This means that, in addition to knowing who's republishing Texas Tribune stories, we can get a rough page-view count of those reprinted stories.
+- Node
+- Express
+- TypeScript
+- Postgres
+- Auth0
+- GraphQL
+- Sequelize
+- Vue
+- Vuetify
+- Vuex
+- Vue Router
 
-### The script tag
-```
-<script
-  data-tt-canonical="<CANONICAL>"
-  integrity="<SRI_HASH>"
-  src="https://dot.texastribune.org/static/dist/dot.min.[WEBPACK_HASH].js"
-  crossorigin="anonymous"
->
-</script>
-```
+## Environment variables
 
-The `data-tt-canonical` attribute should be a full URL that includes the protocol, domain and path. For example, `https://www.texastribune.org/2018/03/09/slug-goes-here` or `https://apps.texastribune.org/path-goes-here`. The important thing is that it contain "texastribune" somewhere.
+| Variable                |                           Example |
+| ----------------------- | --------------------------------: |
+| `ACCESS_IDS`            | {"app-name":"secret-char-string"} |
+| `APP_URL`               |             http://localhost:3000 |
+| `AUTH0_CLIENT_ID`       |                                   |
+| `AUTH0_CLIENT_SECRET`   |                                   |
+| `AUTH0_DOMAIN`          |                        domain.com |
+| `AWS_ACCESS_KEY_ID`     |                                   |
+| `AWS_SECRET_ACCESS_KEY` |                                   |
+| `DB_HOST`               |                            dot-db |
+| `DB_NAME`               |                               dot |
+| `DB_PASSWORD`           |                          postgres |
+| `DB_PORT`               |                              5432 |
+| `DB_USER`               |                          postgres |
+| `NODE_ENV`              |                       development |
+| `NODE_PORT`             |                              3000 |
+| `TRACKER_JWT_SECRET`    |                      HS256 secret |
+| `ENABLE_SENTRY`         |                        true/false |
+| `SENTRY_DSN`            |                                   |
+| `SENTRY_ENVIRONMENT`    |                       development |
+| `VUETIFY_NONCE`         |                       noncestring |
 
-See "Building the tracker script" below for more information about the SRI hash.
+### More detail
 
-### The image request
-If we need to track views in an environment that doesn't support JavaScript, it's possible to use an image tag directly:
-`<img src="https://dot.texastribune.org/dot.gif?url=<URL>&canonical=<CANONICAL>&query=<QUERY>&ref=<REF>">`
-+ `url`: The republished page's URL (it must include the protocol, domain and path)
-+ `canonical`: The Texas Tribune URL (it must include the protocol, domain and path, as well as "texastribune")
-+ `query`: Any query parameters attached to the republished page's URL
-+ `ref`: The [referrer](https://developer.mozilla.org/en-US/docs/Web/API/Document/referrer) to the republished page
-
-Even if a value is blank, include it as an empty query parameter:
-`<img src="https://dot.texastribune.org/dot.gif?query=&ref=&url=http://www.foo.com&canonical=https://texastribune.org/03/08/2018/slug-here">`
-
-
-## What's inside
-Below are the main technologies used in the app. The **only** thing you need installed on your machine is Docker. The build process, detailed below in "setup," handles the rest.
-
-+ [Express](https://expressjs.com/)
-+ [Node Postgres](https://github.com/brianc/node-postgres)
-+ Vue.js
-+ [Apollo](https://www.apollographql.com/)
-+ GraphQL
-+ [Sentry/Raven](https://github.com/getsentry/raven-js) (this could be removed or swapped with a different error-handling service)
-
-
-## Setup
-These steps assume you have Docker installed on your machine.
-
-1. Create an `env` file in the root and fill it out according to what's in `env.sample`.
-3. `make db-refresh -f Makefile.dev`. This pulls down a copy of the production database for use locally. Check out this [repository](https://github.com/texastribune/docker-pg-tools) for info about how to set up a database export (assuming you're using AWS/S3).
-4. `make -f Makefile.dev`. This will trigger a Docker build and drop you inside a container. All dependencies will be installed with Yarn.
-
-
-## Where stuff lives
-+ `server/`: The Express configuration, including routing, middleware and error handling
-+ `tracker/`: The source files for the tracking script. This includes a Webpack configuration.
-+ `dashboard/`: The visual dashboard, powered by Vue.js and Apollo. This includes a Webpack configuration.
-+ `graphql/`: The GraphQL API, powered by Express and Apollo
-
-
-## Important URLs
-+ `/dashboard`: The visual dashboard.
-+ `/test`: An HTML page containing a development build of the tracker script (meaning it will not insert rows into the production database). Useful for debugging [development only].
-+ `/dot.gif?<params>`: The endpoint for retrieving the image `src` and inserting republisher info into the database.
-+ `/graphql`: The API. Given it's GraphQL, all endpoints use `POST`.
-
+- `ACCESS_IDS`: This JSON string is a whitelist of apps that are authorized to make requests to Dot's tracking-script API. The key is an arbitrary descriptor of the requesting app's name. The value should be a hard-to-guess string of characters. We will likely transition this authorization to Auth0 machine-to-machine applications.
+- `APP_URL`: The protocol and domain (no trailing slash) at which you'll be running Dot. This will likely differ by environment.
+- `NODE_ENV`: The recommended values for this are `development`, `production` or `staging`. This variable determines whether Webpack will auto-rebuild and how Sequelize connects to Postgres, among other things.
+- `TRACKER_JWT_SECRET`: A secret for hashing the JSON Web Token that will be distributed with each tracking script.
+- `VUETIFY_NONCE`: A nonce to include in the Content Security Policy response header so that [Vuetify can inject embedded styles](https://vuetifyjs.com/en/customization/th%C3%A8me/#csp-nonce) into the page.
 
 ## Commands
 
-### Development
-+ `yarn run dash:dev`: Start development mode for the dashboard. Webpack's hot module replacement is enabled, meaning you can make changes to files in `dashboard/*` and see them update live at `/dashboard`.
-+ `yarn run tracker:dev`: Fire up development mode for the tracker-script portion of the app (which you can test at `/test`). Changes to files in `tracker/*` or `server/*` should trigger automatic rebuilds.
+To run the app locally:
 
-### Production
-#### Commands
-+ `yarn run start:prod`: Start the server.
-+ `yarn run dash:prod:webpack`: Build the production bundle for the dashboard.
-+ `yarn run tracker:prod:webpack`: Build a new production version of the tracker script. See section below.
+1. `make db-refresh -f Makefile.dev`: Using your AWS credentials, this loads a dump of the production database into your local environment.
+2. `make -f Makefile.dev`: Build the Docker image locally, and run a container with `bash` as the entrypoint.
+3. `npm run build`: Compile JavaScript using Webpack and TypeScript.
+4. `npm run start:watch`: Run the app, using Nodemon to watch for Node file changes and Webpack Dev Middleware to watch for front-end file changes.
+5. Visit `/dashboard/`.
 
+Other commands:
 
-## Building the tracker script
-To give republishers [SRI protection](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity), production builds of the tracker script are:
-1. Version controlled
-2. Uniquely hashed
-3. Built locally
+- `npm run lint`: Run ESlint checks on `.js`, `.ts` and `.vue` files.
+- `npm run release`: Create a tagged GitHub release. Run this command _outside_ of the Docker container.
 
-If you change anything in `tracker/src/`, run `yarn run tracker:prod:webpack`. Webpack will notice the bundle has changed and thus build a new uniquely hashed file into `tracker/public/dist`. **Make sure to commit it and its source map**.
+## How Dot works
 
-After you've deployed the new script, put its URL into this [website](https://www.srihash.org/) to get an integrity key.
+Applications (most likely your CMS) that want to distribute tracking scripts along with republishable articles need to make an API call to acquire the markup for the script. This request should be made from the server as it involves an authorization secret.
 
-Finally, update the pixel-tracker variables for texastribune.org.
+```
+GET /api/v2/trackers/?canonical=<canonical>&source=<source>
+Authorization: Bearer <access ID>
+```
 
-Why this process? SRI integrity keys become invalid if the file they refer to has changed. So every time we update the logic of the tracker script, it's important to build a **new version** of it and pair it with a **new integrity key**. This means we should also never delete old builds of the pixel script.
+- _Canonical_: The canonical URL of the article
+- _Source_: A value describing from where the article is being distributed. This is an enum whose currently allowed values are `rss` and `repub`.
+- _Access ID_: One of the values in the `ACCESS_IDS` environment variable
 
+A successful request will return a fully formed script tag to include in the markup of the republishable article. It includes a data attribute whose value is a JSON Web Token containing some metadata about the article. The generation of this JWT is why an authorization header is required: It is hashed with a secret, meaning the data it contains can't be tampered with. This helps ensure the integrity of collected page views.
 
-## Deployment
-Deployment assumes you have a `Makefile` on the production server that pulls `master` and starts a Docker build. `Makefile.example` in this project demonstrates a way to do this.
+The script tag also contains a [subresource-integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity) hash. This hash, among other reasons, is why this app has hard semantic versioning.
 
+Once the tracking script is embedded in republishers' source code, it will create a 1x1 image on each page load. The request for this pixel will include a query parameter with the issued JWT. This data is decoded on the server and inserted into Postgres.
+
+A GraphQL API reads from the database and provides JSON that powers the dashboard.
+
+## Accessing API data
+
+Only certain users are authorized to read from this app's GraphQL API. This is handled via [Auth0 permissions](https://auth0.com/docs/authorization/guides/manage-permissions). Once granted, the necessary permissions will appear in users' access tokens.
+
+## Migrations
+
+We use Sequelize to handle migrations. Note that, if you're running these locally, you'll want to do an `npm run build` first. This ensures that the migration files are compiled from TypeScript to plain JavaScript.
+
+### Schema migrations
+
+Schema-migration scripts are located in `server/migrations/`. To run schema migrations up to a certain point, do `npx sequelize-cli db:migrate --to <name-of-migration>.js`. Or, to run them all, simply do `npx sequelize-cli db:migrate`.
+
+### Data migrations
+
+Data-migration scripts, called "seeders" in the Sequelize world, are located in `server/seeders/`. To run a script, do `npx sequelize-cli db:seed --seed <name-of-seed>.js`.
+
+## Releases
+
+This app is semantically versioned and uses the [`release-it`](https://github.com/release-it/release-it) package to create releases. You must have full repository permissions as well as `GITHUB_TOKEN=<personal access token>` in your terminal environment _outside_ of the Docker container.
+
+To create a release, run `npm run release` outside of Docker. Answer "yes" to all the questions that follow. During the release, the contents of `tracker/pixel.js` will be copied and placed in `analytics/<version>/pixel.js`, where Express can serve them. This ensures we have a script-per-app-version and can thus continue serving old versions while providing them with a valid SRI hash.
+
+The `master` branch represents the current major version. All new releases, save patches to previous releases, should be made from `master`. The `next` branch represents the next major version. All pre-releases for the next major version should be made from this branch.
+
+## Deploying to production
+
+We recommended building an image from the included Dockerfile, then running that image inside a container on the production server. You should provide a command that overrides the default entrypoint and enters you into a bash shell. From there, you can run database migrations.
+
+For more information/to get a sample production Makefile, please contact agibson@texastribune.org.
 
 ## License
+
 MIT
-
-
-## TODOs
-+ Use Webpack to put vendor code into a separate bundle.
-+ Use an ORM for GraphQL resolvers.
-+ Give more detail to Sentry when error occurs.
-+ Upgrade to Node v8.x
