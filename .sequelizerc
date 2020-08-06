@@ -1,18 +1,10 @@
 const path = require('path');
 
 const serverBuildPath = path.join(process.cwd(), 'build', 'server');
-const {
-  DB_HOST = 'dot-db',
-  DB_NAME = 'dot',
-  DB_PASSWORD = 'postgres',
-  DB_PORT = 5432,
-  DB_USER = 'postgres',
-} = process.env;
 
 module.exports = {
   config: path.join(serverBuildPath, 'sequelize.js'),
   'migrations-path': path.join(serverBuildPath, 'migrations'),
   'models-path': path.join(serverBuildPath, 'models'),
   'seeders-path': path.join(serverBuildPath, 'seeders'),
-  url: `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`,
 };

@@ -1,6 +1,6 @@
 import { QueryInterface } from 'sequelize';
 
-export default {
+export = {
   up: async (queryInterface: QueryInterface): Promise<void> => {
     await queryInterface.dropTable('visit');
   },

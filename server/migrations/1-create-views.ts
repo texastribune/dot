@@ -1,7 +1,7 @@
 import { DataTypes, QueryInterface } from 'sequelize';
 import { ValidTrackerSource } from '../types';
 
-export default {
+export = {
   up: (queryInterface: QueryInterface): Promise<void> => {
     return queryInterface.createTable('views', {
       id: {
