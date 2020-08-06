@@ -1,5 +1,7 @@
 import { RDS_PEM } from './config';
 
+console.log(RDS_PEM);
+
 export default {
   development: {
     username: process.env.DB_USER,
