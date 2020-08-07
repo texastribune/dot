@@ -20,7 +20,7 @@ router.get('/pixel.gif', async (req, res) => {
 
     // eslint-disable-next-line no-console
     console.log(
-      `Logged view | ID: ${view.id} | Canonical: ${view.canonical} | Domain: ${view.domain} | Source: ${view.source}`
+      `Logged view | Canonical: ${view.canonical} | Domain: ${view.domain} | Source: ${view.source}`
     );
   } catch (error) {
     reportError(error);

@@ -166,7 +166,16 @@ View.init(
       type: DataTypes.TEXT,
       allowNull: true,
       validate: {
-        notContains: ['localhost', 's3.amazonaws.com'],
+        notTest(value: string): void {
+          if (value.includes('localhost')) {
+            throw new Error('Domain contains "localhost"');
+          }
+        },
+        notS3(value: string): void {
+          if (value.includes('s3.amazonaws.com')) {
+            throw new Error('Domain contains "s3.amazonaws.com"');
+          }
+        },
       },
     },
     source: {
