@@ -5,9 +5,7 @@ import {
   Op as Operation,
   Filterable,
 } from 'sequelize';
-import jwt from 'jsonwebtoken';
 
-import { TRACKER_JWT_SECRET } from '../config';
 import {
   AccessTokenPayload,
   ViewsItemByCanonical,
@@ -18,7 +16,6 @@ import {
 import { userPermissions } from '../utils/decorators';
 import sequelize from '../db';
 import {
-  TrackerTokenPayload,
   ValidTrackerSource,
   ViewsListByCanonicalArgs,
   ViewsListByDomainArgs,
@@ -35,32 +32,15 @@ class View extends Model {
 
   public visitedAt!: Date;
 
-  public static async createViewFromToken({
-    token,
+  public static async createView({
+    canonical,
     domain,
+    source,
   }: {
-    token: string;
+    canonical: string;
     domain: string;
+    source: ValidTrackerSource;
   }): Promise<View> {
-    const tokenPayload = await new Promise((resolve, reject) => {
-      jwt.verify(
-        token,
-        TRACKER_JWT_SECRET as string,
-        {
-          algorithms: ['HS256'],
-          ignoreExpiration: true,
-        },
-        (error, payload) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(payload);
-          }
-        }
-      );
-    });
-
-    const { canonical, source } = tokenPayload as TrackerTokenPayload;
     const view = await View.create({
       canonical,
       source,

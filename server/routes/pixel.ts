@@ -1,5 +1,9 @@
 import express from 'express';
+import jwt from 'jsonwebtoken';
+import semver from 'semver';
 
+import { TRACKER_JWT_SECRET } from '../config';
+import { TrackerTokenPayload } from '../types';
 import View from '../models/view';
 import reportError from '../utils/report-error';
 
@@ -13,15 +17,38 @@ router.get('/pixel.gif', async (req, res) => {
   const { token, domain } = req.query;
 
   try {
-    const view = await View.createViewFromToken({
-      domain: domain as string,
-      token: token as string,
+    const tokenPayload = await new Promise((resolve, reject) => {
+      jwt.verify(
+        token as string,
+        TRACKER_JWT_SECRET as string,
+        {
+          algorithms: ['HS256'],
+          ignoreExpiration: true,
+        },
+        (error, payload) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(payload);
+          }
+        }
+      );
     });
 
-    // eslint-disable-next-line no-console
-    console.log(
-      `Logged view | Canonical: ${view.canonical} | Domain: ${view.domain} | Source: ${view.source}`
-    );
+    const { canonical, source, version } = tokenPayload as TrackerTokenPayload;
+
+    if (semver.gte(version, '2.1.0')) {
+      const view = await View.createView({
+        canonical,
+        source,
+        domain: domain as string,
+      });
+
+      // eslint-disable-next-line no-console
+      console.log(
+        `Logged view | Canonical: ${view.canonical} | Domain: ${view.domain} | Source: ${view.source}`
+      );
+    }
   } catch (error) {
     reportError(error);
   } finally {
