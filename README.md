@@ -1,6 +1,6 @@
 # Dot: The Texas Tribune's pixel tracker
 
-This app produces a small, non-invasive tracking script that we distribute with our content. It sends back data about who is republishing our articles, which we visualize in a dashboard.
+This app produces a small, non-invasive script that we distribute with our content. The script uses a JSON Web Token to send back data about who is republishing our articles, which we visualize in a dashboard.
 
 ## Technology used
 
@@ -76,7 +76,7 @@ Authorization: Bearer <access ID>
 - _Source_: A value describing from where the article is being distributed. This is an enum whose currently allowed values are `rss` and `repub`.
 - _Access ID_: One of the values in the `ACCESS_IDS` environment variable
 
-A successful request will return a fully formed script tag to include in the markup of the republishable article. It includes a data attribute whose value is a JSON Web Token containing some metadata about the article. The generation of this JWT is why an authorization header is required: It is hashed with a secret, meaning the data it contains can't be tampered with. This helps ensure the integrity of collected page views.
+A successful request will return a fully formed script tag to distribute along with the republishable article. It includes a data attribute whose value is a JSON Web Token containing some metadata about the article. The generation of this JWT is why an authorization header is required: It is hashed with a secret, meaning the data it contains can't be altered. This helps ensure the integrity of collected page views.
 
 The script tag also contains a [subresource-integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity) hash. This hash, among other reasons, is why this app has hard semantic versioning.
 
@@ -104,9 +104,13 @@ Data-migration scripts, called "seeders" in the Sequelize world, are located in 
 
 This app is semantically versioned and uses the [`release-it`](https://github.com/release-it/release-it) package to create releases. You must have full repository permissions as well as `GITHUB_TOKEN=<personal access token>` in your terminal environment _outside_ of the Docker container.
 
-To create a release, run `npm run release` outside of Docker. Answer "yes" to all the questions that follow. During the release, the contents of `tracker/pixel.js` will be copied and placed in `analytics/<version>/pixel.js`, where Express can serve them. This ensures we have a script-per-app-version and can thus continue serving old versions while providing them with a valid SRI hash.
+To create a release, run `npm run release` outside of Docker. Answer "yes" to all the questions that follow. During the release, the contents of `tracker/pixel.js` will be copied and placed in `analytics/<version>/pixel.js`, where Express can serve them. This ensures we have a script per app version and can thus continue serving old versions while providing them with a valid SRI hash.
 
-The `master` branch represents the current major version. All new releases, save patches to previous releases, should be made from `master`. The `next` branch represents the next major version. All pre-releases for the next major version should be made from this branch.
+The `master` branch represents the current major version. All releases should be made from `master` save two scenarios: patches to previous versions and pre-releases of the next major version.
+
+It's OK to make pre-releases from `master` to test on staging servers, but these should never be deployed to production. _Remnant pre-release scripts in `analytics/` should be deleted when making a new minor or patch release_.
+
+The `next` branch represents the next major version. All pre-releases for the next major version should be made from this branch.
 
 ## Deploying to production
 
