@@ -123,7 +123,7 @@ router.get('/', (req, res, next) => {
           .digest('base64');
 
         return res.header('Cache-Control', 'no-store').json({
-          script: `<script src="${APP_URL}${TRACKER_STATIC_ALIAS}${VERSION}/${TRACKER_SCRIPT}" data-dot-token="${token}" integrity="${sriAlg}-${hash}" crossorigin="anonymous"></script>`,
+          script: `<script async src="${APP_URL}${TRACKER_STATIC_ALIAS}${VERSION}/${TRACKER_SCRIPT}" data-dot-token="${token}" integrity="${sriAlg}-${hash}" crossorigin="anonymous"></script>`,
         });
       }
     );
