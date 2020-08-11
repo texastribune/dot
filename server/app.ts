@@ -28,6 +28,7 @@ import {
 import db from './db';
 import routes from './routes';
 import pixelRoute from './routes/pixel';
+import legacyRoutes from './routes/legacy';
 import reportError from './utils/report-error';
 import { AppError, EnhancedError, ResponseError } from './errors';
 
@@ -78,6 +79,7 @@ if (IS_DEV) {
   app.use(webpackDev(webpack(webpackConfig as webpack.Configuration)));
 }
 
+app.use(legacyRoutes);
 app.use(pixelRoute);
 app.use(connectSlashes());
 app.use(routes);
