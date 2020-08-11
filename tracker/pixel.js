@@ -8,15 +8,17 @@
     var loc = win.location;
     var currentScript =
       doc.currentScript || doc.querySelector('script[' + attr + ']');
+    var scriptSrcParts = currentScript.src.split('/');
+
+    var img = new win.Image(1, 1);
+    var imgSrc = scriptSrcParts[0] + '//' + scriptSrcParts[2] + '/pixel.gif?';
     var domain = e(loc.hostname);
     var token = e(currentScript.getAttribute(attr) || '');
-    var img = new win.Image(1, 1);
-    var src = currentScript.getAttribute('data-dot-url') + '/pixel.gif?';
 
-    src += 'domain=' + domain + '&';
-    src += 'token=' + token;
+    imgSrc += 'domain=' + domain + '&';
+    imgSrc += 'token=' + token;
 
-    img.src = src;
+    img.src = imgSrc;
     win.ttDotTracked = true;
   }
 })();
