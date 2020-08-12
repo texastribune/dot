@@ -1,37 +1,17 @@
 import { Sequelize } from 'sequelize';
 
-import {
-  DB_HOST,
-  DB_NAME,
-  DB_PASSWORD,
-  DB_PORT,
-  DB_USER,
-  IS_PROD,
-  IS_DEV,
-  RDS_PEM,
-} from './config';
+import sequelizeEnvs from './sequelize';
+import { Environments } from './types';
+import { IS_DEV, NODE_ENV } from './config';
 
 const db = new Sequelize({
-  database: DB_NAME,
-  dialect: 'postgres',
-  host: DB_HOST,
+  ...sequelizeEnvs[NODE_ENV as Environments],
   logging: IS_DEV
     ? (sql): void => {
         // eslint-disable-next-line no-console
         console.log(sql);
       }
     : false,
-  password: DB_PASSWORD,
-  port: DB_PORT,
-  username: DB_USER,
-  dialectOptions: IS_PROD
-    ? {
-        ssl: {
-          rejectUnauthorized: true,
-          ca: [RDS_PEM],
-        },
-      }
-    : undefined,
 });
 
 export default db;

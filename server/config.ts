@@ -25,6 +25,7 @@ export const {
   DB_PASSWORD = 'postgres',
   DB_USER = 'postgres',
 } = process.env;
+export const { NODE_ENV } = process.env;
 export const PUBLIC_BUILD_PATH = path.join(process.cwd(), 'public');
 export const RDS_PEM = fs.readFileSync(
   path.join(process.cwd(), 'keys', 'rds-combined-ca-bundle.pem')

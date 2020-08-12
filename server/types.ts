@@ -1,5 +1,7 @@
 import { AccessTokenPayload } from '../shared-types';
 
+export type Environments = 'production' | 'staging' | 'development';
+
 export enum ValidTrackerSource {
   Legacy = 'legacy',
   Repub = 'repub',
