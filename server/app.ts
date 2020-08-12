@@ -43,7 +43,14 @@ if (ENABLE_SENTRY) {
 
 const app = express();
 
+// ==============================================================================
+// SENTRY MIDDLEWARE
+// ==============================================================================
 app.use(Sentry.Handlers.requestHandler() as express.RequestHandler);
+
+// ==============================================================================
+// SECURITY MIDDLEWARE
+// ==============================================================================
 app.use(
   helmet({
     contentSecurityPolicy: IS_DEV
@@ -58,11 +65,21 @@ app.use(
     permittedCrossDomainPolicies: true,
   })
 );
+
+// ==============================================================================
+// LOGGING MIDDLEWARE
+// ==============================================================================
 app.use(morgan(IS_DEV ? 'dev' : 'tiny'));
 
+// ==============================================================================
+// TEMPLATES MIDDLEWARE
+// ==============================================================================
 app.set('views', TEMPLATES_PATH);
 app.set('view engine', 'pug');
 
+// ==============================================================================
+// STATIC-FILES MIDDLEWARE
+// ==============================================================================
 app.use(express.static(PUBLIC_BUILD_PATH));
 app.use(
   DASHBOARD_STATIC_ALIAS,
@@ -87,18 +104,28 @@ app.use(
     },
     fallthrough: false,
   }),
-  staticFileError()
+  // do not cache 404s because future version numbers are predictable
+  staticFileError({ 'Cache-Control': 'no-store' })
 );
 
+// ==============================================================================
+// WEBPACK MIDDLEWARE
+// ==============================================================================
 if (IS_DEV) {
   app.use(webpackDev(webpack(webpackConfig as webpack.Configuration)));
 }
 
+// ==============================================================================
+// ROUTING MIDDLEWARE
+// ==============================================================================
 app.use(legacyRoutes);
 app.use(pixelRoute);
 app.use(connectSlashes());
 app.use(routes);
 
+// ==============================================================================
+// ERROR-HANDLING MIDDLEWARE
+// ==============================================================================
 app.use(
   (
     error: EnhancedError,
@@ -153,6 +180,9 @@ app.use(
   }
 );
 
+// ==============================================================================
+// CONFIGURE AXIOS
+// ==============================================================================
 axios.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -172,6 +202,9 @@ axios.interceptors.response.use(
   }
 );
 
+// ==============================================================================
+// START NODE
+// ==============================================================================
 db.authenticate()
   .then(() => {
     app.listen(PORT, () => {
