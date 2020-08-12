@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { AccessTokenPayload, UserPermissions } from '../../shared-types';
+import { USER_PERMISSIONS } from '../../shared-config';
+import { AccessTokenPayload } from '../../shared-types';
 import { ForbiddenError } from '../errors';
 
 // eslint-disable-next-line import/prefer-default-export
-export function userPermissions(requiredPerms: UserPermissions[]) {
+export function userPermissions(requiredPerms: USER_PERMISSIONS[]) {
   return (
     target: any,
     propertyKey: string,

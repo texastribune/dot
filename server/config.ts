@@ -36,3 +36,9 @@ export const TRACKER_STATIC_ALIAS = '/analytics/';
 export const TRACKER_BUILD_PATH = path.join(process.cwd(), 'analytics');
 export const TRACKER_SCRIPT = 'pixel.js';
 export const { version: VERSION } = pkg;
+
+export enum VALID_TRACKER_SOURCE {
+  Legacy = 'legacy',
+  Repub = 'repub',
+  Rss = 'rss',
+}

@@ -13,3 +13,7 @@ export const ENABLE_SENTRY = process.env.ENABLE_SENTRY === 'true';
 export const SENTRY_DSN = process.env.SENTRY_DSN;
 export const SENTRY_ENVIRONMENT = process.env.SENTRY_ENVIRONMENT;
 export const VUETIFY_NONCE = process.env.VUETIFY_NONCE || '';
+
+export enum USER_PERMISSIONS {
+  ReadViews = 'dot:view_data',
+}

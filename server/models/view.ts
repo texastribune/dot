@@ -6,20 +6,17 @@ import {
   Filterable,
 } from 'sequelize';
 
+import { USER_PERMISSIONS } from '../../shared-config';
 import {
   AccessTokenPayload,
   ViewsItemByCanonical,
   ViewsItemByDomain,
   ViewsList,
-  UserPermissions,
 } from '../../shared-types';
 import { userPermissions } from '../utils/decorators';
 import sequelize from '../db';
-import {
-  ValidTrackerSource,
-  ViewsListByCanonicalArgs,
-  ViewsListByDomainArgs,
-} from '../types';
+import { ViewsListByCanonicalArgs, ViewsListByDomainArgs } from '../types';
+import { VALID_TRACKER_SOURCE } from '../config';
 
 class View extends Model {
   public id!: number;
@@ -28,7 +25,7 @@ class View extends Model {
 
   public domain!: string | null;
 
-  public source!: ValidTrackerSource;
+  public source!: VALID_TRACKER_SOURCE;
 
   public visitedAt!: Date;
 
@@ -39,7 +36,7 @@ class View extends Model {
   }: {
     canonical: string;
     domain: string;
-    source: ValidTrackerSource;
+    source: VALID_TRACKER_SOURCE;
   }): Promise<View> {
     const view = await View.create({
       canonical,
@@ -50,7 +47,7 @@ class View extends Model {
     return view.save();
   }
 
-  @userPermissions([UserPermissions.ReadViews])
+  @userPermissions([USER_PERMISSIONS.ReadViews])
   public static async getViewsListByCanonical(
     user: AccessTokenPayload,
     { startDate, endDate, domain }: ViewsListByCanonicalArgs
@@ -90,7 +87,7 @@ class View extends Model {
     };
   }
 
-  @userPermissions([UserPermissions.ReadViews])
+  @userPermissions([USER_PERMISSIONS.ReadViews])
   public static async getViewsListByDomain(
     user: AccessTokenPayload,
     { startDate, endDate, canonical }: ViewsListByDomainArgs
@@ -159,7 +156,7 @@ View.init(
       },
     },
     source: {
-      type: DataTypes.ENUM(...Object.values(ValidTrackerSource)),
+      type: DataTypes.ENUM(...Object.values(VALID_TRACKER_SOURCE)),
       allowNull: false,
     },
     visitedAt: {

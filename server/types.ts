@@ -1,16 +1,11 @@
 import { AccessTokenPayload } from '../shared-types';
+import { VALID_TRACKER_SOURCE } from './config';
 
 export type Environments = 'production' | 'staging' | 'development';
 
-export enum ValidTrackerSource {
-  Legacy = 'legacy',
-  Repub = 'repub',
-  Rss = 'rss',
-}
-
 export interface TrackerTokenPayload {
   canonical: string;
-  source: ValidTrackerSource;
+  source: VALID_TRACKER_SOURCE;
   version: string;
 }
 

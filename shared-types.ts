@@ -1,9 +1,7 @@
-export enum UserPermissions {
-  ReadViews = 'dot:view_data',
-}
+import { USER_PERMISSIONS } from './shared-config';
 
 export interface AccessTokenPayload {
-  permissions: UserPermissions[];
+  permissions: USER_PERMISSIONS[];
 }
 
 interface ViewsItem {

@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueRouter, { RouteConfig } from 'vue-router';
 
-import { UserPermissions } from '../../shared-types';
+import { USER_PERMISSIONS } from '../../shared-config';
 import { RouteMeta } from '../types';
 import LoggedIn from './logged-in/Index.vue';
 
@@ -26,7 +26,7 @@ const routes: RouteConfig[] = [
     pathToRegexpOptions: { strict: true },
     meta: buildRouteMeta({
       requiresLogIn: true,
-      permissions: [UserPermissions.ReadViews],
+      permissions: [USER_PERMISSIONS.ReadViews],
     }),
     children: [
       {
@@ -39,7 +39,7 @@ const routes: RouteConfig[] = [
         pathToRegexpOptions: { strict: true },
         meta: buildRouteMeta({
           requiresLogIn: true,
-          permissions: [UserPermissions.ReadViews],
+          permissions: [USER_PERMISSIONS.ReadViews],
         }),
       },
       {
@@ -52,7 +52,7 @@ const routes: RouteConfig[] = [
         pathToRegexpOptions: { strict: true },
         meta: buildRouteMeta({
           requiresLogIn: true,
-          permissions: [UserPermissions.ReadViews],
+          permissions: [USER_PERMISSIONS.ReadViews],
         }),
       },
       {
@@ -65,7 +65,7 @@ const routes: RouteConfig[] = [
         pathToRegexpOptions: { strict: true },
         meta: buildRouteMeta({
           requiresLogIn: true,
-          permissions: [UserPermissions.ReadViews],
+          permissions: [USER_PERMISSIONS.ReadViews],
         }),
       },
     ],

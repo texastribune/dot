@@ -14,9 +14,9 @@ import {
   TRACKER_SCRIPT,
   TRACKER_JWT_SECRET,
   VERSION,
+  VALID_TRACKER_SOURCE,
 } from '../../../config';
 import { UnauthorizedError, TrackerCreationError } from '../../../errors';
-import { ValidTrackerSource } from '../../../types';
 
 const router = express.Router();
 
@@ -63,7 +63,9 @@ router.get('/', (req, res, next) => {
   }
 
   if (
-    !Object.values(ValidTrackerSource).includes(source as ValidTrackerSource)
+    !Object.values(VALID_TRACKER_SOURCE).includes(
+      source as VALID_TRACKER_SOURCE
+    )
   ) {
     return next(
       new TrackerCreationError({

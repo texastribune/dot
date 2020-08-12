@@ -4,7 +4,8 @@ import axios from 'axios';
 import jwt from 'jsonwebtoken';
 import { ActionTree, GetterTree, MutationTree, Module } from 'vuex';
 
-import { AccessTokenPayload, UserPermissions } from '../../shared-types';
+import { USER_PERMISSIONS } from '../../shared-config';
+import { AccessTokenPayload } from '../../shared-types';
 import auth from '../auth';
 import { GET_TOKENS, REFRESH_TOKENS } from './actions';
 
@@ -94,7 +95,7 @@ const getters: GetterTree<State, {}> = {
   accessToken: ({ accessToken }) => accessToken,
 
   userHasPerms: ({ accessTokenPayload: { permissions } }) => (
-    requiredPermissions: UserPermissions[]
+    requiredPermissions: USER_PERMISSIONS[]
   ): boolean => requiredPermissions.every((perm) => permissions.includes(perm)),
 
   isLoggedIn: ({ isLoggedIn }) => isLoggedIn,
