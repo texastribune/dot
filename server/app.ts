@@ -16,6 +16,7 @@ import {
   VUETIFY_NONCE,
 } from '../shared-config';
 import {
+  DASHBOARD_CACHE_TIME,
   DASHBOARD_STATIC_ALIAS,
   DASHBOARD_BUILD_PATH,
   IS_DEV,
@@ -29,6 +30,7 @@ import db from './db';
 import routes from './routes';
 import pixelRoute from './routes/pixel';
 import legacyRoutes from './routes/legacy';
+import staticFileError from './middleware/static-file-error';
 import reportError from './utils/report-error';
 import { AppError, EnhancedError, ResponseError } from './errors';
 
@@ -62,7 +64,18 @@ app.set('views', TEMPLATES_PATH);
 app.set('view engine', 'pug');
 
 app.use(express.static(PUBLIC_BUILD_PATH));
-app.use(DASHBOARD_STATIC_ALIAS, express.static(DASHBOARD_BUILD_PATH));
+app.use(
+  DASHBOARD_STATIC_ALIAS,
+  express.static(DASHBOARD_BUILD_PATH, {
+    setHeaders(res) {
+      res.set({
+        'Cache-Control': `max-age=${DASHBOARD_CACHE_TIME}`,
+      });
+    },
+    fallthrough: false,
+  }),
+  staticFileError()
+);
 app.use(
   TRACKER_STATIC_ALIAS,
   express.static(TRACKER_BUILD_PATH, {
@@ -72,7 +85,9 @@ app.use(
         'Cache-Control': 'no-store',
       });
     },
-  })
+    fallthrough: false,
+  }),
+  staticFileError()
 );
 
 if (IS_DEV) {
