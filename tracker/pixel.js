@@ -6,12 +6,11 @@
     var e = encodeURIComponent;
     var attr = 'data-dot-token';
     var loc = win.location;
-    var currentScript =
-      doc.currentScript || doc.querySelector('script[' + attr + ']');
+    var currentScript = doc.querySelector('script[' + attr + ']');
     var scriptSrcParts = currentScript.src.split('/');
 
     var img = new win.Image(1, 1);
-    var imgSrc = scriptSrcParts[0] + '//' + scriptSrcParts[2] + '/pixel.gif?';
+    var imgSrc = 'https://' + scriptSrcParts[2] + '/pixel.gif?';
     var domain = e(loc.hostname);
     var token = e(currentScript.getAttribute(attr) || '');
 
