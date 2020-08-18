@@ -10,7 +10,7 @@
     var scriptSrcParts = currentScript.src.split('/');
 
     var img = new win.Image(1, 1);
-    var imgSrc = 'https://' + scriptSrcParts[2] + '/pixel.gif?';
+    var imgSrc = scriptSrcParts[0] + '//' + scriptSrcParts[2] + '/pixel.gif?';
     var domain = e(loc.hostname);
     var token = e(currentScript.getAttribute(attr) || '');
 
