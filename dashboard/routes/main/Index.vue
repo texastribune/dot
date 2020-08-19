@@ -42,12 +42,19 @@ const Component = Vue.extend({
     } = getInitialDates(this.$route);
 
     return {
+      // what a user has clicked in the date picker
+      chosenPickerDates: [startDate, endDate],
+      // fallback in case valid query params not provided
       defaultDates: [defaultStartDate, defaultEndDate],
+      // the month the date picker is currently showing
+      displayedPickerDates: '',
+      // the dates used in GraphQL queries
       finalDates: [startDate, endDate],
-      pickerDates: [startDate, endDate],
+      // contains a user-friendly message if valid query params not provided
       pickerError: error,
-      modalIsVisible: false,
+
       calendarIcon: mdiCalendar,
+      modalIsVisible: false,
     };
   },
 
@@ -81,7 +88,7 @@ const Component = Vue.extend({
     },
 
     updateBtnReady(): boolean {
-      return this.pickerDates.length === 2;
+      return this.chosenPickerDates.length === 2;
     },
 
     rangeSentence(): string {
@@ -119,13 +126,13 @@ const Component = Vue.extend({
 
   methods: {
     onUpdateClick(): void {
-      const [startDate, endDate] = this.pickerDates;
+      const [startDate, endDate] = this.chosenPickerDates;
       this.$router.push({ query: { startDate, endDate } });
       this.closeModal();
     },
 
     onPickerChange(newDates: string[]): void {
-      this.pickerDates = newDates.sort();
+      this.chosenPickerDates = newDates.sort();
     },
 
     focusOnInput(): void {
@@ -139,7 +146,8 @@ const Component = Vue.extend({
     },
 
     resetPicker(): void {
-      this.pickerDates = [...this.finalDates];
+      this.chosenPickerDates = [...this.finalDates];
+      this.displayedPickerDates = this.finalDates.join();
     },
   },
 });
@@ -182,7 +190,12 @@ export default Component;
           </v-text-field>
         </template>
 
-        <v-date-picker v-model="pickerDates" range @change="onPickerChange">
+        <v-date-picker
+          v-model="chosenPickerDates"
+          :picker-date.sync="displayedPickerDates"
+          range
+          @change="onPickerChange"
+        >
           <v-btn text color="primary" @click="closeModal">Cancel</v-btn>
           <v-btn
             text
