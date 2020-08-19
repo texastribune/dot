@@ -12,7 +12,7 @@
   },
   "extends": [
     "airbnb-base",
-    "plugin:vue/vue3-recommended",
+    "plugin:vue/recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:import/typescript",
     "prettier",
