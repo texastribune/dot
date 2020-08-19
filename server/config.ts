@@ -39,6 +39,7 @@ export const { version: VERSION } = pkg;
 
 export enum VALID_TRACKER_SOURCE {
   Legacy = 'legacy',
+  Manual = 'manual',
   Repub = 'repub',
   Rss = 'rss',
 }
