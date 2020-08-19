@@ -91,6 +91,10 @@ const Component = Vue.extend({
       return this.chosenPickerDates.length === 2;
     },
 
+    pickerMax(): string {
+      return moment().format('YYYY-MM-DD');
+    },
+
     rangeSentence(): string {
       return `${this.displayStartDate} through ${this.displayEndDate}`;
     },
@@ -192,6 +196,7 @@ export default Component;
 
         <v-date-picker
           v-model="chosenPickerDates"
+          :max="pickerMax"
           :picker-date.sync="displayedPickerDates"
           range
           @change="onPickerChange"
