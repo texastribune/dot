@@ -18,14 +18,20 @@ import {
   RateLimitError,
 } from '../../errors';
 import reportError from '../../utils/report-error';
+import privateCacheMiddleware from '../../middleware/private-cache';
 import typeDefs from './schema';
 import resolvers from './resolvers';
 
 const router = express.Router();
 
 router.use(
+  privateCacheMiddleware,
   (req, res, next) => {
-    res.set('Cache-Control', 'no-store');
+    if (req.method === 'GET') {
+      // remove the content-type header that Apollo client mistakenly adds to GETs
+      // this is bad because express-graphql then assumes it's a POST request
+      delete req.headers['content-type'];
+    }
     next();
   },
   jwt({
@@ -39,22 +45,6 @@ router.use(
   graphql({
     schema: makeExecutableSchema({ typeDefs, resolvers }),
     graphiql: IS_DEV,
-    customFormatErrorFn(error) {
-      const { originalError } = error;
-
-      reportError(originalError || error);
-
-      if (originalError && originalError instanceof AppError) {
-        return {
-          status: originalError.status,
-          message: originalError.message,
-        };
-      }
-      return {
-        status: 500,
-        message: statuses(500),
-      };
-    },
   })
 );
 
