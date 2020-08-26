@@ -28,10 +28,7 @@ router.get('/', async (req, res, next) => {
       }
     );
 
-    // prettier-ignore
-    return res
-      .header('Cache-Control', 'no-store')
-      .json({ tokens });
+    return res.json({ tokens });
   } catch (error) {
     if (error instanceof ResponseError) {
       const responseError = error as ResponseError<auth0.Auth0Error>;
