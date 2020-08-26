@@ -3,7 +3,10 @@
 
 import Vue from 'vue';
 import Vuetify, { VIcon } from 'vuetify/lib';
-import ApolloClient from 'apollo-boost';
+import { ApolloClient } from 'apollo-client';
+import { ApolloLink } from 'apollo-link';
+import { createHttpLink } from 'apollo-link-http';
+import { InMemoryCache } from 'apollo-cache-inmemory';
 import VueApollo from 'vue-apollo';
 import VueMeta from 'vue-meta';
 
@@ -16,6 +19,9 @@ import { SET_APP_ERROR, SET_APP_IS_LOADING } from './store/actions';
 import { logIn } from './auth';
 import App from './App.vue';
 
+// ==============================================================================
+// ROUTING
+// ==============================================================================
 router.onError((error) => {
   store.dispatch(`${CONTEXT_MODULE}/${SET_APP_ERROR}`, error);
 });
@@ -43,25 +49,41 @@ router.afterEach(() => {
   store.dispatch(`${CONTEXT_MODULE}/${SET_APP_IS_LOADING}`, false);
 });
 
-const apolloClient = new ApolloClient({
+// ==============================================================================
+// APOLLO + GRAPHQL
+// ==============================================================================
+const httpLink = createHttpLink({
   uri: `${APP_URL}/graph/`,
-  request: (operation): void => {
-    const accessToken = store.getters[`${USER_MODULE}/accessToken`];
+  useGETForQueries: true,
+});
 
-    if (accessToken) {
-      operation.setContext({
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-    }
-  },
+const authMiddleware = new ApolloLink((operation, forward) => {
+  const accessToken = store.getters[`${USER_MODULE}/accessToken`];
+
+  if (accessToken) {
+    operation.setContext(({ headers = {} }) => ({
+      headers: {
+        ...headers,
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }));
+  }
+
+  return forward(operation);
+});
+
+const apolloClient = new ApolloClient({
+  cache: new InMemoryCache(),
+  link: authMiddleware.concat(httpLink),
 });
 
 const apolloProvider = new VueApollo({
   defaultClient: apolloClient,
 });
 
+// ==============================================================================
+// GET VUE READY
+// ==============================================================================
 Vue.use(VueApollo);
 Vue.use(Vuetify);
 Vue.use(VueMeta);

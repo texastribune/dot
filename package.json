@@ -21,7 +21,10 @@
   "dependencies": {
     "@mdi/js": "^5.4.45",
     "@sentry/node": "^5.15.4",
-    "apollo-boost": "^0.4.9",
+    "apollo-cache-inmemory": "^1.6.6",
+    "apollo-client": "^2.6.10",
+    "apollo-link": "^1.2.14",
+    "apollo-link-http": "^1.5.17",
     "auth0-js": "^9.13.3",
     "axios": "^0.19.2",
     "connect-slashes": "^1.4.0",
