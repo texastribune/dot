@@ -19,6 +19,7 @@ import {
   DASHBOARD_CACHE_TIME,
   DASHBOARD_STATIC_ALIAS,
   DASHBOARD_BUILD_PATH,
+  DEFAULT_CACHE_TIME,
   IS_DEV,
   PORT,
   PUBLIC_BUILD_PATH,
@@ -30,7 +31,7 @@ import db from './db';
 import routes from './routes';
 import pixelRoute from './routes/pixel';
 import legacyRoutes from './routes/legacy';
-import staticFileError from './middleware/static-file-error';
+import staticFileErrorMiddleware from './middleware/static-file-error';
 import reportError from './utils/report-error';
 import { AppError, EnhancedError, ResponseError } from './errors';
 
@@ -91,7 +92,7 @@ app.use(
     },
     fallthrough: false,
   }),
-  staticFileError()
+  staticFileErrorMiddleware()
 );
 app.use(
   TRACKER_STATIC_ALIAS,
@@ -105,8 +106,18 @@ app.use(
     fallthrough: false,
   }),
   // do not cache 404s because future version numbers are predictable
-  staticFileError({ 'Cache-Control': 'no-store' })
+  staticFileErrorMiddleware({ 'Cache-Control': 'no-store' })
 );
+
+// ==============================================================================
+// CACHING MIDDLEWARE
+// ==============================================================================
+app.use((req, res, next) => {
+  if (req.method === 'GET' && !req.headers.authorization) {
+    res.set('Cache-Control', `max-age=${DEFAULT_CACHE_TIME}`);
+  }
+  next();
+});
 
 // ==============================================================================
 // WEBPACK MIDDLEWARE
@@ -133,7 +144,6 @@ app.use(
     res: express.Response,
     next: express.NextFunction
   ) => {
-    res.set('Cache-Control', 'no-store');
     reportError(error);
     next(error);
   }
