@@ -100,13 +100,13 @@ app.use(
     setHeaders(res) {
       res.set({
         'Access-Control-Allow-Origin': '*',
-        'Cache-Control': 'no-store',
+        'Cache-Control': 'no-cache',
       });
     },
     fallthrough: false,
   }),
   // do not cache 404s because future version numbers are predictable
-  staticFileErrorMiddleware({ 'Cache-Control': 'no-store' })
+  staticFileErrorMiddleware({ 'Cache-Control': 'no-cache' })
 );
 
 // ==============================================================================
