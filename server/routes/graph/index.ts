@@ -18,14 +18,14 @@ import {
   RateLimitError,
 } from '../../errors';
 import reportError from '../../utils/report-error';
-import privateCacheMiddleware from '../../middleware/private-cache';
+import noCacheMiddleware from '../../middleware/no-cache';
 import typeDefs from './schema';
 import resolvers from './resolvers';
 
 const router = express.Router();
 
 router.use(
-  privateCacheMiddleware,
+  noCacheMiddleware,
   (req, res, next) => {
     if (req.method === 'GET') {
       // remove the content-type header that Apollo client mistakenly adds to GETs

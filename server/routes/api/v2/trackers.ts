@@ -17,8 +17,12 @@ import {
   VALID_TRACKER_SOURCE,
 } from '../../../config';
 import { UnauthorizedError, TrackerCreationError } from '../../../errors';
+import noCacheMiddleware from '../../../middleware/no-cache';
 
 const router = express.Router();
+
+// caching middleware
+router.use(noCacheMiddleware);
 
 // authorization middleware
 router.get('/', (req, res, next) => {

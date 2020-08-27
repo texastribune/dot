@@ -5,6 +5,7 @@ import semver from 'semver';
 import { TRACKER_JWT_SECRET } from '../config';
 import { TrackerTokenPayload } from '../types';
 import View from '../models/view';
+import noCacheMiddleware from '../middleware/no-cache';
 import reportError from '../utils/report-error';
 
 const router = express.Router();
@@ -13,6 +14,7 @@ const gif = Buffer.from(
   'base64'
 );
 
+router.use(noCacheMiddleware);
 router.get('/pixel.gif', async (req, res) => {
   const { token, domain } = req.query;
 

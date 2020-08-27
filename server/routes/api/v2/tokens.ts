@@ -10,9 +10,11 @@ import {
 } from '../../../../shared-config';
 import { AUTH0_CLIENT_SECRET } from '../../../config';
 import { ResponseError, UnauthorizedError, Auth0Error } from '../../../errors';
+import noCacheMiddleware from '../../../middleware/no-cache';
 
 const router = express.Router();
 
+router.use(noCacheMiddleware);
 router.get('/', async (req, res, next) => {
   const { code } = req.query;
 
