@@ -70,7 +70,13 @@ app.use(
 // ==============================================================================
 // LOGGING MIDDLEWARE
 // ==============================================================================
-app.use(morgan(IS_DEV ? 'dev' : 'tiny'));
+app.use(
+  morgan(
+    IS_DEV
+      ? 'dev'
+      : ':remote-addr :method :url :status :response-time ms - :res[content-length]'
+  )
+);
 
 // ==============================================================================
 // TEMPLATES MIDDLEWARE
