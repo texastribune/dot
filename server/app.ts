@@ -119,8 +119,12 @@ app.use(
 // CACHING MIDDLEWARE
 // ==============================================================================
 app.use((req, res, next) => {
-  if (req.method === 'GET' && !req.headers.authorization) {
-    res.set('Cache-Control', `max-age=${DEFAULT_CACHE_TIME}`);
+  if (req.method === 'GET') {
+    if (req.headers.authorization) {
+      res.set('Cache-Control', 'no-store');
+    } else {
+      res.set('Cache-Control', `max-age=${DEFAULT_CACHE_TIME}`);
+    }
   }
   next();
 });
