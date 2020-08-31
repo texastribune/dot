@@ -9,6 +9,7 @@ import statuses from 'statuses';
 import axios, { AxiosError } from 'axios';
 
 import webpackConfig from '../webpack.config';
+import { NetworkError } from '../shared-errors';
 import {
   SENTRY_ENVIRONMENT,
   ENABLE_SENTRY,
@@ -33,7 +34,7 @@ import pixelRoute from './routes/pixel';
 import legacyRoutes from './routes/legacy';
 import staticFileErrorMiddleware from './middleware/static-file-error';
 import reportError from './utils/report-error';
-import { AppError, EnhancedError, ResponseError } from './errors';
+import { AppError, EnhancedError } from './errors';
 
 if (ENABLE_SENTRY) {
   Sentry.init({
@@ -206,19 +207,21 @@ app.use(
 axios.interceptors.response.use(
   (response) => response,
   (error) => {
-    const responseError = error as AxiosError;
-    const { code, response, message } = responseError;
-    const data = response ? response.data : undefined;
-    const status = response ? response.status : undefined;
+    if (error.isAxiosError) {
+      const networkError = error as AxiosError;
 
-    return Promise.reject(
-      new ResponseError({
-        code,
-        data,
-        message,
-        status,
-      })
-    );
+      return Promise.reject(
+        new NetworkError({
+          code: networkError.code,
+          message: networkError.message,
+          status: networkError.response
+            ? networkError.response.status
+            : undefined,
+          data: networkError.response ? networkError.response.data : undefined,
+        })
+      );
+    }
+    return Promise.reject(error);
   }
 );
 
