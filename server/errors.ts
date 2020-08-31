@@ -4,115 +4,70 @@ export interface EnhancedError extends Error {
   status?: number;
 }
 
-// prettier-ignore
-export abstract class AppError<T = undefined> extends Error implements EnhancedError {
+export abstract class AppError extends Error implements EnhancedError {
   public status: number;
-
-  public extra?: T;
 
   constructor({
     message,
     name,
-    status,
-    extra,
+    status = 500,
   }: {
     message: string;
     name: string;
-    status: number;
-    extra?: T;
+    status?: number;
   }) {
     super(message);
     this.name = name;
     this.status = status;
-    this.extra = extra;
-  }
-}
-export class ResponseError<T> extends Error implements EnhancedError {
-  public code?: string;
-
-  public data?: T;
-
-  public status: number;
-
-  constructor({
-    code,
-    data,
-    message,
-    status = 500,
-  }: {
-    code?: string;
-    data?: T;
-    message: string;
-    status?: number;
-  }) {
-    super(message);
-    this.name = 'ResponseError';
-    this.code = code;
-    this.data = data;
-    this.status = status;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  public formatExtra() {
-    const { code, data, status } = this;
-    return { code, data, status };
   }
 }
 
-export class SignInError<T> extends AppError<T> {
-  constructor({
-    message,
-    status,
-    extra,
-  }: {
-    message: string;
-    status: number;
-    extra?: T;
-  }) {
-    super({ message, status, extra, name: 'SignInError' });
+export class InvalidAuth0CodeError extends AppError {
+  constructor() {
+    super({
+      message: 'Invalid authorization code',
+      status: 401,
+      name: 'InvalidAuth0CodeError',
+    });
   }
 }
 
-export class UnauthorizedError<T> extends AppError<T> {
-  constructor({ message, extra }: { message: string; extra?: T }) {
-    super({ message, status: 401, extra, name: 'UnauthorizedError' });
+export class Auth0CodeRetrievalError extends AppError {
+  constructor() {
+    super({
+      message: 'Error retrieving authorization tokens',
+      status: 500,
+      name: 'Auth0CodeRetrievalError',
+    });
   }
 }
 
-export class TrackerCreationError<T> extends AppError<T> {
-  constructor({ message, extra }: { message: string; extra?: T }) {
-    super({ message, status: 400, extra, name: 'TrackerCreationError' });
-  }
-}
-
-export class Auth0Error<T> extends AppError<T> {
-  constructor({ message, extra }: { message: string; extra?: T }) {
-    super({ message, status: 500, extra, name: 'Auth0Error' });
-  }
-}
-
-export class ForbiddenError<T> extends AppError<T> {
-  constructor({ extra }: { extra?: T } = {}) {
+export class ForbiddenError extends AppError {
+  constructor() {
     super({
       message: 'Insufficient permissions',
       status: 403,
-      extra,
       name: 'ForbiddenError',
     });
   }
 }
 
-export class RateLimitError<T> extends AppError<T> {
-  constructor({
-    extra,
-  }: {
-    extra?: T;
-  } = {}) {
+export class UnauthorizedError extends AppError {
+  constructor() {
     super({
-      message: 'Too many requests',
-      status: 429,
-      extra,
-      name: 'RateLimitError',
+      message: 'Invalid authorization credentials',
+      status: 401,
+      name: 'UnauthorizedError',
+    });
+  }
+}
+
+export class TrackerCreationError extends AppError {
+  constructor(message: string) {
+    super({
+      message,
+      status: 400,
+      name: 'TrackerCreationError',
     });
   }
 }
