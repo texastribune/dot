@@ -13,7 +13,7 @@ import {
   ViewsItemByDomain,
   ViewsList,
 } from '../../shared-types';
-import { userPermissions } from '../utils/decorators';
+import userPermissions from '../decorators/user-permissions';
 import sequelize from '../db';
 import { ViewsListByCanonicalArgs, ViewsListByDomainArgs } from '../types';
 import { VALID_TRACKER_SOURCE } from '../config';

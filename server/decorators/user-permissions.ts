@@ -2,10 +2,9 @@
 
 import { USER_PERMISSIONS } from '../../shared-config';
 import { AccessTokenPayload } from '../../shared-types';
-import { ForbiddenError } from '../errors';
+import { InsufficientPermissionsError } from '../errors';
 
-// eslint-disable-next-line import/prefer-default-export
-export function userPermissions(requiredPerms: USER_PERMISSIONS[]) {
+export default function userPermissions(requiredPerms: USER_PERMISSIONS[]) {
   return (
     target: any,
     propertyKey: string,
@@ -23,7 +22,7 @@ export function userPermissions(requiredPerms: USER_PERMISSIONS[]) {
           user.permissions.includes(requiredPerm)
         )
       ) {
-        throw new ForbiddenError();
+        throw new InsufficientPermissionsError();
       }
       return originalMethod.apply(this, [user, ...args]);
     };
