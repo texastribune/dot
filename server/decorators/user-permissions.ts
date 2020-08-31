@@ -2,7 +2,7 @@
 
 import { USER_PERMISSIONS } from '../../shared-config';
 import { AccessTokenPayload } from '../../shared-types';
-import { InsufficientPermissionsError } from '../errors';
+import { ForbiddenError, UnauthorizedError } from '../errors';
 
 export default function userPermissions(requiredPerms: USER_PERMISSIONS[]) {
   return (
@@ -17,13 +17,18 @@ export default function userPermissions(requiredPerms: USER_PERMISSIONS[]) {
       user: AccessTokenPayload,
       ...args: any[]
     ): any {
+      if (!user) {
+        throw new UnauthorizedError();
+      }
+
       if (
         !requiredPerms.every((requiredPerm) =>
           user.permissions.includes(requiredPerm)
         )
       ) {
-        throw new InsufficientPermissionsError();
+        throw new ForbiddenError();
       }
+
       return originalMethod.apply(this, [user, ...args]);
     };
   };

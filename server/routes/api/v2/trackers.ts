@@ -7,6 +7,7 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 
 import { APP_URL } from '../../../../shared-config';
+import noCacheMiddleware from '../../../middleware/no-cache';
 import {
   ACCESS_IDS,
   TRACKER_STATIC_ALIAS,
@@ -16,8 +17,11 @@ import {
   VERSION,
   VALID_TRACKER_SOURCE,
 } from '../../../config';
-import { UnauthorizedError, TrackerCreationError } from '../../../errors';
-import noCacheMiddleware from '../../../middleware/no-cache';
+import {
+  UnauthorizedError,
+  ForbiddenError,
+  TrackerCreationError,
+} from '../../../errors';
 
 const router = express.Router();
 
@@ -27,11 +31,7 @@ router.use(noCacheMiddleware);
 // authorization middleware
 router.get('/', (req, res, next) => {
   if (!req.headers.authorization) {
-    return next(
-      new UnauthorizedError({
-        message: 'No authorization ID',
-      })
-    );
+    return next(new UnauthorizedError());
   }
 
   const [, accessId] = req.headers.authorization.split(' ');
@@ -44,11 +44,7 @@ router.get('/', (req, res, next) => {
   });
 
   if (!isAllowed) {
-    return next(
-      new UnauthorizedError({
-        message: 'Invalid authorization ID',
-      })
-    );
+    return next(new ForbiddenError());
   }
 
   return next();
@@ -59,11 +55,7 @@ router.get('/', (req, res, next) => {
   const { canonical, source } = req.query;
 
   if (typeof canonical !== 'string' || typeof source !== 'string') {
-    return next(
-      new TrackerCreationError({
-        message: 'Invalid query parameters',
-      })
-    );
+    return next(new TrackerCreationError('Invalid query parameters'));
   }
 
   if (
@@ -71,22 +63,14 @@ router.get('/', (req, res, next) => {
       source as VALID_TRACKER_SOURCE
     )
   ) {
-    return next(
-      new TrackerCreationError({
-        message: 'Invalid source',
-      })
-    );
+    return next(new TrackerCreationError('Invalid source'));
   }
 
   try {
     // eslint-disable-next-line no-new
     new URL(canonical);
   } catch (err) {
-    return next(
-      new TrackerCreationError({
-        message: 'Invalid canonical URL',
-      })
-    );
+    return next(new TrackerCreationError('Invalid canonical URL'));
   }
 
   return next();
