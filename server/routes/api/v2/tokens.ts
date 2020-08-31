@@ -8,13 +8,19 @@ import {
   AUTH0_REDIRECT_URI,
   AUTH0_TOKEN_URL,
 } from '../../../../shared-config';
+import { NetworkError } from '../../../../shared-errors';
 import { AUTH0_CLIENT_SECRET } from '../../../config';
-import { ResponseError, UnauthorizedError, Auth0Error } from '../../../errors';
 import noCacheMiddleware from '../../../middleware/no-cache';
+import reportError from '../../../utils/report-error';
+import {
+  InvalidAuth0CodeError,
+  Auth0CodeRetrievalError,
+} from '../../../errors';
 
 const router = express.Router();
 
 router.use(noCacheMiddleware);
+
 router.get('/', async (req, res, next) => {
   const { code } = req.query;
 
@@ -32,26 +38,18 @@ router.get('/', async (req, res, next) => {
 
     return res.json({ tokens });
   } catch (error) {
-    if (error instanceof ResponseError) {
-      const responseError = error as ResponseError<auth0.Auth0Error>;
+    if (error instanceof NetworkError) {
+      const responseError = error as NetworkError<auth0.Auth0Error>;
       const invalidCode =
         responseError.data &&
         responseError.data.error_description === 'Invalid authorization code';
 
       if (invalidCode) {
-        return next(
-          new UnauthorizedError({
-            message: 'Invalid authorization code',
-          })
-        );
+        return next(new InvalidAuth0CodeError());
       }
 
-      return next(
-        new Auth0Error({
-          message: 'Error retrieving authorization tokens',
-          extra: responseError.formatExtra(),
-        })
-      );
+      reportError(error);
+      return next(new Auth0CodeRetrievalError());
     }
 
     return next(error);
