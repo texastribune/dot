@@ -170,10 +170,12 @@ app.use(
     next: express.NextFunction
   ) => {
     const status = error.status || 500;
-    const message =
-      error instanceof AppError ? error.message : statuses(status);
 
-    res.status(status).json({ message });
+    if (error instanceof AppError) {
+      res.status(status).json({ message: error.message });
+    } else {
+      res.status(status).json({ message: statuses(status) });
+    }
   }
 );
 
@@ -186,18 +188,13 @@ app.use(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     next: express.NextFunction
   ) => {
-    let status;
-    let message;
+    const status = error.status || 500;
 
     if (error instanceof AppError) {
-      status = error.status;
-      message = error.message;
+      res.status(500).json({ errors: [{ status, message: error.message }] });
     } else {
-      status = 500;
-      message = statuses(500);
+      res.status(500).json({ errors: [{ status, message: statuses(status) }] });
     }
-
-    res.status(500).json({ errors: [{ status, message }] });
   }
 );
 

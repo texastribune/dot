@@ -12,10 +12,7 @@ import { NetworkError } from '../../../../shared-errors';
 import { AUTH0_CLIENT_SECRET } from '../../../config';
 import noCacheMiddleware from '../../../middleware/no-cache';
 import reportError from '../../../utils/report-error';
-import {
-  InvalidAuth0CodeError,
-  Auth0CodeRetrievalError,
-} from '../../../errors';
+import { InvalidAuth0CodeError, InternalServerError } from '../../../errors';
 
 const router = express.Router();
 
@@ -49,7 +46,7 @@ router.get('/', async (req, res, next) => {
       }
 
       reportError(error);
-      return next(new Auth0CodeRetrievalError());
+      return next(new InternalServerError());
     }
 
     return next(error);

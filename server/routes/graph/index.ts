@@ -11,12 +11,7 @@ import {
   AUTH0_PUBLIC_KEY_URL,
 } from '../../../shared-config';
 import { IS_DEV } from '../../config';
-import {
-  AppError,
-  EnhancedError,
-  UnauthorizedError,
-  RateLimitError,
-} from '../../errors';
+import { AppError, EnhancedError, UnauthorizedError } from '../../errors';
 import reportError from '../../utils/report-error';
 import noCacheMiddleware from '../../middleware/no-cache';
 import typeDefs from './schema';
@@ -45,6 +40,22 @@ router.use(
   graphql({
     schema: makeExecutableSchema({ typeDefs, resolvers }),
     graphiql: IS_DEV,
+    customFormatErrorFn(error) {
+      const { originalError } = error;
+
+      if (originalError) {
+        reportError(originalError);
+
+        const origError = originalError as EnhancedError;
+        const status = origError.status || 500;
+        const message =
+          origError instanceof AppError ? error.message : statuses(status);
+
+        return { status, message };
+      }
+
+      return { status: 400, message: error.message };
+    },
   })
 );
 
@@ -56,11 +67,7 @@ router.use(
     next: express.NextFunction
   ) => {
     if (error instanceof jwt.UnauthorizedError) {
-      return next(new UnauthorizedError({ message: 'Invalid access token' }));
-    }
-
-    if (error instanceof jwksRsa.JwksRateLimitError) {
-      return next(new RateLimitError());
+      return next(new UnauthorizedError());
     }
 
     return next(error);

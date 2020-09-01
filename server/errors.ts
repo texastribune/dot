@@ -10,15 +10,25 @@ export abstract class AppError extends Error implements EnhancedError {
   constructor({
     message,
     name,
-    status = 500,
+    status,
   }: {
     message: string;
     name: string;
-    status?: number;
+    status: number;
   }) {
     super(message);
     this.name = name;
     this.status = status;
+  }
+}
+
+export class InternalServerError extends AppError {
+  constructor() {
+    super({
+      message: 'Internal server error',
+      status: 500,
+      name: 'InternalServerError',
+    });
   }
 }
 
@@ -28,16 +38,6 @@ export class InvalidAuth0CodeError extends AppError {
       message: 'Invalid authorization code',
       status: 401,
       name: 'InvalidAuth0CodeError',
-    });
-  }
-}
-
-export class Auth0CodeRetrievalError extends AppError {
-  constructor() {
-    super({
-      message: 'Error retrieving authorization tokens',
-      status: 500,
-      name: 'Auth0CodeRetrievalError',
     });
   }
 }
