@@ -29,24 +29,6 @@ class View extends Model {
 
   public visitedAt!: Date;
 
-  public static async createView({
-    canonical,
-    domain,
-    source,
-  }: {
-    canonical: string;
-    domain: string;
-    source: VALID_TRACKER_SOURCE;
-  }): Promise<View> {
-    const view = await View.create({
-      canonical,
-      source,
-      domain: domain || null,
-    });
-
-    return view.save();
-  }
-
   @userPermissions([USER_PERMISSIONS.ReadViews])
   public static async getViewsListByCanonical(
     user: AccessTokenPayload,
@@ -142,18 +124,7 @@ View.init(
     domain: {
       type: DataTypes.TEXT,
       allowNull: true,
-      validate: {
-        notTest(value: string): void {
-          if (value.includes('localhost')) {
-            throw new Error('Domain contains "localhost"');
-          }
-        },
-        notS3(value: string): void {
-          if (value.includes('s3.amazonaws.com')) {
-            throw new Error('Domain contains "s3.amazonaws.com"');
-          }
-        },
-      },
+      validate: { notContains: 'localhost' },
     },
     source: {
       type: DataTypes.ENUM(...Object.values(VALID_TRACKER_SOURCE)),
