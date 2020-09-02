@@ -15,6 +15,7 @@ const gif = Buffer.from(
 );
 
 router.use(noCacheMiddleware);
+
 router.get('/pixel.gif', async (req, res) => {
   const { token, domain } = req.query;
 
@@ -40,11 +41,13 @@ router.get('/pixel.gif', async (req, res) => {
     const { canonical, source, version } = tokenPayload as TrackerTokenPayload;
 
     if (semver.gte(version, '2.1.0')) {
-      const view = await View.createView({
+      const view = await View.create({
         canonical,
         source,
-        domain: domain as string,
+        domain: domain || null,
       });
+
+      await view.save();
 
       // eslint-disable-next-line no-console
       console.log(
@@ -54,12 +57,12 @@ router.get('/pixel.gif', async (req, res) => {
   } catch (error) {
     reportError(error);
   } finally {
-    res.set({
-      'Content-Type': 'image/gif',
-      'Content-Length': gif.length,
-    });
-
-    res.send(gif);
+    res
+      .set({
+        'Content-Type': 'image/gif',
+        'Content-Length': gif.length,
+      })
+      .send(gif);
   }
 });
 
