@@ -20,6 +20,8 @@
   },
   "dependencies": {
     "@mdi/js": "^5.4.45",
+    "@sentry/browser": "^5.22.3",
+    "@sentry/integrations": "^5.22.3",
     "@sentry/node": "^5.15.4",
     "apollo-cache-inmemory": "^1.6.6",
     "apollo-client": "^2.6.10",

@@ -10,6 +10,7 @@ import { VApp, VAppBar, VOverlay } from 'vuetify/lib';
 
 import { CONTEXT_MODULE } from './store';
 import { SET_APP_ERROR } from './store/actions';
+import reportError from './utils/report-error';
 import LoadingWheel from './components/LoadingWheel.vue';
 import ErrorView from './ErrorView.vue';
 
@@ -33,6 +34,8 @@ export default Vue.extend({
 
   errorCaptured(error) {
     this[SET_APP_ERROR](error);
+    reportError(error);
+    return false;
   },
 
   metaInfo: {

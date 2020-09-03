@@ -40,6 +40,7 @@ const config = {
       'AUTH0_DOMAIN',
       'AUTH0_CLIENT_ID',
       'VUETIFY_NONCE',
+      'SENTRY_DSN',
     ]),
     new WebpackAssetsManifest({
       entrypoints: true,

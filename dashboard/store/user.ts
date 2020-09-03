@@ -3,10 +3,11 @@
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
 import { ActionTree, GetterTree, MutationTree, Module } from 'vuex';
+import { setUser } from '@sentry/browser';
 
 import { USER_PERMISSIONS } from '../../shared-config';
 import { AccessTokenPayload } from '../../shared-types';
-import auth from '../auth';
+import auth from '../utils/auth';
 import { GET_TOKENS, REFRESH_TOKENS } from './actions';
 
 interface State {
@@ -17,7 +18,10 @@ interface State {
 }
 
 function getInitialAccessTokenPayload(): AccessTokenPayload {
-  return { permissions: [] };
+  return {
+    sub: '',
+    permissions: [],
+  };
 }
 
 function createDefaultState(): State {
@@ -46,24 +50,25 @@ const mutations: MutationTree<State> = {
   },
 
   SET_READY(state: State, accessToken: string): void {
+    const accessTokenPayload = jwt.decode(accessToken) as AccessTokenPayload;
+
     state.isLoggedIn = true;
     state.accessToken = accessToken;
-    state.accessTokenPayload = jwt.decode(accessToken) as AccessTokenPayload;
+    state.accessTokenPayload = accessTokenPayload;
+
+    setUser({ id: accessTokenPayload.sub });
   },
 };
 
 const actions: ActionTree<State, {}> = {
   [GET_TOKENS]: async ({ commit }, code): Promise<void> => {
-    try {
-      const {
-        data: { tokens },
-      } = await axios.get<{
-        tokens: { id_token: string; access_token: string };
-      }>(`/api/v2/tokens/?code=${code}`);
-      commit('SET_READY', tokens.access_token);
-    } catch (error) {
-      commit('SET_ERROR', error);
-    }
+    const {
+      data: { tokens },
+    } = await axios.get<{
+      tokens: { access_token: string };
+    }>(`/api/v2/tokens/?code=${code}`);
+
+    commit('SET_READY', tokens.access_token);
   },
 
   [REFRESH_TOKENS]: async ({ commit }): Promise<void> => {

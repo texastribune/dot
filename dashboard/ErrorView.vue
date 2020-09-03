@@ -8,7 +8,7 @@ import Vue from 'vue';
 import { mapGetters } from 'vuex';
 import { VMain, VContainer, VRow, VCol } from 'vuetify/lib';
 
-import { AppError } from '../server/errors';
+import { AppError } from './errors';
 import { CONTEXT_MODULE } from './store';
 
 export default Vue.extend({

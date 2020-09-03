@@ -1,25 +1,22 @@
 /* eslint-disable max-classes-per-file */
 
-import { AppError } from '../server/errors';
-
-export class NotAllowedError<T> extends AppError<T> {
-  constructor({ extra }: { extra?: T } = {}) {
-    super({
-      extra,
-      message: 'You do not have sufficient permissions to view this route',
-      name: 'NotAllowedError',
-      status: 403,
-    });
+export abstract class AppError extends Error {
+  // eslint-disable-next-line no-useless-constructor
+  constructor(message: string) {
+    super(message);
   }
 }
 
-export class InvalidDatesError<T> extends AppError<T> {
-  constructor({ message, extra }: { message: string; extra?: T }) {
-    super({
-      extra,
-      message,
-      name: 'InvalidDatesError',
-      status: 400,
-    });
+export class NotAllowedError extends AppError {
+  constructor() {
+    super('You do not have sufficient permissions to view this route');
+    this.name = 'NotAllowedError';
+  }
+}
+
+export class InvalidDatesError extends AppError {
+  constructor(message: string) {
+    super(message);
+    this.name = 'InvalidDatesError';
   }
 }

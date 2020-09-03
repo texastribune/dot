@@ -28,6 +28,7 @@ export default Vue.extend({
         return router.push({ name: 'overview' });
       }
       const { name, params, query } = JSON.parse(next);
+
       return router.push({ name, params, query });
     }, 3000);
   },

@@ -9,7 +9,7 @@ interface DatePickerValues {
   endDate: string;
   defaultStartDate: string;
   defaultEndDate: string;
-  error?: InvalidDatesError<undefined>;
+  error?: InvalidDatesError;
 }
 
 const todayObj = moment().startOf('day');
@@ -35,29 +35,27 @@ export default function getInitialDates(route: Route): DatePickerValues {
   if ((startDate && !endDate) || (!startDate && endDate)) {
     return {
       ...fallback,
-      error: new InvalidDatesError({
-        message:
-          'If you provide a start date, you must also provide an end date',
-      }),
+      error: new InvalidDatesError(
+        'If you provide a start date, you must also provide an end date'
+      ),
     };
   }
 
   if (!moment(startIso).isValid() || !moment(endIso).isValid()) {
     return {
       ...fallback,
-      error: new InvalidDatesError({
-        message: 'The provided dates have invalid formatting',
-      }),
+      error: new InvalidDatesError(
+        'The provided dates have invalid formatting'
+      ),
     };
   }
 
   if (startIso >= endIso) {
     return {
       ...fallback,
-      error: new InvalidDatesError({
-        message:
-          "The start date can't be greater than or equal to the end date",
-      }),
+      error: new InvalidDatesError(
+        "The start date can't be greater than or equal to the end date"
+      ),
     };
   }
 

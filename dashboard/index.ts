@@ -9,21 +9,40 @@ import { createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import VueApollo from 'vue-apollo';
 import VueMeta from 'vue-meta';
+import { init as initSentry } from '@sentry/browser';
+import { Vue as VueIntegration } from '@sentry/integrations';
 
-import { APP_URL, VUETIFY_NONCE } from '../shared-config';
+import {
+  APP_URL,
+  VUETIFY_NONCE,
+  SENTRY_DSN,
+  SENTRY_ENVIRONMENT,
+} from '../shared-config';
+import configureAxios from '../shared-utils/configure-axios';
 import { NotAllowedError } from './errors';
 import { RouteMeta } from './types';
 import router from './routes';
 import store, { USER_MODULE, CONTEXT_MODULE } from './store';
 import { SET_APP_ERROR, SET_APP_IS_LOADING } from './store/actions';
-import { logIn } from './auth';
+import { logIn } from './utils/auth';
+import reportError from './utils/report-error';
 import App from './App.vue';
+
+// ==============================================================================
+// SENTRY
+// ==============================================================================
+initSentry({
+  dsn: SENTRY_DSN,
+  environment: SENTRY_ENVIRONMENT,
+  integrations: [new VueIntegration({ Vue })],
+});
 
 // ==============================================================================
 // ROUTING
 // ==============================================================================
 router.onError((error) => {
   store.dispatch(`${CONTEXT_MODULE}/${SET_APP_ERROR}`, error);
+  reportError(error);
 });
 
 router.beforeEach((to, from, next) => {
@@ -80,6 +99,11 @@ const apolloClient = new ApolloClient({
 const apolloProvider = new VueApollo({
   defaultClient: apolloClient,
 });
+
+// ==============================================================================
+// AXIOS
+// ==============================================================================
+configureAxios();
 
 // ==============================================================================
 // GET VUE READY

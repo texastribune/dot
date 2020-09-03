@@ -2,6 +2,7 @@ import { USER_PERMISSIONS } from './shared-config';
 
 export interface AccessTokenPayload {
   permissions: USER_PERMISSIONS[];
+  sub: string;
 }
 
 interface ViewsItem {
