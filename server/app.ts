@@ -6,10 +6,9 @@ import connectSlashes from 'connect-slashes';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import statuses from 'statuses';
-import axios, { AxiosError } from 'axios';
 
 import webpackConfig from '../webpack.config';
-import { NetworkError } from '../shared-errors';
+import configureAxios from '../shared-utils/configure-axios';
 import {
   SENTRY_ENVIRONMENT,
   ENABLE_SENTRY,
@@ -201,26 +200,7 @@ app.use(
 // ==============================================================================
 // CONFIGURE AXIOS
 // ==============================================================================
-axios.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.isAxiosError) {
-      const networkError = error as AxiosError;
-
-      return Promise.reject(
-        new NetworkError({
-          code: networkError.code,
-          message: networkError.message,
-          status: networkError.response
-            ? networkError.response.status
-            : undefined,
-          data: networkError.response ? networkError.response.data : undefined,
-        })
-      );
-    }
-    return Promise.reject(error);
-  }
-);
+configureAxios();
 
 // ==============================================================================
 // START NODE
