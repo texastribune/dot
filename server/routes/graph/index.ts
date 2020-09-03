@@ -13,6 +13,7 @@ import {
 import { IS_DEV } from '../../config';
 import { AppError, EnhancedError, UnauthorizedError } from '../../errors';
 import reportError from '../../utils/report-error';
+import logError from '../../utils/log-error';
 import noCacheMiddleware from '../../middleware/no-cache';
 import typeDefs from './schema';
 import resolvers from './resolvers';
@@ -53,6 +54,8 @@ router.use(
 
         return { ...error, status, message };
       }
+
+      logError(error);
       return { ...error, status: 400, message: error.message };
     },
   })

@@ -2,10 +2,11 @@ import { captureException, withScope } from '@sentry/node';
 
 import { NetworkError } from '../../shared-errors';
 import { EnhancedError } from '../errors';
+import logError from './log-error';
 
 export default function reportError(
   error: EnhancedError,
-  extra?: object
+  { forceReport = false }: { forceReport: boolean } = { forceReport: false }
 ): void {
   withScope((scope) => {
     if (error instanceof NetworkError) {
@@ -14,19 +15,10 @@ export default function reportError(
       scope.setExtra('status', error.status);
     }
 
-    if (extra) {
-      scope.setExtra('extra', extra);
-    }
-
-    if (!error.status || error.status >= 500) {
+    if (!error.status || error.status >= 500 || forceReport) {
       captureException(error);
     }
 
-    // eslint-disable-next-line no-console
-    console.error(error.name);
-    // eslint-disable-next-line no-console
-    console.error(error.message);
-    // eslint-disable-next-line no-console
-    console.error(error.stack);
+    logError(error);
   });
 }
