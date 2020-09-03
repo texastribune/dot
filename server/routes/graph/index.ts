@@ -51,10 +51,9 @@ router.use(
         const message =
           origError instanceof AppError ? error.message : statuses(status);
 
-        return { status, message };
+        return { ...error, status, message };
       }
-
-      return { status: 400, message: error.message };
+      return { ...error, status: 400, message: error.message };
     },
   })
 );
@@ -69,7 +68,6 @@ router.use(
     if (error instanceof jwt.UnauthorizedError) {
       return next(new UnauthorizedError());
     }
-
     return next(error);
   }
 );
