@@ -45,7 +45,7 @@ router.get('/', async (req, res, next) => {
         return next(new InvalidAuth0CodeError());
       }
 
-      reportError(error);
+      reportError(error, { forceReport: true });
       return next(new InternalServerError());
     }
 
