@@ -197,6 +197,44 @@ app.use(
   }
 );
 
+app.use(
+  (
+    error: EnhancedError,
+    req: express.Request,
+    res: express.Response,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    next: express.NextFunction
+  ) => {
+    const status = error.status || 500;
+    let heading = 'An error occurred';
+    let message = 'We will do our best to figure it out!';
+
+    if (status >= 500) {
+      heading = 'Sorry, we messed up';
+      message = "We will check out the problem, don't you worry!";
+    } else if (status >= 400) {
+      heading = 'Well, that was odd';
+      message = 'You might have done something funky with the URL.';
+    }
+
+    res.status(status).render('error', { heading, message });
+  }
+);
+
+// ==============================================================================
+// HANDLE 404s
+// ==============================================================================
+app.use((req, res) => {
+  if (req.path.startsWith('/api')) {
+    res.status(404).json({ message: statuses(404) });
+  } else {
+    res.render('error', {
+      heading: 'Page not found',
+      message: 'You stumbled on a page that does not exist on the Internet.',
+    });
+  }
+});
+
 // ==============================================================================
 // CONFIGURE AXIOS
 // ==============================================================================
