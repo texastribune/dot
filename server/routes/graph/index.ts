@@ -2,7 +2,6 @@ import express from 'express';
 import graphql from 'express-graphql';
 import jwt from 'express-jwt';
 import jwksRsa from 'jwks-rsa';
-import { GraphQLError } from 'graphql';
 import { makeExecutableSchema } from 'graphql-tools';
 import statuses from 'statuses';
 
@@ -45,14 +44,9 @@ router.use(
     customFormatErrorFn(gqlError) {
       const { originalError } = gqlError;
 
-      if (!originalError || originalError instanceof GraphQLError) {
-        const relevantError = originalError || gqlError;
-        logError(relevantError);
-        return {
-          ...relevantError,
-          status: 400,
-          message: relevantError.message,
-        };
+      if (!originalError) {
+        logError(gqlError);
+        return { ...gqlError, status: 400 };
       }
 
       const enhancedError = originalError as EnhancedError;
