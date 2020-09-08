@@ -1,5 +1,11 @@
 # Change log
 
+## v2.3.3
+
+### Bug fixes
+
+- Be more explicit when specifying Sentry URL in CSP settings
+
 ## v2.3.2
 
 ### Bug fixes
