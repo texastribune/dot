@@ -1,5 +1,23 @@
 # Change log
 
+## v2.3.0
+
+### Improvements
+
+- Add client-side error handling with Sentry
+- Use GET requests for GraphQL queries
+- Include IP address in access logs
+- Add proper error page for HTML routes
+- Add default cache time for all unauthorized requests
+- Add more detail to GraphQL errors
+- Create no-cache middleware
+
+### Chores
+
+- Move Axios configuration to separate file that client and server can share
+- Simplify server-side error classes
+- Create `logError` utility that is separate from `reportError`
+
 ## v2.2.0
 
 ### Improvements
