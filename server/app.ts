@@ -58,6 +58,7 @@ app.use(
       ? undefined
       : {
           directives: {
+            connectSrc: ["'self'", "'https://*.sentry.io'"],
             defaultSrc: ["'self'"],
             styleSrc: ["'self'", `'nonce-${VUETIFY_NONCE}'`],
           },

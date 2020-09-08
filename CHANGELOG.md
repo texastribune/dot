@@ -1,5 +1,11 @@
 # Change log
 
+## v2.3.2
+
+### Bug fixes
+
+- Add Sentry domain to allowed CSP `connect-src`
+
 ## v2.3.1
 
 ### Bug fixes
