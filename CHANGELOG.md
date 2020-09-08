@@ -1,5 +1,11 @@
 # Change log
 
+## v2.3.1
+
+### Bug fixes
+
+- Fix `pixel.gif` route so it doesn't add `Cache-Control: no-store` to all routes
+
 ## v2.3.0
 
 ### Improvements

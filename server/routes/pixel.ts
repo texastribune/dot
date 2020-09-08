@@ -14,7 +14,7 @@ const gif = Buffer.from(
   'base64'
 );
 
-router.use(noCacheMiddleware);
+router.use('/pixel.gif', noCacheMiddleware);
 
 router.get('/pixel.gif', async (req, res) => {
   const { token, domain } = req.query;
