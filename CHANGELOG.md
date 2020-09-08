@@ -1,5 +1,19 @@
 # Change log
 
+## v2.2.0
+
+### Improvements
+
+- Reset date picker every time it's opened
+- Max out date picker at today
+- Make `manual` a valid tracker source
+
+### Chores
+
+- Consolidate Sequelize configs
+- Simplify tracking script's reference to itself
+- Moves enums from `*types.ts` files to `*config.ts` files
+
 ## v2.1.0
 
 ### Security
