@@ -1,5 +1,11 @@
 # Change log
 
+## v2.3.5
+
+### Bug fixes
+
+- Ensure Webpack has access to `SENTRY_ENVIRONMENT` via build arguments
+
 ## v2.3.4
 
 ### Bug fixes

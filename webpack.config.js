@@ -41,6 +41,7 @@ const config = {
       'AUTH0_CLIENT_ID',
       'VUETIFY_NONCE',
       'SENTRY_DSN',
+      'SENTRY_ENVIRONMENT',
     ]),
     new WebpackAssetsManifest({
       entrypoints: true,
