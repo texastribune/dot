@@ -1,5 +1,11 @@
 # Change log
 
+## v2.3.4
+
+### Bug fixes
+
+- Set the correct `connect-src` CSP value for Sentry (after much experimentation!)
+
 ## v2.3.3
 
 ### Bug fixes
