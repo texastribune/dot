@@ -1,5 +1,11 @@
 # Change log
 
+## v2.3.6
+
+### Security
+
+- Bump `node-fetch` to v2.6.1
+
 ## v2.3.5
 
 ### Bug fixes
