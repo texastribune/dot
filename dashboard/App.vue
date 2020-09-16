@@ -1,9 +1,4 @@
 <script lang="ts">
-/* eslint-disable @typescript-eslint/triple-slash-reference, spaced-comment */
-/// <reference path="../node_modules/vuetify/types/lib.d.ts" />
-// eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
-/// <reference path="../node_modules/vue-meta/types/vue.d.ts" />
-
 import Vue from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 import { VApp, VAppBar, VOverlay } from 'vuetify/lib';
