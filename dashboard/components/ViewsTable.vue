@@ -1,7 +1,4 @@
 <script lang="ts">
-/* eslint-disable vue/valid-v-slot, @typescript-eslint/triple-slash-reference, spaced-comment */
-/// <reference path="../../node_modules/vuetify/types/lib.d.ts" />
-
 import Vue, { PropType } from 'vue';
 import { VDataTable, VTextField } from 'vuetify/lib';
 import { DataTableHeader } from 'vuetify';
@@ -120,11 +117,11 @@ export default Vue.extend({
       </form>
 
       <v-data-table :headers="headers" :items="items" :search="search">
-        <template #item.content="{ item: { content } }">
+        <template v-slot:[`item.content`]="{ item: { content } }">
           <slot name="content" :content="content"></slot>
         </template>
 
-        <template #item.views="{ item: { views } }">
+        <template v-slot:[`item.views`]="{ item: { views } }">
           <span>{{ formatViews(views) }}</span>
         </template>
       </v-data-table>
