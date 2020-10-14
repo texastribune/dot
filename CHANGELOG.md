@@ -1,5 +1,12 @@
 # Change log
 
+## v2.4.0
+
+### Improvements
+
+- Add support for two new `sources`: `dataviz` and `manual`
+- Add election-specific script
+
 ## v2.3.6
 
 ### Security
