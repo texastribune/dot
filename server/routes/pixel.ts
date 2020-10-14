@@ -1,8 +1,7 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
-import semver from 'semver';
 
-import { TRACKER_JWT_SECRET } from '../config';
+import { TRACKER_JWT_SECRET, VALID_TRACKER_SOURCE } from '../config';
 import { TrackerTokenPayload } from '../types';
 import View from '../models/view';
 import noCacheMiddleware from '../middleware/no-cache';
@@ -17,30 +16,42 @@ const gif = Buffer.from(
 router.use('/pixel.gif', noCacheMiddleware);
 
 router.get('/pixel.gif', async (req, res) => {
-  const { token, domain } = req.query;
+  const { token, contest, domain } = req.query;
 
   try {
-    const tokenPayload = await new Promise((resolve, reject) => {
-      jwt.verify(
-        token as string,
-        TRACKER_JWT_SECRET as string,
-        {
-          algorithms: ['HS256'],
-          ignoreExpiration: true,
-        },
-        (error, payload) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(payload);
-          }
-        }
+    if (contest && typeof contest === 'string') {
+      const view = await View.create({
+        canonical: `https://apps.texastribune.org/features/2020/general-election-results/embeds/partner/?${contest}`,
+        source: VALID_TRACKER_SOURCE.DataViz,
+        domain: domain || null,
+      });
+
+      await view.save();
+      // eslint-disable-next-line no-console
+      console.log(
+        `Logged view | Canonical: ${view.canonical} | Domain: ${view.domain} | Source: ${view.source}`
       );
-    });
+    } else if (token && typeof token === 'string') {
+      const tokenPayload = await new Promise((resolve, reject) => {
+        jwt.verify(
+          token as string,
+          TRACKER_JWT_SECRET as string,
+          {
+            algorithms: ['HS256'],
+            ignoreExpiration: true,
+          },
+          (error, payload) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(payload);
+            }
+          }
+        );
+      });
 
-    const { canonical, source, version } = tokenPayload as TrackerTokenPayload;
+      const { canonical, source } = tokenPayload as TrackerTokenPayload;
 
-    if (semver.gte(version, '2.1.0')) {
       const view = await View.create({
         canonical,
         source,
@@ -48,7 +59,6 @@ router.get('/pixel.gif', async (req, res) => {
       });
 
       await view.save();
-
       // eslint-disable-next-line no-console
       console.log(
         `Logged view | Canonical: ${view.canonical} | Domain: ${view.domain} | Source: ${view.source}`

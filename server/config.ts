@@ -43,4 +43,5 @@ export enum VALID_TRACKER_SOURCE {
   Manual = 'manual',
   Repub = 'repub',
   Rss = 'rss',
+  DataViz = 'dataviz',
 }
