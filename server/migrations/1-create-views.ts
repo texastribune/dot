@@ -1,5 +1,4 @@
 import { DataTypes, QueryInterface } from 'sequelize';
-import { VALID_TRACKER_SOURCE } from '../config';
 
 export = {
   up: (queryInterface: QueryInterface): Promise<void> => {
@@ -18,12 +17,9 @@ export = {
       domain: {
         type: DataTypes.TEXT,
         allowNull: true,
-        validate: {
-          notContains: ['localhost', 's3.amazonaws.com'],
-        },
       },
       source: {
-        type: DataTypes.ENUM(...Object.values(VALID_TRACKER_SOURCE)),
+        type: DataTypes.ENUM('legacy', 'repub', 'rss'),
         allowNull: false,
       },
       // eslint-disable-next-line @typescript-eslint/camelcase
