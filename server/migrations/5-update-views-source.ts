@@ -1,12 +1,23 @@
-import { QueryInterface, DataTypes } from 'sequelize';
-
-import { VALID_TRACKER_SOURCE } from '../config';
+import { QueryInterface } from 'sequelize';
 
 export = {
   up: async (queryInterface: QueryInterface): Promise<void> => {
-    await queryInterface.changeColumn('views', 'source', {
-      type: DataTypes.ENUM(...Object.values(VALID_TRACKER_SOURCE)),
-      allowNull: false,
-    });
+    const transaction = await queryInterface.sequelize.transaction();
+
+    try {
+      await queryInterface.sequelize.query(
+        `ALTER TYPE "enum_views_source" ADD VALUE 'manual'`
+      );
+      await queryInterface.sequelize.query(
+        `ALTER TYPE "enum_views_source" ADD VALUE 'dataviz'`
+      );
+
+      transaction.commit();
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error(err);
+      transaction.rollback();
+      throw err;
+    }
   },
 };
