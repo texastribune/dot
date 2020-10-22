@@ -125,8 +125,5 @@ export default Vue.extend({
     <template #heading="{ classes }">
       <h1 :class="classes">{{ routeDomain }}</h1>
     </template>
-    <template #content="{ content }">
-      {{ content }}
-    </template>
   </views-table>
 </template>
