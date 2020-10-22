@@ -73,7 +73,7 @@ Authorization: Bearer <access ID>
 ```
 
 - _Canonical_: The canonical URL of the article
-- _Source_: A value describing from where the article is being distributed. This is an enum whose currently allowed values are `rss` and `repub`.
+- _Source_: An enum value describing from where the article is being distributed.
 - _Access ID_: One of the values in the `ACCESS_IDS` environment variable
 
 A successful request will return a fully formed script tag to distribute along with the republishable article. It includes a data attribute whose value is a JSON Web Token containing some metadata about the article. The generation of this JWT is why an authorization header is required: It is hashed with a secret, meaning the data it contains can't be altered. This helps ensure the integrity of collected page views.
@@ -92,13 +92,7 @@ Only certain users are authorized to read from this app's GraphQL API. This is h
 
 We use Sequelize to handle migrations. Note that, if you're running these locally, you'll want to do an `npm run build` first. This ensures that the migration files are compiled from TypeScript to plain JavaScript.
 
-### Schema migrations
-
 Schema-migration scripts are located in `server/migrations/`. To run schema migrations up to a certain point, do `npx sequelize-cli db:migrate --to <name-of-migration>.js`. Or, to run them all, simply do `npx sequelize-cli db:migrate`.
-
-### Data migrations
-
-Data-migration scripts, called "seeders" in the Sequelize world, are located in `server/seeders/`. To run a script, do `npx sequelize-cli db:seed --seed <name-of-seed>.js`.
 
 ## Releases
 

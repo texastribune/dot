@@ -1,5 +1,18 @@
 # Change log
 
+## v2.5.0
+
+### Chores
+
+- Adjust Sentry settings
+- Enable `trust proxy` in Express
+- Remove TypeScript triple-slash reference types
+- Use different Vue syntax for dynamic scoped slots
+
+### Security
+
+- Remove all uses of `Sequelize.literal`
+
 ## v2.4.0
 
 ### Improvements
