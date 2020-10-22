@@ -183,19 +183,21 @@ export default Vue.extend({
         <h2 :class="classes">Summary by domain</h2>
       </template>
       <template #content="{ content }">
-        <router-link
-          :to="{
-            name: 'domainDetail',
-            params: {
-              domain: content,
-            },
-            query: {
-              startDate: $route.query.startDate || undefined,
-              endDate: $route.query.endDate || undefined,
-            },
-          }"
-          >{{ content }}</router-link
-        >
+        <template v-if="content">
+          <router-link
+            :to="{
+              name: 'domainDetail',
+              params: {
+                domain: content,
+              },
+              query: {
+                startDate: $route.query.startDate || undefined,
+                endDate: $route.query.endDate || undefined,
+              },
+            }"
+            >{{ content }}</router-link
+          >
+        </template>
       </template>
     </views-table>
   </div>

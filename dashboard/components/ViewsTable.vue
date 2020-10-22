@@ -118,7 +118,9 @@ export default Vue.extend({
 
       <v-data-table :headers="headers" :items="items" :search="search">
         <template v-slot:[`item.content`]="{ item: { content } }">
-          <slot name="content" :content="content"></slot>
+          <slot name="content" :content="content">
+            {{ content || 'Unknown' }}
+          </slot>
         </template>
 
         <template v-slot:[`item.views`]="{ item: { views } }">
