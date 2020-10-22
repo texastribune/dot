@@ -47,7 +47,13 @@ const app = express();
 // ==============================================================================
 // SENTRY MIDDLEWARE
 // ==============================================================================
-app.use(Sentry.Handlers.requestHandler() as express.RequestHandler);
+app.use(
+  Sentry.Handlers.requestHandler({
+    request: ['data', 'headers', 'method', 'query_string', 'url'],
+    user: ['id', 'sub'],
+    ip: true,
+  }) as express.RequestHandler
+);
 
 // ==============================================================================
 // SECURITY MIDDLEWARE
