@@ -1,9 +1,4 @@
 <script lang="ts">
-/* eslint-disable vue/valid-v-slot, @typescript-eslint/triple-slash-reference, spaced-comment */
-/// <reference path="../../../node_modules/vue-apollo/types/vue.d.ts" />
-/* eslint-disable vue/valid-v-slot, @typescript-eslint/triple-slash-reference, spaced-comment */
-/// <reference path="../../../node_modules/vue-meta/types/vue.d.ts" />
-
 import Vue from 'vue';
 import { DataTableHeader } from 'vuetify';
 import gql from 'graphql-tag';
