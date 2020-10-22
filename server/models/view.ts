@@ -16,7 +16,7 @@ import {
 import userPermissions from '../decorators/user-permissions';
 import sequelize from '../db';
 import { ViewsListByCanonicalArgs, ViewsListByDomainArgs } from '../types';
-import { VALID_TRACKER_SOURCE } from '../config';
+import { VALID_TRACKER_SOURCE, IS_PROD } from '../config';
 
 class View extends Model {
   public id!: number;
@@ -124,7 +124,34 @@ View.init(
     domain: {
       type: DataTypes.TEXT,
       allowNull: true,
-      validate: { notContains: 'localhost' },
+      validate: {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        isRightType: (value: any): void => {
+          if (typeof value !== 'string' && value != null) {
+            throw new Error('Domain is not a string or nullish value');
+          }
+        },
+        notLocal: (value: string | null | undefined): void => {
+          if (
+            IS_PROD &&
+            value &&
+            (value.includes('local.') || value.includes('localhost'))
+          ) {
+            throw new Error(`Domain ${value} includes "local"`);
+          }
+        },
+        notUs: (value: string | null | undefined): void => {
+          if (IS_PROD && value && value.includes('texastribune')) {
+            throw new Error(`Domain ${value} includes "texastribune"`);
+          }
+        },
+        // the data-viz team often puts republishable embeds on codepen
+        notCodePen: (value: string | null | undefined): void => {
+          if (IS_PROD && value && value.includes('codepen')) {
+            throw new Error(`Domain ${value} includes "codepen"`);
+          }
+        },
+      },
     },
     source: {
       type: DataTypes.ENUM(...Object.values(VALID_TRACKER_SOURCE)),
@@ -146,6 +173,15 @@ View.init(
         fields: ['canonical', 'domain', 'visitedAt'],
       },
     ],
+    hooks: {
+      beforeSave: (instance): void => {
+        // to account for the scenario where domain is an empty string
+        if (!instance.domain) {
+          // eslint-disable-next-line no-param-reassign
+          instance.domain = null;
+        }
+      },
+    },
   }
 );
 
