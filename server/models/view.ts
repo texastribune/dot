@@ -52,7 +52,7 @@ class View extends Model {
       View.findAll({
         attributes: [
           'canonical',
-          [Sequelize.literal('COUNT(*)::integer'), 'views'],
+          [Sequelize.fn('count', Sequelize.col('canonical')), 'views'],
         ],
         group: 'canonical',
         order: [[Sequelize.col('views'), 'DESC']],
@@ -64,7 +64,7 @@ class View extends Model {
       totalViews,
       items: items.map((item) => ({
         canonical: item.canonical,
-        views: item.get('views') as number,
+        views: parseInt(item.get('views') as string, 10),
       })),
     };
   }
@@ -90,7 +90,7 @@ class View extends Model {
       View.findAll({
         attributes: [
           'domain',
-          [Sequelize.literal('COUNT(*)::integer'), 'views'],
+          [Sequelize.fn('count', Sequelize.col('domain')), 'views'],
         ],
         group: 'domain',
         order: [[Sequelize.col('views'), 'DESC']],
@@ -102,7 +102,7 @@ class View extends Model {
       totalViews,
       items: items.map((item) => ({
         domain: item.domain,
-        views: item.get('views') as number,
+        views: parseInt(item.get('views') as string, 10),
       })),
     };
   }
