@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { EnhancedError } from '../errors';
+import { EnhancedError } from '../../shared-errors';
 
 export default function staticFileError(responseHeaders?: {
   [key: string]: string;

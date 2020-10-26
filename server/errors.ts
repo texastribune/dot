@@ -1,26 +1,6 @@
 /* eslint-disable max-classes-per-file */
 
-export interface EnhancedError extends Error {
-  status?: number;
-}
-
-export abstract class AppError extends Error implements EnhancedError {
-  public status: number;
-
-  constructor({
-    message,
-    name,
-    status,
-  }: {
-    message: string;
-    name: string;
-    status: number;
-  }) {
-    super(message);
-    this.name = name;
-    this.status = status;
-  }
-}
+import { AppError } from '../shared-errors';
 
 export class InternalServerError extends AppError {
   constructor() {
@@ -42,32 +22,22 @@ export class InvalidAuth0CodeError extends AppError {
   }
 }
 
-export class ForbiddenError extends AppError {
-  constructor() {
-    super({
-      message: 'Insufficient permissions',
-      status: 403,
-      name: 'ForbiddenError',
-    });
-  }
-}
-
-export class UnauthorizedError extends AppError {
-  constructor() {
-    super({
-      message: 'Invalid authorization credentials',
-      status: 401,
-      name: 'UnauthorizedError',
-    });
-  }
-}
-
 export class TrackerCreationError extends AppError {
   constructor(message: string) {
     super({
       message,
       status: 400,
       name: 'TrackerCreationError',
+    });
+  }
+}
+
+export class InvalidInsertError extends AppError {
+  constructor(message?: string) {
+    super({
+      message: message || 'Input failed to validate',
+      status: 400,
+      name: 'InvalidInsertError',
     });
   }
 }

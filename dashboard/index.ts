@@ -18,6 +18,7 @@ import {
   SENTRY_DSN,
   SENTRY_ENVIRONMENT,
 } from '../shared-config';
+import { NetworkError } from '../shared-errors';
 import configureAxios from '../shared-utils/configure-axios';
 import { NotAllowedError } from './errors';
 import { RouteMeta } from './types';
@@ -26,6 +27,7 @@ import store, { USER_MODULE, CONTEXT_MODULE } from './store';
 import { SET_APP_ERROR, SET_APP_IS_LOADING } from './store/actions';
 import { logIn } from './utils/auth';
 import reportError from './utils/report-error';
+import reportNetworkError from './utils/report-network-error';
 import App from './App.vue';
 
 // ==============================================================================
@@ -42,7 +44,12 @@ initSentry({
 // ==============================================================================
 router.onError((error) => {
   store.dispatch(`${CONTEXT_MODULE}/${SET_APP_ERROR}`, error);
-  reportError(error);
+
+  if (error instanceof NetworkError) {
+    reportNetworkError(error);
+  } else {
+    reportError(error);
+  }
 });
 
 router.beforeEach((to, from, next) => {
