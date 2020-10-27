@@ -11,7 +11,6 @@ export const DEFAULT_CACHE_TIME = 300;
 export const IS_DEV = process.env.NODE_ENV === 'development';
 export const IS_PROD = process.env.NODE_ENV === 'production';
 export const PORT = parseInt(process.env.NODE_PORT || '3000', 10);
-export const DASHBOARD_CACHE_TIME = 2628000;
 export const DASHBOARD_STATIC_ALIAS = '/static/';
 export const DASHBOARD_MANIFEST_FILE_NAME = 'assets.json';
 export const DASHBOARD_BUILD_PATH = path.join(process.cwd(), 'dist');

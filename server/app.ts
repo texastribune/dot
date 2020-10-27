@@ -16,7 +16,6 @@ import {
   VUETIFY_NONCE,
 } from '../shared-config';
 import {
-  DASHBOARD_CACHE_TIME,
   DASHBOARD_STATIC_ALIAS,
   DASHBOARD_BUILD_PATH,
   DEFAULT_CACHE_TIME,
@@ -105,12 +104,12 @@ app.use(
   express.static(DASHBOARD_BUILD_PATH, {
     setHeaders(res) {
       res.set({
-        'Cache-Control': `max-age=${DASHBOARD_CACHE_TIME}`,
+        'Cache-Control': 'max-age=2628000',
       });
     },
     fallthrough: false,
   }),
-  staticFileErrorMiddleware()
+  staticFileErrorMiddleware({ 'Cache-Control': 'max-age=60' })
 );
 app.use(
   TRACKER_STATIC_ALIAS,
@@ -118,13 +117,12 @@ app.use(
     setHeaders(res) {
       res.set({
         'Access-Control-Allow-Origin': '*',
-        'Cache-Control': 'no-cache',
+        'Cache-Control': 'max-age=60',
       });
     },
     fallthrough: false,
   }),
-  // do not cache 404s because future version numbers are predictable
-  staticFileErrorMiddleware({ 'Cache-Control': 'no-cache' })
+  staticFileErrorMiddleware({ 'Cache-Control': 'max-age=60' })
 );
 
 // ==============================================================================
