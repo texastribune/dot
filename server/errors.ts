@@ -31,13 +31,3 @@ export class TrackerCreationError extends AppError {
     });
   }
 }
-
-export class InvalidInsertError extends AppError {
-  constructor(message?: string) {
-    super({
-      message: message || 'Input failed to validate',
-      status: 400,
-      name: 'InvalidInsertError',
-    });
-  }
-}

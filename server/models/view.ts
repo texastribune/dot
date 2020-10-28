@@ -17,7 +17,6 @@ import userPermissions from '../decorators/user-permissions';
 import sequelize from '../db';
 import { ViewsListByCanonicalArgs, ViewsListByDomainArgs } from '../types';
 import { VALID_TRACKER_SOURCE, IS_PROD } from '../config';
-import { InvalidInsertError } from '../errors';
 
 class View extends Model {
   public id!: number;
@@ -129,9 +128,7 @@ View.init(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         isRightType: (value: any): void => {
           if (typeof value !== 'string' && value != null) {
-            throw new InvalidInsertError(
-              'Domain is not a string or nullish value'
-            );
+            throw new Error('Domain is not a string or nullish value');
           }
         },
         notLocal: (value: string | null | undefined): void => {
@@ -140,20 +137,18 @@ View.init(
             value &&
             (value.includes('local.') || value.includes('localhost'))
           ) {
-            throw new InvalidInsertError(`Domain ${value} includes "local"`);
+            throw new Error(`Domain ${value} includes "local"`);
           }
         },
         notUs: (value: string | null | undefined): void => {
           if (IS_PROD && value && value.includes('texastribune')) {
-            throw new InvalidInsertError(
-              `Domain ${value} includes "texastribune"`
-            );
+            throw new Error(`Domain ${value} includes "texastribune"`);
           }
         },
         // the data-viz team often puts republishable embeds on codepen
         notCodePen: (value: string | null | undefined): void => {
           if (IS_PROD && value && value.includes('codepen')) {
-            throw new InvalidInsertError(`Domain ${value} includes "codepen"`);
+            throw new Error(`Domain ${value} includes "codepen"`);
           }
         },
       },
@@ -188,8 +183,8 @@ View.init(
       },
     },
     // TODO: After v6 Sequelize upgrade, add validationFailed hook that turns all
-    // validation failures into instances of InvalidInsertError; this will allow for
-    // giving meaningful feedback to user about bad input
+    // validation failures into instances of an error that inherits from AppError.
+    // This will allow for giving meaningful feedback back to user.
   }
 );
 
