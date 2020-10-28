@@ -13,8 +13,11 @@ import {
   ViewsListByDomainArgs,
 } from '../../types';
 import View from '../../models/view';
+import GraphQLUrl from './scalars/url';
 
 const resolvers = {
+  Url: GraphQLUrl,
+
   DateTime: GraphQLDateTime,
 
   ViewsItem: {

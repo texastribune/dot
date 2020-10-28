@@ -15,12 +15,12 @@ export interface GQLContext {
 
 export interface ViewsListByCanonicalArgs {
   domain?: string | null;
-  endDate: string;
-  startDate: string;
+  endDate: Date;
+  startDate: Date;
 }
 
 export interface ViewsListByDomainArgs {
   canonical?: string;
-  endDate: string;
-  startDate: string;
+  endDate: Date;
+  startDate: Date;
 }
