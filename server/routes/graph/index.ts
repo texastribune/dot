@@ -52,7 +52,7 @@ router.use(
         return gqlError;
       }
 
-      // TODO: Detect TypeErrors caused by sending invalid scalar format
+      // TODO: Detect TypeErrors thrown inside parseValue and parseLiteral of a custom scalar
       // Those should get a 400, not a 500, and give the client the actual error message
       const enhancedError = gqlError.originalError as EnhancedError;
       const status = enhancedError.status || 500;
