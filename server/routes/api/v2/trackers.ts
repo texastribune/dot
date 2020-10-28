@@ -7,7 +7,9 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 
 import { APP_URL } from '../../../../shared-config';
+import { UnauthorizedError, ForbiddenError } from '../../../../shared-errors';
 import noCacheMiddleware from '../../../middleware/no-cache';
+import { TrackerCreationError } from '../../../errors';
 import {
   ACCESS_IDS,
   TRACKER_STATIC_ALIAS,
@@ -17,11 +19,6 @@ import {
   VERSION,
   VALID_TRACKER_SOURCE,
 } from '../../../config';
-import {
-  UnauthorizedError,
-  ForbiddenError,
-  TrackerCreationError,
-} from '../../../errors';
 
 const router = express.Router();
 

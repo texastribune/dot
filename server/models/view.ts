@@ -182,6 +182,9 @@ View.init(
         }
       },
     },
+    // TODO: After v6 Sequelize upgrade, add validationFailed hook that turns all
+    // validation failures into instances of an error that inherits from AppError.
+    // This will allow for giving meaningful feedback back to user.
   }
 );
 

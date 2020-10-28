@@ -15,6 +15,7 @@ import {
   SENTRY_DSN,
   VUETIFY_NONCE,
 } from '../shared-config';
+import { AppError, NetworkError, EnhancedError } from '../shared-errors';
 import {
   DASHBOARD_CACHE_TIME,
   DASHBOARD_STATIC_ALIAS,
@@ -32,8 +33,9 @@ import routes from './routes';
 import pixelRoute from './routes/pixel';
 import legacyRoutes from './routes/legacy';
 import staticFileErrorMiddleware from './middleware/static-file-error';
+import logError from './utils/log-error';
 import reportError from './utils/report-error';
-import { AppError, EnhancedError } from './errors';
+import reportNetworkError from './utils/report-network-error';
 
 if (ENABLE_SENTRY) {
   Sentry.init({
@@ -166,7 +168,15 @@ app.use(
     res: express.Response,
     next: express.NextFunction
   ) => {
-    reportError(error);
+    if (!error.status || error.status >= 500) {
+      if (error instanceof NetworkError) {
+        reportNetworkError(error);
+      } else {
+        reportError(error);
+      }
+    }
+
+    logError(error);
     next(error);
   }
 );
@@ -199,12 +209,12 @@ app.use(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     next: express.NextFunction
   ) => {
-    const status = error.status || 500;
-
     if (error instanceof AppError) {
-      res.status(500).json({ errors: [{ status, message: error.message }] });
+      res.status(500).json({ errors: [{ message: error.message }] });
     } else {
-      res.status(500).json({ errors: [{ status, message: statuses(status) }] });
+      res
+        .status(500)
+        .json({ errors: [{ message: statuses(error.status || 500) }] });
     }
   }
 );

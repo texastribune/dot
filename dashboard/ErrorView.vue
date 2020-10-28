@@ -3,7 +3,7 @@ import Vue from 'vue';
 import { mapGetters } from 'vuex';
 import { VMain, VContainer, VRow, VCol } from 'vuetify/lib';
 
-import { AppError } from './errors';
+import { AppError } from '../shared-errors';
 import { CONTEXT_MODULE } from './store';
 
 export default Vue.extend({
@@ -18,7 +18,7 @@ export default Vue.extend({
       if (this.appError instanceof AppError) {
         return `${this.appError.message}.`;
       }
-      return 'We\'re working hard to fix the problem.';
+      return "We're working hard to fix the problem.";
     },
   },
 

@@ -3,9 +3,11 @@ import Vue from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 import { VApp, VAppBar, VOverlay } from 'vuetify/lib';
 
+import { NetworkError } from '../shared-errors';
+import reportError from './utils/report-error';
+import reportNetworkError from './utils/report-network-error';
 import { CONTEXT_MODULE } from './store';
 import { SET_APP_ERROR } from './store/actions';
-import reportError from './utils/report-error';
 import LoadingWheel from './components/LoadingWheel.vue';
 import ErrorView from './ErrorView.vue';
 
@@ -29,7 +31,13 @@ export default Vue.extend({
 
   errorCaptured(error) {
     this[SET_APP_ERROR](error);
-    reportError(error);
+
+    if (error instanceof NetworkError) {
+      reportNetworkError(error);
+    } else {
+      reportError(error);
+    }
+
     return false;
   },
 

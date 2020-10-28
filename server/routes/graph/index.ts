@@ -10,8 +10,12 @@ import {
   AUTH0_JWT_ISSUER,
   AUTH0_PUBLIC_KEY_URL,
 } from '../../../shared-config';
+import {
+  AppError,
+  EnhancedError,
+  UnauthorizedError,
+} from '../../../shared-errors';
 import { IS_DEV } from '../../config';
-import { AppError, EnhancedError, UnauthorizedError } from '../../errors';
 import reportError from '../../utils/report-error';
 import logError from '../../utils/log-error';
 import noCacheMiddleware from '../../middleware/no-cache';
@@ -42,22 +46,25 @@ router.use(
     schema: makeExecutableSchema({ typeDefs, resolvers }),
     graphiql: IS_DEV,
     customFormatErrorFn(gqlError) {
-      const { originalError } = gqlError;
+      logError(gqlError);
 
-      if (!originalError) {
-        logError(gqlError);
-        return { ...gqlError, status: 400 };
+      if (!gqlError.originalError) {
+        return gqlError;
       }
 
-      const enhancedError = originalError as EnhancedError;
+      // TODO: Detect TypeErrors thrown inside parseValue and parseLiteral of a custom scalar
+      // Those should get a 400, not a 500, and give the client the actual error message
+      const enhancedError = gqlError.originalError as EnhancedError;
       const status = enhancedError.status || 500;
       const message =
         enhancedError instanceof AppError
           ? enhancedError.message
           : statuses(status);
 
-      reportError(enhancedError);
-      return { ...gqlError, status, message };
+      if (!status || status >= 500) {
+        reportError(enhancedError);
+      }
+      return { ...gqlError, message };
     },
   })
 );

@@ -2,7 +2,7 @@
 
 import { USER_PERMISSIONS } from '../../shared-config';
 import { AccessTokenPayload } from '../../shared-types';
-import { ForbiddenError, UnauthorizedError } from '../errors';
+import { ForbiddenError, UnauthorizedError } from '../../shared-errors';
 
 export default function userPermissions(requiredPerms: USER_PERMISSIONS[]) {
   return (

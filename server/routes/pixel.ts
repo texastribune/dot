@@ -3,9 +3,9 @@ import jwt from 'jsonwebtoken';
 
 import { TRACKER_JWT_SECRET, VALID_TRACKER_SOURCE } from '../config';
 import { TrackerTokenPayload } from '../types';
+import reportError from '../utils/report-error';
 import View from '../models/view';
 import noCacheMiddleware from '../middleware/no-cache';
-import reportError from '../utils/report-error';
 
 const router = express.Router();
 const gif = Buffer.from(
@@ -23,7 +23,7 @@ router.get('/pixel.gif', async (req, res) => {
       const view = await View.create({
         canonical: `https://apps.texastribune.org/features/2020/general-election-results/embeds/partner/?${contest}`,
         source: VALID_TRACKER_SOURCE.DataViz,
-        domain: domain || null,
+        domain,
       });
 
       await view.save();

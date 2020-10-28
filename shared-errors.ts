@@ -1,8 +1,14 @@
-// eslint-disable-next-line import/prefer-default-export
-export class NetworkError<T> extends Error {
+/* eslint-disable max-classes-per-file */
+
+export interface EnhancedError extends Error {
+  status?: number;
+}
+
+export class NetworkError extends Error implements EnhancedError {
   public code?: string;
 
-  public data?: T;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public data?: any;
 
   public status?: number;
 
@@ -14,7 +20,8 @@ export class NetworkError<T> extends Error {
   }: {
     message: string;
     code?: string;
-    data?: T;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    data?: any;
     status?: number;
   }) {
     super(message);
@@ -29,5 +36,43 @@ export class NetworkError<T> extends Error {
   public formatForSentry() {
     const { data, code, status } = this;
     return { data, code, status };
+  }
+}
+
+export abstract class AppError extends Error implements EnhancedError {
+  public status?: number;
+
+  constructor({
+    message,
+    name,
+    status,
+  }: {
+    message: string;
+    name: string;
+    status?: number;
+  }) {
+    super(message);
+    this.name = name;
+    this.status = status;
+  }
+}
+
+export class ForbiddenError extends AppError {
+  constructor() {
+    super({
+      message: 'Insufficient permissions',
+      status: 403,
+      name: 'ForbiddenError',
+    });
+  }
+}
+
+export class UnauthorizedError extends AppError {
+  constructor() {
+    super({
+      message: 'Invalid authorization credentials',
+      status: 401,
+      name: 'UnauthorizedError',
+    });
   }
 }

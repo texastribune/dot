@@ -11,8 +11,8 @@ import {
 import { NetworkError } from '../../../../shared-errors';
 import { AUTH0_CLIENT_SECRET } from '../../../config';
 import noCacheMiddleware from '../../../middleware/no-cache';
-import reportError from '../../../utils/report-error';
-import { InvalidAuth0CodeError, InternalServerError } from '../../../errors';
+import reportNetworkError from '../../../utils/report-network-error';
+import { InvalidAuth0CodeError } from '../../../errors';
 
 const router = express.Router();
 
@@ -36,7 +36,7 @@ router.get('/', async (req, res, next) => {
     return res.json({ tokens });
   } catch (error) {
     if (error instanceof NetworkError) {
-      const responseError = error as NetworkError<auth0.Auth0Error>;
+      const responseError = error as NetworkError;
       const invalidCode =
         responseError.data &&
         responseError.data.error_description === 'Invalid authorization code';
@@ -45,8 +45,8 @@ router.get('/', async (req, res, next) => {
         return next(new InvalidAuth0CodeError());
       }
 
-      reportError(error, { forceReport: true });
-      return next(new InternalServerError());
+      reportNetworkError(responseError);
+      return next(new Error('Could not acquire tokens from Auth0'));
     }
 
     return next(error);
