@@ -12,7 +12,7 @@ import { NetworkError } from '../../../../shared-errors';
 import { AUTH0_CLIENT_SECRET } from '../../../config';
 import noCacheMiddleware from '../../../middleware/no-cache';
 import reportNetworkError from '../../../utils/report-network-error';
-import { InvalidAuth0CodeError, InternalServerError } from '../../../errors';
+import { InvalidAuth0CodeError } from '../../../errors';
 
 const router = express.Router();
 
@@ -46,7 +46,7 @@ router.get('/', async (req, res, next) => {
       }
 
       reportNetworkError(responseError);
-      return next(new InternalServerError());
+      return next(new Error('Could not acquire tokens from Auth0'));
     }
 
     return next(error);

@@ -2,16 +2,6 @@
 
 import { AppError } from '../shared-errors';
 
-export class InternalServerError extends AppError {
-  constructor() {
-    super({
-      message: 'Internal server error',
-      status: 500,
-      name: 'InternalServerError',
-    });
-  }
-}
-
 export class InvalidAuth0CodeError extends AppError {
   constructor() {
     super({
