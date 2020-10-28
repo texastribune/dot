@@ -77,7 +77,7 @@ export default Vue.extend({
         query ViewsListByDomain(
           $startDate: DateTime!
           $endDate: DateTime!
-          $canonical: String!
+          $canonical: Url!
         ) {
           viewsListByDomain(
             startDate: $startDate

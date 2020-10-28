@@ -1,4 +1,5 @@
 const schema = `
+scalar Url
 scalar DateTime
 
 
@@ -8,7 +9,7 @@ interface ViewsItem {
 
 type ViewsItemByCanonical implements ViewsItem {
   views: Int!
-  canonical: String!
+  canonical: Url!
 }
 
 type ViewsItemByDomain implements ViewsItem {
@@ -25,7 +26,7 @@ type ViewsList {
 
 type Query {
   viewsListByDomain(
-    canonical: String
+    canonical: Url
     startDate: DateTime!
     endDate: DateTime!
   ): ViewsList!
