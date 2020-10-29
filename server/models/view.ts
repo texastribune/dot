@@ -90,7 +90,7 @@ class View extends Model {
       View.findAll({
         attributes: [
           'domain',
-          [Sequelize.fn('count', Sequelize.col('domain')), 'views'],
+          [Sequelize.fn('count', Sequelize.col('*')), 'views'],
         ],
         group: 'domain',
         order: [[Sequelize.col('views'), 'DESC']],
