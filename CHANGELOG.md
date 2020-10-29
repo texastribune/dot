@@ -1,5 +1,13 @@
 # Change log
 
+## v2.6.0
+
+### Improvements
+
+- Add GraphQL custom scalar to validate URLs
+- Better error handling client and server side
+- Add small cache header to analytics scripts
+
 ## v2.5.0
 
 ### Chores
