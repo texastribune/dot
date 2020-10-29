@@ -64,7 +64,7 @@ class View extends Model {
       totalViews,
       items: items.map((item) => ({
         canonical: item.canonical,
-        views: parseInt(item.get('views') as string, 10),
+        views: item.get('views') as number,
       })),
     };
   }
@@ -102,7 +102,7 @@ class View extends Model {
       totalViews,
       items: items.map((item) => ({
         domain: item.domain,
-        views: parseInt(item.get('views') as string, 10),
+        views: item.get('views') as number,
       })),
     };
   }
