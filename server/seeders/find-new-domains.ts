@@ -1,9 +1,11 @@
+/* eslint-disable no-console */
+
 import fs from 'fs';
-import path from 'path';
 
 // import moment from 'moment';
 // import { Op as Operation } from 'sequelize';
 
+import { NEW_DOMAINS_FILE_PATH } from '../config';
 import View from '../models/view';
 
 export = {
@@ -29,26 +31,26 @@ export = {
       ''
     );
 
-    const fileName = 'new-domains.txt';
-    const filePath = path.join(process.cwd(), 'reports', fileName);
-
     try {
       const message = await new Promise((resolve, reject) => {
-        fs.writeFile(filePath, toWrite, async (error) => {
+        fs.writeFile(NEW_DOMAINS_FILE_PATH, toWrite, async (error) => {
           if (error) {
             return reject(error);
           }
-          return resolve(
-            `Wrote ${fileName} with ${domains.length} new domains`
-          );
+          return resolve(`Wrote ${domains.length} new domains`);
         });
       });
 
-      // eslint-disable-next-line no-console
-      console.log(message);
+      console.log('\x1b[33m%s\x1b[0m', message);
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.error(error);
+      throw error;
+    } finally {
+      console.log(
+        '\x1b[36m%s\x1b[0m',
+        'If not deleting any domains, make sure to delete the text file!'
+      );
+      console.log('\x1b[31m%s\x1b[0m', `--> rm ${NEW_DOMAINS_FILE_PATH}`);
     }
   },
 };

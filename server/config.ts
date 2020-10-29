@@ -36,6 +36,16 @@ export const TRACKER_STATIC_ALIAS = '/analytics/';
 export const TRACKER_BUILD_PATH = path.join(process.cwd(), 'analytics');
 export const TRACKER_SCRIPT = 'pixel.js';
 export const { version: VERSION } = pkg;
+export const NEW_DOMAINS_FILE_PATH = path.join(
+  process.cwd(),
+  'reports',
+  'new-domains.txt'
+);
+export const BAD_DOMAINS_FILE_PATH = path.join(
+  process.cwd(),
+  'reports',
+  'bad-domains.txt'
+);
 
 export enum VALID_TRACKER_SOURCE {
   Legacy = 'legacy',
