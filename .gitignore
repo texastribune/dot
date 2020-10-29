@@ -18,3 +18,7 @@ node_modules
 build
 dist
 !tracker/dist
+reports/**/*
+
+# Gitkeep
+!.gitkeep
