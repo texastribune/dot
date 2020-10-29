@@ -3,9 +3,7 @@ import path from 'path';
 
 import pkg from '../package.json';
 
-export const ACCESS_IDS = JSON.parse(process.env.ACCESS_IDS || '{}') as {
-  [key: string]: string;
-};
+export const ACCESS_ID = process.env.ACCESS_ID || '';
 export const { AUTH0_CLIENT_SECRET = '' } = process.env;
 export const DEFAULT_CACHE_TIME = 300;
 export const IS_DEV = process.env.NODE_ENV === 'development';

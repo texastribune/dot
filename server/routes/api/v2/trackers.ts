@@ -11,7 +11,7 @@ import { UnauthorizedError, ForbiddenError } from '../../../../shared-errors';
 import noCacheMiddleware from '../../../middleware/no-cache';
 import { TrackerCreationError } from '../../../errors';
 import {
-  ACCESS_IDS,
+  ACCESS_ID,
   TRACKER_STATIC_ALIAS,
   TRACKER_BUILD_PATH,
   TRACKER_SCRIPT,
@@ -32,18 +32,10 @@ router.get('/', (req, res, next) => {
   }
 
   const [, accessId] = req.headers.authorization.split(' ');
-  let isAllowed = false;
 
-  Object.entries(ACCESS_IDS).forEach(([, validAccessId]) => {
-    if (validAccessId === accessId) {
-      isAllowed = true;
-    }
-  });
-
-  if (!isAllowed) {
+  if (accessId !== ACCESS_ID) {
     return next(new ForbiddenError());
   }
-
   return next();
 });
 
