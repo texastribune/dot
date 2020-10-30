@@ -131,7 +131,7 @@ View.init(
             throw new Error('Domain is not a string or nullish value');
           }
         },
-        notLocal: (value: string | null | undefined): void => {
+        notDev: (value: string | null | undefined): void => {
           if (
             IS_PROD &&
             value &&
@@ -140,12 +140,11 @@ View.init(
             throw new Error(`Domain ${value} includes "local"`);
           }
         },
-        notUs: (value: string | null | undefined): void => {
+        notTrib: (value: string | null | undefined): void => {
           if (IS_PROD && value && value.includes('texastribune')) {
             throw new Error(`Domain ${value} includes "texastribune"`);
           }
         },
-        // the data-viz team often puts republishable embeds on codepen
         notCodePen: (value: string | null | undefined): void => {
           if (IS_PROD && value && value.includes('codepen')) {
             throw new Error(`Domain ${value} includes "codepen"`);
@@ -175,8 +174,14 @@ View.init(
     ],
     hooks: {
       beforeSave: (instance): void => {
-        // to account for the scenario where domain is an empty string
-        if (!instance.domain) {
+        if (
+          // to account for the scenario where domain is an empty string
+          !instance.domain ||
+          // a strange pattern that often comes from RSS
+          /[A-Z0-9]{8}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{12}/.test(
+            instance.domain
+          )
+        ) {
           // eslint-disable-next-line no-param-reassign
           instance.domain = null;
         }
