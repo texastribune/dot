@@ -2,28 +2,28 @@
 
 import fs from 'fs';
 
-// import moment from 'moment';
-// import { Op as Operation } from 'sequelize';
+import moment from 'moment';
+import { Op as Operation } from 'sequelize';
 
 import { NEW_DOMAINS_FILE_PATH } from '../config';
 import View from '../models/view';
 
 export = {
   up: async (): Promise<void> => {
-    // const today = new Date();
-    // const oneMonthOneWeekAgo = moment()
-    //   .subtract(1, 'month')
-    //   .subtract(1, 'week');
+    const today = new Date();
+    const oneMonthOneWeekAgo = moment()
+      .subtract(1, 'month')
+      .subtract(1, 'week');
 
     const domains = await View.findAll({
       attributes: ['domain'],
       group: ['domain'],
-      // where: {
-      //   visitedAt: {
-      //     [Operation.gte]: oneMonthOneWeekAgo,
-      //     [Operation.lt]: today,
-      //   },
-      // },
+      where: {
+        visitedAt: {
+          [Operation.gte]: oneMonthOneWeekAgo,
+          [Operation.lt]: today,
+        },
+      },
     });
 
     const toWrite = domains.reduce(
