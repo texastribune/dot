@@ -146,7 +146,11 @@ View.init(
           }
         },
         notCodePen: (value: string | null | undefined): void => {
-          if (IS_PROD && value && value.includes('codepen')) {
+          if (
+            IS_PROD &&
+            value &&
+            (value.includes('codepen') || value.includes('cdpn'))
+          ) {
             throw new Error(`Domain ${value} includes "codepen"`);
           }
         },
