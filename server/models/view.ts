@@ -179,9 +179,7 @@ View.init(
     hooks: {
       beforeSave: (instance): void => {
         if (
-          // to account for the scenario where domain is an empty string
           !instance.domain ||
-          // a strange pattern that often comes from RSS
           /[A-Z0-9]{8}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{12}/.test(
             instance.domain
           )
