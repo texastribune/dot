@@ -1,6 +1,6 @@
 # Dot: The Texas Tribune's pixel tracker
 
-This app produces a small, non-invasive script that we distribute with our content. The script uses a JSON Web Token to send back data about who is republishing our articles, which we visualize in a dashboard.
+This app produces a small pixel to include in republished content. The pixel, which is issued with a JSON Web Token to ensure integrity, sends back data that is displayed in a dashboard.
 
 ## Technology used
 
@@ -18,34 +18,34 @@ This app produces a small, non-invasive script that we distribute with our conte
 
 ## Environment variables
 
-| Variable                |                           Example |
-| ----------------------- | --------------------------------: |
-| `ACCESS_IDS`            | {"app-name":"secret-char-string"} |
-| `APP_URL`               |             http://localhost:3000 |
-| `AUTH0_CLIENT_ID`       |                                   |
-| `AUTH0_CLIENT_SECRET`   |                                   |
-| `AUTH0_DOMAIN`          |                        domain.com |
-| `AWS_ACCESS_KEY_ID`     |                                   |
-| `AWS_SECRET_ACCESS_KEY` |                                   |
-| `DB_HOST`               |                            dot-db |
-| `DB_NAME`               |                               dot |
-| `DB_PASSWORD`           |                          postgres |
-| `DB_PORT`               |                              5432 |
-| `DB_USER`               |                          postgres |
-| `NODE_ENV`              |                       development |
-| `NODE_PORT`             |                              3000 |
-| `TRACKER_JWT_SECRET`    |                      HS256 secret |
-| `ENABLE_SENTRY`         |                        true/false |
-| `SENTRY_DSN`            |                                   |
-| `SENTRY_ENVIRONMENT`    |                       development |
-| `VUETIFY_NONCE`         |                       noncestring |
+| Variable                |               Example |
+| ----------------------- | --------------------: |
+| `ACCESS_ID`             |    secret-char-string |
+| `APP_URL`               | http://localhost:3000 |
+| `AUTH0_CLIENT_ID`       |                       |
+| `AUTH0_CLIENT_SECRET`   |                       |
+| `AUTH0_DOMAIN`          |            domain.com |
+| `AWS_ACCESS_KEY_ID`     |                       |
+| `AWS_SECRET_ACCESS_KEY` |                       |
+| `DB_HOST`               |                dot-db |
+| `DB_NAME`               |                   dot |
+| `DB_PASSWORD`           |              postgres |
+| `DB_PORT`               |                  5432 |
+| `DB_USER`               |              postgres |
+| `NODE_ENV`              |           development |
+| `NODE_PORT`             |                  3000 |
+| `TRACKER_JWT_SECRET`    |          HS256 secret |
+| `ENABLE_SENTRY`         |            true/false |
+| `SENTRY_DSN`            |                       |
+| `SENTRY_ENVIRONMENT`    |           development |
+| `VUETIFY_NONCE`         |           noncestring |
 
 ### More detail
 
-- `ACCESS_IDS`: This JSON string is a whitelist of apps that are authorized to make requests to Dot's tracking-script API. The key is an arbitrary descriptor of the requesting app's name. The value should be a hard-to-guess string of characters. We will likely transition this authorization to Auth0 machine-to-machine applications.
+- `ACCESS_ID`: A random string of characters that allows applications to request pixels by including this value in the `Authorization` header. We will likely transition this process to Auth0 machine-to-machine applications.
 - `APP_URL`: The protocol and domain (no trailing slash) at which you'll be running Dot. This will likely differ by environment.
 - `NODE_ENV`: The recommended values for this are `development`, `production` or `staging`. This variable determines whether Webpack will auto-rebuild and how Sequelize connects to Postgres, among other things.
-- `TRACKER_JWT_SECRET`: A secret for hashing the JSON Web Token that will be distributed with each tracking script.
+- `TRACKER_JWT_SECRET`: A secret for hashing the JSON Web Token that will be distributed with each pixel.
 - `VUETIFY_NONCE`: A nonce to include in the Content Security Policy response header so that [Vuetify can inject embedded styles](https://vuetifyjs.com/en/customization/th%C3%A8me/#csp-nonce) into the page.
 
 ## Commands
@@ -65,7 +65,7 @@ Other commands:
 
 ## How Dot works
 
-Applications (most likely your CMS) that want to distribute tracking scripts along with republishable articles need to make an API call to acquire the markup for the script. This request should be made from the server as it involves an authorization secret.
+Applications (most likely your CMS) that want to distribute tracking pixels along with republishable articles need to make an API call to acquire the markup for the pixel. This request should be made from the server as it involves an authorization secret.
 
 ```
 GET /api/v2/trackers/?canonical=<canonical>&source=<source>
@@ -74,13 +74,13 @@ Authorization: Bearer <access ID>
 
 - _Canonical_: The canonical URL of the article
 - _Source_: An enum value describing from where the article is being distributed.
-- _Access ID_: One of the values in the `ACCESS_IDS` environment variable
+- _Access ID_: The `ACCESS_ID` value described above
 
-A successful request will return a fully formed script tag to distribute along with the republishable article. It includes a data attribute whose value is a JSON Web Token containing some metadata about the article. The generation of this JWT is why an authorization header is required: It is hashed with a secret, meaning the data it contains can't be altered. This helps ensure the integrity of collected page views.
+A successful request will return a fully formed pixel to distribute along with the republishable article. It includes a JSON Web Token containing some metadata about the article. The generation of this JWT is why an authorization header is required: It is hashed with a secret, meaning the data it contains can't be altered. This helps ensure the integrity of collected information.
 
 The script tag also contains a [subresource-integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity) hash. This hash, among other reasons, is why this app has hard semantic versioning.
 
-Once the tracking script is embedded in republishers' source code, it will create a 1x1 image on each page load. The request for this pixel will include a query parameter with the issued JWT. This data is decoded on the server and inserted into Postgres.
+Once the pixel is embedded in republishers' source code, it will make a request that includes a query parameter with the issued JWT. This data is decoded on the server and inserted into Postgres.
 
 A GraphQL API reads from the database and provides JSON that powers the dashboard.
 
@@ -92,7 +92,7 @@ Only certain users are authorized to read from this app's GraphQL API. This is h
 
 We use Sequelize to handle migrations. Note that, if you're running these locally, you'll want to do an `npm run build` first. This ensures that the migration files are compiled from TypeScript to plain JavaScript.
 
-Schema-migration scripts are located in `server/migrations/`. To run schema migrations up to a certain point, do `npx sequelize-cli db:migrate --to <name-of-migration>.js`. Or, to run them all, simply do `npx sequelize-cli db:migrate`.
+Migration scripts are located in `server/migrations/`. To run migrations up to a certain point, do `npx sequelize-cli db:migrate --to <name-of-migration>.js`. Or, to run all lingering ones, simply do `npx sequelize-cli db:migrate`.
 
 ## Releases
 
@@ -108,7 +108,7 @@ The `next` branch represents the next major version. All pre-releases for the ne
 
 ## Deploying to production
 
-We recommended building an image from the included Dockerfile, then running that image inside a container on the production server. You should provide a command that overrides the default entrypoint and enters you into a bash shell. From there, you can run database migrations.
+We recommended building an image from the included `Dockerfile`, then running that image inside a container on the production server. You should provide a command that overrides the default entrypoint and enters you into a bash shell. From there, you can run database migrations.
 
 For more information/to get a sample production Makefile, please contact agibson@texastribune.org.
 
