@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { TRACKER_JWT_SECRET, VALID_TRACKER_SOURCE } from '../config';
 import { TrackerTokenPayload } from '../types';
 import reportError from '../utils/report-error';
+import logError from '../utils/log-error';
 import View from '../models/view';
 import noCacheMiddleware from '../middleware/no-cache';
 
@@ -63,6 +64,7 @@ router.get('/pixel.gif', async (req, res) => {
       );
     }
   } catch (error) {
+    logError(error);
     reportError(error);
   } finally {
     res
