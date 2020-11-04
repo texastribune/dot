@@ -12,6 +12,7 @@ export const AUTH0_TOKEN_URL = `https://${AUTH0_DOMAIN}/oauth/token`;
 export const ENABLE_SENTRY = process.env.ENABLE_SENTRY === 'true';
 export const SENTRY_DSN = process.env.SENTRY_DSN;
 export const SENTRY_ENVIRONMENT = process.env.SENTRY_ENVIRONMENT;
+export const TIMEZONE = 'America/Chicago';
 export const VUETIFY_NONCE = process.env.VUETIFY_NONCE || '';
 
 export enum USER_PERMISSIONS {
