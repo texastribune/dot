@@ -146,12 +146,8 @@ View.init(
           }
         },
         notLocal: (value: string | null | undefined): void => {
-          if (
-            IS_PROD &&
-            value &&
-            (value.includes('local.') || value.includes('localhost'))
-          ) {
-            throw new Error(`Domain ${value} includes "local"`);
+          if (IS_PROD && value && value.includes('localhost')) {
+            throw new Error(`Domain ${value} includes "localhost"`);
           }
         },
         notUs: (value: string | null | undefined): void => {
