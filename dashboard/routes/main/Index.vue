@@ -12,6 +12,7 @@ import {
 import moment from 'moment-timezone';
 import { mdiCalendar } from '@mdi/js';
 
+import { TIMEZONE } from '../../../shared-config';
 import getInitialDates from './get-initial-dates';
 
 const DISPLAY_DATE_FORMAT = 'MMMM Do, YYYY';
@@ -73,15 +74,11 @@ const Component = Vue.extend({
     },
 
     queryStartDate(): string {
-      return moment.tz(this.startDate, 'America/Chicago').utc().format();
+      return moment.tz(this.startDate, TIMEZONE).utc().format();
     },
 
     queryEndDate(): string {
-      return moment
-        .tz(this.endDate, 'America/Chicago')
-        .add(1, 'day')
-        .utc()
-        .format();
+      return moment.tz(this.endDate, TIMEZONE).add(1, 'day').utc().format();
     },
 
     updateBtnReady(): boolean {
