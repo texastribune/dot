@@ -5,8 +5,7 @@ import jwt from 'jsonwebtoken';
 import { ActionTree, GetterTree, MutationTree, Module } from 'vuex';
 import { setUser } from '@sentry/browser';
 
-import { USER_PERMISSIONS } from '../../shared-config';
-import { AccessTokenPayload } from '../../shared-types';
+import { AccessTokenPayload, UserPermissions } from '../../shared-types';
 import auth from '../utils/auth';
 import { GET_TOKENS, REFRESH_TOKENS } from './actions';
 
@@ -100,7 +99,7 @@ const getters: GetterTree<State, {}> = {
   accessToken: ({ accessToken }) => accessToken,
 
   userHasPerms: ({ accessTokenPayload: { permissions } }) => (
-    requiredPermissions: USER_PERMISSIONS[]
+    requiredPermissions: UserPermissions[]
   ): boolean => requiredPermissions.every((perm) => permissions.includes(perm)),
 
   isLoggedIn: ({ isLoggedIn }) => isLoggedIn,

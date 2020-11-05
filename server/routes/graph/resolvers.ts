@@ -13,6 +13,7 @@ import {
   ViewsListByDomainArgs,
 } from '../../types';
 import View from '../../models/view';
+import needsPermission from '../../utils/needs-permission';
 import GraphQLUrl from './scalars/url';
 
 const resolvers = {
@@ -40,7 +41,8 @@ const resolvers = {
       args: ViewsListByCanonicalArgs,
       context: GQLContext
     ): Promise<ViewsList<ViewsItemByCanonical>> {
-      return View.getViewsListByCanonical(context.user, args);
+      needsPermission(['dot:view_data'], context.user);
+      return View.getViewsListByCanonical(args);
     },
 
     async viewsListByDomain(
@@ -48,7 +50,8 @@ const resolvers = {
       args: ViewsListByDomainArgs,
       context: GQLContext
     ): Promise<ViewsList<ViewsItemByDomain>> {
-      return View.getViewsListByDomain(context.user, args);
+      needsPermission(['dot:view_data'], context.user);
+      return View.getViewsListByDomain(args);
     },
   },
 };

@@ -1,7 +1,7 @@
-import { USER_PERMISSIONS } from './shared-config';
+export type UserPermissions = 'dot:view_data';
 
 export interface AccessTokenPayload {
-  permissions: USER_PERMISSIONS[];
+  permissions: UserPermissions[];
   sub: string;
 }
 

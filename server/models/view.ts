@@ -7,14 +7,11 @@ import {
 } from 'sequelize';
 import isURL from 'validator/lib/isURL';
 
-import { USER_PERMISSIONS } from '../../shared-config';
 import {
-  AccessTokenPayload,
   ViewsItemByCanonical,
   ViewsItemByDomain,
   ViewsList,
 } from '../../shared-types';
-import userPermissions from '../decorators/user-permissions';
 import sequelize from '../db';
 import { ViewsListByCanonicalArgs, ViewsListByDomainArgs } from '../types';
 import { VALID_TRACKER_SOURCE, IS_PROD } from '../config';
@@ -30,11 +27,11 @@ class View extends Model {
 
   public visitedAt!: Date;
 
-  @userPermissions([USER_PERMISSIONS.ReadViews])
-  public static async getViewsListByCanonical(
-    user: AccessTokenPayload,
-    { startDate, endDate, domain }: ViewsListByCanonicalArgs
-  ): Promise<ViewsList<ViewsItemByCanonical>> {
+  public static async getViewsListByCanonical({
+    startDate,
+    endDate,
+    domain,
+  }: ViewsListByCanonicalArgs): Promise<ViewsList<ViewsItemByCanonical>> {
     const where: Filterable['where'] = {
       visitedAt: {
         [Operation.gte]: startDate,
@@ -70,11 +67,11 @@ class View extends Model {
     };
   }
 
-  @userPermissions([USER_PERMISSIONS.ReadViews])
-  public static async getViewsListByDomain(
-    user: AccessTokenPayload,
-    { startDate, endDate, canonical }: ViewsListByDomainArgs
-  ): Promise<ViewsList<ViewsItemByDomain>> {
+  public static async getViewsListByDomain({
+    startDate,
+    endDate,
+    canonical,
+  }: ViewsListByDomainArgs): Promise<ViewsList<ViewsItemByDomain>> {
     const where: Filterable['where'] = {
       visitedAt: {
         [Operation.gte]: startDate,
