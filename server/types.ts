@@ -10,7 +10,7 @@ export interface TrackerTokenPayload {
 }
 
 export interface GQLContext {
-  user: AccessTokenPayload;
+  user?: AccessTokenPayload;
 }
 
 export interface ViewsListByCanonicalArgs {
