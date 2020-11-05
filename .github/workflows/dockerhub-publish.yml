@@ -1,13 +1,9 @@
 name: Publish to Dockerhub
 
-# publish the image for PRs or pushes to master or on releases
+# publish the image for releases
 on:
-  push:
-    branches: [master]
-  pull_request:
-    branches: [master]
   release:
-    types: [published, created, edited, prereleased]
+    types: [published, created, edited]
 
 jobs:
   build:
