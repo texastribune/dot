@@ -5,6 +5,7 @@ import {
   Op as Operation,
   Filterable,
 } from 'sequelize';
+import isURL from 'validator/lib/isURL';
 
 import { USER_PERMISSIONS } from '../../shared-config';
 import {
@@ -119,7 +120,20 @@ View.init(
     canonical: {
       type: DataTypes.TEXT,
       allowNull: false,
-      validate: { isUrl: true },
+      validate: {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        isValidUrl: (value: any): void => {
+          if (
+            !isURL(value, {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+              // @ts-ignore
+              validate_length: false, // eslint-disable-line @typescript-eslint/camelcase
+            })
+          ) {
+            throw new Error('Validation isUrl on canonical failed');
+          }
+        },
+      },
     },
     domain: {
       type: DataTypes.TEXT,
@@ -132,12 +146,8 @@ View.init(
           }
         },
         notDev: (value: string | null | undefined): void => {
-          if (
-            IS_PROD &&
-            value &&
-            (value.includes('local.') || value.includes('localhost'))
-          ) {
-            throw new Error(`Domain ${value} includes "local"`);
+          if (IS_PROD && value && value.includes('localhost')) {
+            throw new Error(`Domain ${value} includes "localhost"`);
           }
         },
         notTrib: (value: string | null | undefined): void => {

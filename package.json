@@ -1,7 +1,7 @@
 {
   "name": "dot",
   "description": "The Texas Tribune's pixel tracking tool",
-  "version": "2.6.0",
+  "version": "2.6.3",
   "scripts": {
     "build": "npm run build:dashboard && npm run build:server",
     "build:dashboard": "rimraf dist && NODE_ENV=production webpack",
@@ -48,7 +48,7 @@
     "pug": "^2.0.4",
     "sequelize": "^5.21.8",
     "statuses": "^2.0.0",
-    "validator": "^13.0.0",
+    "validator": "^13.1.0",
     "vue": "^2.6.11",
     "vue-apollo": "^3.0.4",
     "vue-meta": "^2.4.0",
@@ -69,7 +69,7 @@
     "@types/jsonwebtoken": "^8.3.9",
     "@types/morgan": "^1.9.0",
     "@types/node": "^12.12.35",
-    "@types/validator": "^13.0.0",
+    "@types/validator": "^13.1.0",
     "@types/webpack": "^4.41.11",
     "@types/webpack-dev-middleware": "^3.7.0",
     "@typescript-eslint/eslint-plugin": "^2.28.0",

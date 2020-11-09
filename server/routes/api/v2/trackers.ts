@@ -32,18 +32,10 @@ router.get('/', (req, res, next) => {
   }
 
   const [, accessId] = req.headers.authorization.split(' ');
-  let isAllowed = false;
 
-  Object.entries(ACCESS_IDS).forEach(([, validAccessId]) => {
-    if (validAccessId === accessId) {
-      isAllowed = true;
-    }
-  });
-
-  if (!isAllowed) {
+  if (accessId !== Object.values(ACCESS_IDS)[0]) {
     return next(new ForbiddenError());
   }
-
   return next();
 });
 
