@@ -20,6 +20,12 @@ export = {
       });
 
       const domainsArray = badDomains.toString().split('\n');
+
+      // if file has a blank final line
+      if (domainsArray[domainsArray.length - 1] === '') {
+        domainsArray.pop();
+      }
+
       const numDeletedRows = await View.destroy({
         where: {
           domain: {
