@@ -6,6 +6,7 @@
 
 - Use singular `ACCESS_ID` instead of JSON string
 - Re-order query parameters on `pixel.gif`
+- Tell PostgreSQL to interpret large counts as `number`s
 
 ### Bug fixes
 
