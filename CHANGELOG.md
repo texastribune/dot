@@ -1,5 +1,16 @@
 # Change log
 
+## v2.7.0
+
+### Improvements
+
+- Use singular `ACCESS_ID` instead of JSON string
+- Re-order query parameters on `pixel.gif`
+
+### Bug fixes
+
+- Fix PostgreSQL `COUNT()` logic in `View` model static methods
+
 ## v2.6.0
 
 ### Improvements
