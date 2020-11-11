@@ -1,5 +1,7 @@
 /* eslint-disable no-console */
 
+import fs from 'fs';
+
 import moment from 'moment-timezone';
 import { Sequelize, Op as Operation } from 'sequelize';
 
@@ -16,13 +18,17 @@ export = {
 
     const todayStart = moment().tz(TIMEZONE).startOf('day').toDate();
 
-    await View.findAll({
+    const data = await View.findAll({
       attributes: [
         'canonical',
-        [Sequelize.fn('count', Sequelize.col('canonical')), 'views'],
+        'domain',
+        [Sequelize.fn('count', Sequelize.col('*')), 'views'],
       ],
-      group: 'canonical',
-      order: [[Sequelize.col('views'), 'DESC']],
+      group: ['canonical', 'domain'],
+      order: [
+        ['canonical', 'ASC'],
+        [Sequelize.col('views'), 'DESC'],
+      ],
       where: {
         visitedAt: {
           [Operation.gte]: yesterdayStart,
@@ -30,5 +36,13 @@ export = {
         },
       },
     });
+
+    const csv = data.reduce(
+      (acc, view) =>
+        `${acc}${view.canonical},${view.domain},${view.get('views')}\n`,
+      'canonical,domain,views\n'
+    );
+
+    fs.writeFileSync('foo.csv', csv);
   },
 };
