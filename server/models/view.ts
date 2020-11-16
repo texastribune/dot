@@ -62,7 +62,7 @@ class View extends Model {
       totalViews,
       items: items.map((item) => ({
         canonical: item.canonical,
-        views: parseInt(item.get('views') as string, 10),
+        views: item.get('views') as number,
       })),
     };
   }
@@ -88,7 +88,7 @@ class View extends Model {
       View.findAll({
         attributes: [
           'domain',
-          [Sequelize.fn('count', Sequelize.col('domain')), 'views'],
+          [Sequelize.fn('count', Sequelize.col('*')), 'views'],
         ],
         group: 'domain',
         order: [[Sequelize.col('views'), 'DESC']],
@@ -100,7 +100,7 @@ class View extends Model {
       totalViews,
       items: items.map((item) => ({
         domain: item.domain,
-        views: parseInt(item.get('views') as string, 10),
+        views: item.get('views') as number,
       })),
     };
   }
@@ -142,19 +142,22 @@ View.init(
             throw new Error('Domain is not a string or nullish value');
           }
         },
-        notLocal: (value: string | null | undefined): void => {
+        notDev: (value: string | null | undefined): void => {
           if (IS_PROD && value && value.includes('localhost')) {
             throw new Error(`Domain ${value} includes "localhost"`);
           }
         },
-        notUs: (value: string | null | undefined): void => {
+        notTrib: (value: string | null | undefined): void => {
           if (IS_PROD && value && value.includes('texastribune')) {
             throw new Error(`Domain ${value} includes "texastribune"`);
           }
         },
-        // the data-viz team often puts republishable embeds on codepen
         notCodePen: (value: string | null | undefined): void => {
-          if (IS_PROD && value && value.includes('codepen')) {
+          if (
+            IS_PROD &&
+            value &&
+            (value.includes('codepen') || value.includes('cdpn'))
+          ) {
             throw new Error(`Domain ${value} includes "codepen"`);
           }
         },
@@ -182,8 +185,12 @@ View.init(
     ],
     hooks: {
       beforeSave: (instance): void => {
-        // to account for the scenario where domain is an empty string
-        if (!instance.domain) {
+        if (
+          !instance.domain ||
+          /[A-Z0-9]{8}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{12}/.test(
+            instance.domain
+          )
+        ) {
           // eslint-disable-next-line no-param-reassign
           instance.domain = null;
         }

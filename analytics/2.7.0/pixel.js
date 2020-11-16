@@ -14,8 +14,8 @@
     var domain = e(loc.hostname);
     var token = e(currentScript.getAttribute(attr) || '');
 
-    imgSrc += 'domain=' + domain + '&';
-    imgSrc += 'token=' + token;
+    imgSrc += 'token=' + token + '&';
+    imgSrc += 'domain=' + domain;
 
     img.src = imgSrc;
     win.ttDotTracked = true;

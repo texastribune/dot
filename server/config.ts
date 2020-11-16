@@ -3,9 +3,7 @@ import path from 'path';
 
 import pkg from '../package.json';
 
-export const ACCESS_IDS = JSON.parse(process.env.ACCESS_IDS || '{}') as {
-  [key: string]: string;
-};
+export const ACCESS_ID = process.env.ACCESS_ID || '';
 export const { AUTH0_CLIENT_SECRET = '' } = process.env;
 export const DEFAULT_CACHE_TIME = 300;
 export const IS_DEV = process.env.NODE_ENV === 'development';
@@ -36,6 +34,21 @@ export const TRACKER_STATIC_ALIAS = '/analytics/';
 export const TRACKER_BUILD_PATH = path.join(process.cwd(), 'analytics');
 export const TRACKER_SCRIPT = 'pixel.js';
 export const { version: VERSION } = pkg;
+export const BAD_DOMAINS_FILE_PATH = path.join(
+  process.cwd(),
+  'reports',
+  'bad-domains.txt'
+);
+export const NEW_DOMAINS_FILE_PATH = path.join(
+  process.cwd(),
+  'reports',
+  'new-domains.txt'
+);
+export const DOMAINS_TO_NULLIFY_FILE_PATH = path.join(
+  process.cwd(),
+  'reports',
+  'domains-to-nullify.txt'
+);
 
 export enum VALID_TRACKER_SOURCE {
   Legacy = 'legacy',

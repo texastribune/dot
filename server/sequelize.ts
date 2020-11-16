@@ -1,3 +1,7 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+// @ts-ignore
+import pg from 'pg';
+
 import {
   RDS_PEM,
   DB_HOST,
@@ -6,6 +10,9 @@ import {
   DB_USER,
   DB_PORT,
 } from './config';
+
+// https://github.com/sequelize/sequelize/issues/2383
+pg.defaults.parseInt8 = true;
 
 export = {
   development: {

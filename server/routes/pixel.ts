@@ -52,11 +52,7 @@ router.get('/pixel.gif', async (req, res) => {
       });
 
       const { canonical, source } = tokenPayload as TrackerTokenPayload;
-      const view = await View.create({
-        canonical,
-        source,
-        domain,
-      });
+      const view = await View.create({ canonical, source, domain });
 
       // eslint-disable-next-line no-console
       console.log(
