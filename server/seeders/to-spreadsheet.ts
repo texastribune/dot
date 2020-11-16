@@ -1,12 +1,16 @@
-/* eslint-disable no-console */
-
-import fs from 'fs';
+/* eslint-disable no-console, @typescript-eslint/camelcase */
 
 import moment from 'moment-timezone';
 import { Sequelize, Op as Operation } from 'sequelize';
+import { GoogleSpreadsheet } from 'google-spreadsheet';
 
 import { TIMEZONE } from '../../shared-config';
 import View from '../models/view';
+import {
+  GOOGLE_SERVICE_ACCOUNT_EMAIL,
+  GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY,
+  GOOGLE_SPREADSHEET_ID,
+} from '../config';
 
 export = {
   up: async (): Promise<void> => {
@@ -18,17 +22,14 @@ export = {
 
     const todayStart = moment().tz(TIMEZONE).startOf('day').toDate();
 
-    const data = await View.findAll({
+    const viewGroups = await View.findAll({
       attributes: [
         'canonical',
         'domain',
         [Sequelize.fn('count', Sequelize.col('*')), 'views'],
       ],
       group: ['canonical', 'domain'],
-      order: [
-        ['canonical', 'ASC'],
-        [Sequelize.col('views'), 'DESC'],
-      ],
+      order: [['canonical', 'ASC']],
       where: {
         visitedAt: {
           [Operation.gte]: yesterdayStart,
@@ -37,12 +38,23 @@ export = {
       },
     });
 
-    const csv = data.reduce(
-      (acc, view) =>
-        `${acc}${view.canonical},${view.domain},${view.get('views')}\n`,
-      'canonical,domain,views\n'
-    );
+    const doc = new GoogleSpreadsheet(GOOGLE_SPREADSHEET_ID);
+    await doc.useServiceAccountAuth({
+      client_email: GOOGLE_SERVICE_ACCOUNT_EMAIL,
+      private_key: GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY,
+    });
+    await doc.loadInfo();
 
-    fs.writeFileSync('foo.csv', csv);
+    const sheet = doc.sheetsByIndex[0];
+    await sheet.clear();
+    await sheet.setHeaderRow(['canonical', 'domain', 'views']);
+
+    const rows = viewGroups.map((group) => ({
+      canonical: group.canonical,
+      domain: group.domain || 'null',
+      views: group.get('views') as number,
+    }));
+
+    await sheet.addRows(rows);
   },
 };

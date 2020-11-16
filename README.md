@@ -18,27 +18,30 @@ This app produces a small pixel to include in republished content. The pixel, wh
 
 ## Environment variables
 
-| Variable                |               Example |
-| ----------------------- | --------------------: |
-| `ACCESS_ID`             |    secret-char-string |
-| `APP_URL`               | http://localhost:3000 |
-| `AUTH0_CLIENT_ID`       |                       |
-| `AUTH0_CLIENT_SECRET`   |                       |
-| `AUTH0_DOMAIN`          |            domain.com |
-| `AWS_ACCESS_KEY_ID`     |                       |
-| `AWS_SECRET_ACCESS_KEY` |                       |
-| `DB_HOST`               |                dot-db |
-| `DB_NAME`               |                   dot |
-| `DB_PASSWORD`           |              postgres |
-| `DB_PORT`               |                  5432 |
-| `DB_USER`               |              postgres |
-| `NODE_ENV`              |           development |
-| `NODE_PORT`             |                  3000 |
-| `TRACKER_JWT_SECRET`    |          HS256 secret |
-| `ENABLE_SENTRY`         |            true/false |
-| `SENTRY_DSN`            |                       |
-| `SENTRY_ENVIRONMENT`    |           development |
-| `VUETIFY_NONCE`         |           noncestring |
+| Variable                             |               Example |
+| ------------------------------------ | --------------------: |
+| `ACCESS_ID`                          |    secret-char-string |
+| `APP_URL`                            | http://localhost:3000 |
+| `AUTH0_CLIENT_ID`                    |                       |
+| `AUTH0_CLIENT_SECRET`                |                       |
+| `AUTH0_DOMAIN`                       |            domain.com |
+| `AWS_ACCESS_KEY_ID`                  |                       |
+| `AWS_SECRET_ACCESS_KEY`              |                       |
+| `DB_HOST`                            |                dot-db |
+| `DB_NAME`                            |                   dot |
+| `DB_PASSWORD`                        |              postgres |
+| `DB_PORT`                            |                  5432 |
+| `DB_USER`                            |              postgres |
+| `GOOGLE_SERVICE_ACCOUNT_EMAIL`       |                       |
+| `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY` |                       |
+| `GOOGLE_SPREADSHEET_ID`              |                       |
+| `NODE_ENV`                           |           development |
+| `NODE_PORT`                          |                  3000 |
+| `TRACKER_JWT_SECRET`                 |          HS256 secret |
+| `ENABLE_SENTRY`                      |            true/false |
+| `SENTRY_DSN`                         |                       |
+| `SENTRY_ENVIRONMENT`                 |           development |
+| `VUETIFY_NONCE`                      |           noncestring |
 
 ### More detail
 
