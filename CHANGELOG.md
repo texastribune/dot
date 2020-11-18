@@ -1,5 +1,15 @@
 # Change log
 
+## v2.8.0
+
+### Features
+
+- Add script for baking out data into a Google Spreadsheet
+
+### Improvements
+
+- Kill permissions decorators in favor of regular ol' function
+
 ## v2.7.0
 
 ### Improvements
