@@ -1,6 +1,6 @@
-import { USER_PERMISSIONS } from '../shared-config';
+import { UserPermissions } from '../shared-types';
 
 export interface RouteMeta {
   requiresLogIn: boolean;
-  permissions: USER_PERMISSIONS[];
+  permissions: UserPermissions[];
 }

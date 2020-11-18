@@ -18,27 +18,30 @@ This app produces a small pixel to include in republished content. The pixel, wh
 
 ## Environment variables
 
-| Variable                |               Example |
-| ----------------------- | --------------------: |
-| `ACCESS_ID`             |    secret-char-string |
-| `APP_URL`               | http://localhost:3000 |
-| `AUTH0_CLIENT_ID`       |                       |
-| `AUTH0_CLIENT_SECRET`   |                       |
-| `AUTH0_DOMAIN`          |            domain.com |
-| `AWS_ACCESS_KEY_ID`     |                       |
-| `AWS_SECRET_ACCESS_KEY` |                       |
-| `DB_HOST`               |                dot-db |
-| `DB_NAME`               |                   dot |
-| `DB_PASSWORD`           |              postgres |
-| `DB_PORT`               |                  5432 |
-| `DB_USER`               |              postgres |
-| `NODE_ENV`              |           development |
-| `NODE_PORT`             |                  3000 |
-| `TRACKER_JWT_SECRET`    |          HS256 secret |
-| `ENABLE_SENTRY`         |            true/false |
-| `SENTRY_DSN`            |                       |
-| `SENTRY_ENVIRONMENT`    |           development |
-| `VUETIFY_NONCE`         |           noncestring |
+| Variable                             |               Example |
+| ------------------------------------ | --------------------: |
+| `ACCESS_ID`                          |    secret-char-string |
+| `APP_URL`                            | http://localhost:3000 |
+| `AUTH0_CLIENT_ID`                    |                       |
+| `AUTH0_CLIENT_SECRET`                |                       |
+| `AUTH0_DOMAIN`                       |            domain.com |
+| `AWS_ACCESS_KEY_ID`                  |                       |
+| `AWS_SECRET_ACCESS_KEY`              |                       |
+| `DB_HOST`                            |                dot-db |
+| `DB_NAME`                            |                   dot |
+| `DB_PASSWORD`                        |              postgres |
+| `DB_PORT`                            |                  5432 |
+| `DB_USER`                            |              postgres |
+| `GOOGLE_SERVICE_ACCOUNT_EMAIL`       |                       |
+| `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY` |                       |
+| `GOOGLE_SPREADSHEET_ID`              |                       |
+| `NODE_ENV`                           |           development |
+| `NODE_PORT`                          |                  3000 |
+| `TRACKER_JWT_SECRET`                 |          HS256 secret |
+| `ENABLE_SENTRY`                      |            true/false |
+| `SENTRY_DSN`                         |                       |
+| `SENTRY_ENVIRONMENT`                 |           development |
+| `VUETIFY_NONCE`                      |           noncestring |
 
 ### More detail
 
@@ -94,17 +97,13 @@ We use Sequelize to handle migrations. Note that, if you're running these locall
 
 Migration scripts are located in `server/migrations/`. To run migrations up to a certain point, do `npx sequelize-cli db:migrate --to <name-of-migration>.js`. Or, to run all lingering ones, simply do `npx sequelize-cli db:migrate`.
 
-## Releases
+## Google Spreadsheets integration
 
-This app is semantically versioned and uses the [`release-it`](https://github.com/release-it/release-it) package to create releases. You must have full repository permissions as well as `GITHUB_TOKEN=<personal access token>` in your terminal environment _outside_ of the Docker container.
+This project includes a Sequelize seeder for baking out collected data into a Google Spreadsheet. By default, it'll produce stats for the previous day, but the date range is adjustable.
 
-To create a release, run `npm run release` outside of Docker. Answer "yes" to all the questions that follow. During the release, the contents of `tracker/pixel.js` will be copied and placed in `analytics/<version>/pixel.js`, where Express can serve them. This ensures we have a script per app version and can thus continue serving old versions while providing them with a valid SRI hash.
+The excellent `node-google-spreadsheet` [package](https://theoephraim.github.io/node-google-spreadsheet/#/) powers this task. It assumes you're authenticating via [service account](https://theoephraim.github.io/node-google-spreadsheet/#/getting-started/authentication?id=service-account) and thus you'll need the `GOOGLE_*` environment variables referenced above.
 
-The `master` branch represents the current major version. All releases should be made from `master` save two scenarios: patches to previous versions and pre-releases of the next major version.
-
-It's OK to make pre-releases from `master` to test on staging servers, but these should never be deployed to production. _Remnant pre-release scripts in `analytics/` should be deleted when making a new minor or patch release_.
-
-The `next` branch represents the next major version. All pre-releases for the next major version should be made from this branch.
+To run the seeder: `npx sequelize-cli db:seed --seed to-spreadsheet.js`. If you're running it locally, you'll want to do `npm run build:server` first.
 
 ## Deploying to production
 
