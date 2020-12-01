@@ -1,6 +1,7 @@
 /*  eslint-disable @typescript-eslint/no-explicit-any */
 
 import { GraphQLScalarType } from 'graphql';
+// We keep this the same version as what's used internally in Sequelize
 import isURL from 'validator/lib/isURL';
 
 export default new GraphQLScalarType({
