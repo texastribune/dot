@@ -41,7 +41,7 @@ export = {
         }
       );
 
-      console.log('\x1b[33m%s\x1b[0m', `Deleted ${numUpdatedRows} rows`);
+      console.log('\x1b[33m%s\x1b[0m', `Updated ${numUpdatedRows} rows`);
     } catch (error) {
       console.error(error);
       throw error;
