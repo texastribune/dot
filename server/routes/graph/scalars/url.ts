@@ -1,6 +1,7 @@
-/*  eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/camelcase, @typescript-eslint/ban-ts-ignore */
+/*  eslint-disable @typescript-eslint/no-explicit-any */
 
 import { GraphQLScalarType } from 'graphql';
+// We keep this the same version as what's used internally in Sequelize
 import isURL from 'validator/lib/isURL';
 
 export default new GraphQLScalarType({
@@ -12,8 +13,7 @@ export default new GraphQLScalarType({
         `URL cannot represent non-string type ${JSON.stringify(value)}`
       );
     }
-    // @ts-ignore
-    if (!isURL(value, { validate_length: false })) {
+    if (!isURL(value)) {
       throw new TypeError(
         `URL cannot represent invalidly formatted URL string ${JSON.stringify(
           value
@@ -26,8 +26,7 @@ export default new GraphQLScalarType({
     if (ast.kind !== 'StringValue') {
       throw new TypeError(`URL cannot correspond to AST type ${ast.kind}`);
     }
-    // @ts-ignore
-    if (!isURL(ast.value, { validate_length: false })) {
+    if (!isURL(ast.value)) {
       throw new TypeError(
         `URL cannot represent invalidly formatted URL string ${JSON.stringify(
           ast.value
@@ -42,8 +41,7 @@ export default new GraphQLScalarType({
         `URL cannot represent non-string type ${JSON.stringify(value)}`
       );
     }
-    // @ts-ignore
-    if (!isURL(value, { validate_length: false })) {
+    if (!isURL(value)) {
       throw new TypeError(
         `URL cannot represent invalidly formatted URL string ${JSON.stringify(
           value
