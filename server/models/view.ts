@@ -5,7 +5,6 @@ import {
   Op as Operation,
   Filterable,
 } from 'sequelize';
-import isURL from 'validator/lib/isURL';
 
 import {
   ViewsItemByCanonical,
@@ -117,20 +116,7 @@ View.init(
     canonical: {
       type: DataTypes.TEXT,
       allowNull: false,
-      validate: {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        isValidUrl: (value: any): void => {
-          if (
-            !isURL(value, {
-              // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-              // @ts-ignore
-              validate_length: false, // eslint-disable-line @typescript-eslint/camelcase
-            })
-          ) {
-            throw new Error('Validation isUrl on canonical failed');
-          }
-        },
-      },
+      validate: { isUrl: true },
     },
     domain: {
       type: DataTypes.TEXT,
