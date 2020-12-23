@@ -1,5 +1,11 @@
 # Change log
 
+## v2.8.2
+
+### Improvements
+
+- Report view-validation failures as warnings, not errors
+
 ## v2.8.0
 
 ### Features
