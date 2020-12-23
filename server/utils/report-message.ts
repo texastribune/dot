@@ -7,8 +7,5 @@ export default function reportMessage({
   message: string;
   severity?: Severity;
 }): void {
-  // eslint-disable-next-line no-console
-  console.error(message);
-
   captureMessage(message, severity);
 }

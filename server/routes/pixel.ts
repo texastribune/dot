@@ -3,8 +3,8 @@ import jwt from 'jsonwebtoken';
 
 import { TRACKER_JWT_SECRET } from '../config';
 import { TrackerTokenPayload } from '../types';
-import reportError from '../utils/report-error';
-import logError from '../utils/log-error';
+import reportMessage from '../utils/report-message';
+import logMessage from '../utils/log-message';
 import View from '../models/view';
 import noCacheMiddleware from '../middleware/no-cache';
 
@@ -46,8 +46,8 @@ router.get('/pixel.gif', async (req, res) => {
       `Logged view | Canonical: ${view.canonical} | Domain: ${view.domain} | Source: ${view.source}`
     );
   } catch (error) {
-    logError(error);
-    reportError(error);
+    logMessage(error.message);
+    reportMessage({ message: error.message });
   } finally {
     res
       .set({
