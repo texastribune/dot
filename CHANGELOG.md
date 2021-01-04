@@ -1,5 +1,11 @@
 # Change log
 
+## v2.8.3
+
+### Security
+
+- Fix Axios vulnerability
+
 ## v2.8.2
 
 ### Improvements
