@@ -62,7 +62,7 @@
   "devDependencies": {
     "@types/auth0-js": "^9.12.4",
     "@types/bluebird": "^3.5.30",
-    "@types/express": "^4.17.6",
+    "@types/express": "^4.17.12",
     "@types/express-jwt": "0.0.42",
     "@types/google-spreadsheet": "^3.0.2",
     "@types/graphql": "^14.5.0",
