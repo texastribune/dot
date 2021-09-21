@@ -109,7 +109,7 @@ To run the seeder: `npx sequelize-cli db:seed --seed to-spreadsheet.js`. If you'
 
 We recommend building an image from the included `Dockerfile`, then running that image inside a container on the production server. You should also have a command that builds the image but overrides the default entrypoint and enters you into a bash shell. From there, you can run database migrations.
 
-For more information/to get a sample production Makefile, please contact agibson@texastribune.org.
+For more information/to get a sample production `Makefile`, please contact The Texas Tribune.
 
 ## License
 
