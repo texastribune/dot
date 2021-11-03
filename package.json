@@ -49,7 +49,7 @@
     "pug": "^3.0.1",
     "sequelize": "^5.21.8",
     "statuses": "^2.0.0",
-    "validator": "10.11.0",
+    "validator": "13.7.0",
     "vue": "^2.6.11",
     "vue-apollo": "^3.0.4",
     "vue-meta": "^2.4.0",
