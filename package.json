@@ -36,7 +36,7 @@
     "google-spreadsheet": "^3.1.15",
     "graphql": "^14.6.0",
     "graphql-iso-date": "^3.6.1",
-    "graphql-tag": "^2.10.3",
+    "graphql-tag": "^2.12.6",
     "graphql-tools": "^5.0.0",
     "helmet": "^3.23.2",
     "jsonwebtoken": "^8.5.1",
