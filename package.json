@@ -73,7 +73,7 @@
     "@types/node": "^12.12.35",
     "@types/validator": "10.11.0",
     "@types/webpack": "^4.41.11",
-    "@types/webpack-dev-middleware": "^3.7.0",
+    "@types/webpack-dev-middleware": "^5.3.0",
     "@typescript-eslint/eslint-plugin": "^2.28.0",
     "@typescript-eslint/parser": "^2.28.0",
     "css-loader": "^3.5.2",
