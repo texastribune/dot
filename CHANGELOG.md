@@ -1,5 +1,11 @@
 # Change log
 
+## v2.8.10
+
+### Security
+
+- Various vulnerability patches
+
 ## v2.8.4-9
 
 ### Security
