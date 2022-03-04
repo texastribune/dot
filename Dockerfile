@@ -1,8 +1,5 @@
-FROM node:12-alpine
+FROM node:12
 LABEL maintainer="Texas Tribune <tech@texastribune.org>"
-
-# add bash for dev
-RUN apk add --no-cache bash
 
 RUN mkdir /app
 WORKDIR /app
