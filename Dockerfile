@@ -2,7 +2,7 @@ FROM node:12-alpine
 LABEL maintainer="Texas Tribune <tech@texastribune.org>"
 
 # add bash for dev
-RUN apk add --no-cache bash
+RUN apk add --no-cache bash python2 g++ make
 
 RUN mkdir /app
 WORKDIR /app
