@@ -41,7 +41,7 @@ db: net
 		--volume=${APP}_db-vol:/var/lib/postgresql/data \
 		--name=dot-db \
     --env=POSTGRES_PASSWORD=postgres \
-		postgres:11
+		postgres:12
 	sleep 5
 
 db-refresh: db
@@ -50,4 +50,4 @@ db-refresh: db
 		--env-file=${DOCKER_ENV_FILE} \
 		--env=DATABASE_URL=${DATABASE_URL} \
 		--env=S3_SOURCE=${S3_SOURCE} \
-		texastribune/pg-tools:9.6 /app/import-from-s3.sh
+		texastribune/pg-tools:12 /app/import-from-s3.sh
