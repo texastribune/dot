@@ -1,4 +1,4 @@
-FROM node:12-alpine
+FROM node:18-alpine
 LABEL maintainer="Texas Tribune <tech@texastribune.org>"
 
 # add bash for dev
