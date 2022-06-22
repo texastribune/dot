@@ -1,5 +1,5 @@
 import requests
-import argparse
+import os
 import io
 import base64
 import urllib.parse
@@ -11,12 +11,8 @@ from collections import Counter
 app = Flask(__name__)
 scheduler = APScheduler()
 store = Counter()
-parser = argparse.ArgumentParser()
-parser.add_argument('-i', '--interval', type=int,
-                    default=600, help='interval (in seconds) between each flush.')
-parser.add_argument('-e', '--endpoint', required=True,
-                    help='the endpoint which will accept flushed data.')
-args = parser.parse_args()
+interval = int(os.environ.get('INTERVAL', 600))
+endpoint = os.environ.get('ENDPOINT')
 
 
 @app.route("/pixel.gif")
@@ -45,13 +41,13 @@ def pixel():
     return response
 
 
-@scheduler.task('interval', id='flush', seconds=args.interval)
+@scheduler.task('interval', id='flush', seconds=interval)
 def flush():
     """Attempts to flush `store` to external API at given interval."""
     global store
 
     # NO-OP if no `endpoint` or `store`.
-    if not args.endpoint or not store:
+    if not endpoint or not store:
         return
 
     # Clear/Log `store`.
@@ -61,7 +57,7 @@ def flush():
 
     # Attempt flush to `endpoint`. Reset `store` if failed.
     try:
-        r = requests.post(args.endpoint, json=dict(store))
+        r = requests.post(endpoint, json=dict(store))
         r.raise_for_status()
         print("••• flushed •••")
     except Exception as e:
@@ -71,7 +67,7 @@ def flush():
 
 
 if __name__ == '__main__':
-    print(f"••• endpoint: {args.endpoint}")
-    print(f"••• interval: {args.interval} seconds")
+    print(f"••• endpoint: {endpoint}")
+    print(f"••• interval: {interval} seconds")
     scheduler.start()
     app.run()

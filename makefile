@@ -1,5 +1,8 @@
+export INTERVAL=5
+export ENDPOINT=https://jsonplaceholder.typicode.com/posts
+
 build:
-	python app.py -i 5 -e https://jsonplaceholder.typicode.com/posts
+	python app.py
 
 ping:
 	curl http://127.0.0.1:5000/pixel.gif?a -s -o /dev/null
