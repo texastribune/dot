@@ -46,14 +46,17 @@ def flush():
     """Attempts to flush `store` to external API at given interval."""
     global store
 
+    # Log `store`.
+    for x in store:
+        print(f"{store[x]}:\t{x}")
+
     # NO-OP if no `endpoint` or `store`.
     if not endpoint or not store:
+        print("••• skipping flush •••")
         return
 
-    # Clear/Log `store`.
+    # Clear `store`.
     data, store = store, Counter()
-    for x in data:
-        print(f"{data[x]}:\t{x}")
 
     # Attempt flush to `endpoint`. Reset `store` if failed.
     try:
