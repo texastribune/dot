@@ -73,4 +73,4 @@ if __name__ == '__main__':
     print(f"••• endpoint: {endpoint}")
     print(f"••• interval: {interval} seconds")
     scheduler.start()
-    app.run()
+    app.run(host='0.0.0.0')
