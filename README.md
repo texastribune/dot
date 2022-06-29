@@ -12,6 +12,8 @@ make dev
 make ping
 ```
 
+_Example local output:_
+![Example running locally](./docs/local-example.png)
 ## How it Works
 ```mermaid
 sequenceDiagram
