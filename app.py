@@ -6,10 +6,13 @@ import urllib.parse
 
 from flask import Flask, request, send_file, make_response
 from flask_apscheduler import APScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 from collections import Counter
 
+
 app = Flask(__name__)
-scheduler = APScheduler()
+app.config['SCHEDULER_TIMEZONE'] = 'UTC'
+scheduler = APScheduler(scheduler=BackgroundScheduler(timezone='UTC'), app=app)
 scheduler.start()
 store = Counter()
 interval = int(os.environ.get('INTERVAL', 600))
