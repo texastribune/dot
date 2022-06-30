@@ -22,9 +22,9 @@ build:
 
 
 ping:
-	curl -v "http://localhost:${HOST_PORT}/pixel.gif?a" 
-	curl -v "http://localhost:${HOST_PORT}/pixel.gif?b=x" 
-	curl -v "http://localhost:${HOST_PORT}/pixel.gif?b=x" 
-	curl -v "http://localhost:${HOST_PORT}/pixel.gif?c=y&d=z" 
-	curl -v "http://localhost:${HOST_PORT}/pixel.gif?c=y&d=z" 
-	curl -v "http://localhost:${HOST_PORT}/pixel.gif?c=y&d=z" 
+	curl -v "http://localhost:${HOST_PORT}/pixel.gif?a" -o /dev/null
+	curl -v "http://localhost:${HOST_PORT}/pixel.gif?b=x" -o /dev/null
+	curl -v "http://localhost:${HOST_PORT}/pixel.gif?b=x" -o /dev/null
+	curl -v "http://localhost:${HOST_PORT}/pixel.gif?c=y&d=z" -o /dev/null
+	curl -v "http://localhost:${HOST_PORT}/pixel.gif?c=y&d=z" -o /dev/null
+	curl -v "http://localhost:${HOST_PORT}/pixel.gif?c=y&d=z" -o /dev/null
