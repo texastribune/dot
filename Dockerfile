@@ -14,4 +14,4 @@ RUN pip install -r requirements.txt
 COPY . .
 
 # Start Flask App
-CMD [ "python", "app.py"]
+CMD [ "flask", "run", "--host=0.0.0.0"]

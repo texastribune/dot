@@ -10,8 +10,9 @@ dev: build
 		--rm -it \
 		--name dot-container \
 		-p ${HOST_PORT}:5000 \
-		-v "$(pwd):/usr/src/app" \
+		-v "$$(pwd):/usr/src/app" \
 			-e FLASK_ENV=development \
+			-e FLASK_APP=app \
 			-e INTERVAL=${INTERVAL} \
 			-e ENDPOINT=${ENDPOINT} \
 		dot

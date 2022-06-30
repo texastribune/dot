@@ -10,6 +10,7 @@ from collections import Counter
 
 app = Flask(__name__)
 scheduler = APScheduler()
+scheduler.start()
 store = Counter()
 interval = int(os.environ.get('INTERVAL', 600))
 endpoint = os.environ.get('ENDPOINT')
@@ -67,10 +68,3 @@ def flush():
         print(f"••• flush failed: {e}")
         # Merge `data` back into `store`, which may have been updated.
         store += data
-
-
-if __name__ == '__main__':
-    print(f"••• endpoint: {endpoint}")
-    print(f"••• interval: {interval} seconds")
-    scheduler.start()
-    app.run(host='0.0.0.0')
