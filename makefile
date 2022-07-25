@@ -28,3 +28,14 @@ ping:
 	curl -v "http://localhost:${HOST_PORT}/pixel.gif?c=y&d=z" -o /dev/null
 	curl -v "http://localhost:${HOST_PORT}/pixel.gif?c=y&d=z" -o /dev/null
 	curl -v "http://localhost:${HOST_PORT}/pixel.gif?c=y&d=z" -o /dev/null
+
+# Terraform commands for working/developing infrastructure locally
+## format terraform code
+terraform/format:
+	terraform fmt --recursive infrastructure
+## initialize terraform, installs plugins & connects to remote backend
+terraform/init:
+	terraform -chdir=infrastructure init
+## speculative plan to show locally what would happen on terraform apply
+terraform/plan:
+	terraform -chdir=infrastructure plan
