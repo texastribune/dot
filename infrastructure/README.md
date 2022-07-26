@@ -15,6 +15,7 @@ These need to be set in Terraform Cloud for the workspace:
 |`GOOGLE_ORGANIZATION_ID`|String|Google Organization ID|-|
 |`GOOGLE_PROJECT_ID`|String|The Google Project ID used for the dot application|-|
 |`GOOGLE_REGION`|String|Google Region| _Optional_, defaults to `us-central1`|
+|`SERVICE_NAME`|String|Name of the cloud run service/app| _Optional_, defaults to `dot`|
 
 #### Local Requirements
 * `terraform` cli

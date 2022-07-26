@@ -2,6 +2,11 @@
 variable "GOOGLE_ORGANIZATION_ID" {}
 variable "GOOGLE_PROJECT_ID" {}
 variable "GOOGLE_REGION" { default = "us-central1" }
+variable "SERVICE_NAME" {
+  type = string
+  description = "The name of the Cloud Run service/app"
+  default = "dot"
+}
 
 # GLOBAL
 terraform {
@@ -46,4 +51,15 @@ resource "google_project_service" "enabled_service" {
   for_each = toset(local.services)
   project  = var.GOOGLE_PROJECT_ID
   service  = each.key
+}
+
+module "cloud_run" {
+  # https://registry.terraform.io/modules/GoogleCloudPlatform/cloud-run/google/0.3.0
+  source = "GoogleCloudPlatform/cloud-run/google"
+  version = "~> 0.3.0"
+
+  service_name = var.SERVICE_NAME
+  project_id = var.GOOGLE_PROJECT_ID
+  location = var.GOOGLE_REGION
+  image = "gcr.io/cloudrun/hello"
 }
