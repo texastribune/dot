@@ -9,7 +9,7 @@ terraform {
     # https://registry.terraform.io/providers/hashicorp/google/latest
     google = {
       source  = "hashicorp/google"
-      version = "4.20.0"
+      version = "4.30.0"
     }
   }
   # Configure terraform cloud for terraform backend/statefile
