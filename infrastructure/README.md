@@ -14,6 +14,7 @@ These need to be set in Terraform Cloud for the workspace:
 |`GOOGLE_CREDENTIALS`| JSON|Google Service Account with privileges to deploy cloud resources within the project|See the [Google Provider Configuration Reference Authentication section](https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_reference) |
 |`GOOGLE_ORGANIZATION_ID`|String|Google Organization ID|-|
 |`GOOGLE_PROJECT_ID`|String|The Google Project ID used for the dot application|-|
+|`GOOGLE_PROJECT_NAME`|String|The Google Project name; used to pull app image from google container registry. |-|
 |`GOOGLE_REGION`|String|Google Region| _Optional_, defaults to `us-central1`|
 |`SERVICE_NAME`|String|Name of the cloud run service/app| _Optional_, defaults to `dot`|
 

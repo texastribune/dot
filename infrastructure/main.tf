@@ -1,6 +1,7 @@
 # VARIABLES
 variable "GOOGLE_ORGANIZATION_ID" {}
 variable "GOOGLE_PROJECT_ID" {}
+variable "GOOGLE_PROJECT_NAME" {}
 variable "GOOGLE_REGION" { default = "us-central1" }
 variable "SERVICE_NAME" {
   type = string
@@ -61,7 +62,11 @@ module "cloud_run" {
   service_name = var.SERVICE_NAME
   project_id = var.GOOGLE_PROJECT_ID
   location = var.GOOGLE_REGION
-  image = "gcr.io/cloudrun/hello"
+  image = "us.gcr.io/${var.GOOGLE_PROJECT_NAME}/${var.SERVICE_NAME}:latest"
+  ports = {
+    "name": "http1",
+    "port": 5000
+  }
   
   # allow unauthenticated requests (makes service URL public)
   members = ["allUsers"]
