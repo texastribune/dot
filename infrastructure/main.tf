@@ -62,6 +62,10 @@ module "cloud_run" {
   project_id = var.GOOGLE_PROJECT_ID
   location = var.GOOGLE_REGION
   image = "gcr.io/cloudrun/hello"
+  
+  # allow unauthenticated requests (makes service URL public)
+  members = ["allUsers"]
+
 }
 
 # OUTPUTS
