@@ -63,3 +63,11 @@ module "cloud_run" {
   location = var.GOOGLE_REGION
   image = "gcr.io/cloudrun/hello"
 }
+
+# OUTPUTS
+output "cloud_run-url" {
+  value = "${module.cloud_run.service_url}"
+}
+output "cloud_run-service-name" {
+  value = "${module.cloud_run.service_name}"
+}
