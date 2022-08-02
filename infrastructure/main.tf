@@ -1,9 +1,10 @@
 # VARIABLES
 variable "heroku_email" {}
 variable "heroku_api_key" {sensitive = true}
-variable "SERVICE_NAME" {
+variable "heroku_region" { default = "us" }
+variable "app_name" {
   type        = string
-  description = "The name of the Cloud Run service/app"
+  description = "The name of the app"
   default     = "dot"
 }
 
@@ -34,5 +35,13 @@ provider "heroku" {
 ## DATA
 ### local data
 
-## RESOURCES
+# RESOURCES
+resource "heroku_app" "dot-staging" {
+  name =  "${var.app_name}-staging"
+  region = var.heroku_region
+}
+
 # OUTPUTS
+output "dot-staging-url" {
+  value = heroku_app.dot-staging.web_url
+}
