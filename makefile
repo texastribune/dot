@@ -18,7 +18,7 @@ dev: build
 		dot
 
 build:
-	docker build -t dot .
+	docker build -t dot ./src
 
 
 ping:

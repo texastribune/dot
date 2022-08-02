@@ -7,11 +7,11 @@ WORKDIR /usr/src/app
 EXPOSE 5000
 
 # Install requirements
-COPY ./src/requirements.txt requirements.txt
+COPY ./requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
 # Copy Application Files
-COPY ./src/ .
+COPY ./ .
 
 # Start Flask App
 CMD [ "flask", "run", "--host=0.0.0.0"]

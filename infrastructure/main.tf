@@ -48,7 +48,7 @@ resource "heroku_build" "dot-staging" {
 
   source {
     # root directory with dockerfile to build
-    path = "../"
+    path = "../src"
   }
 }
 
