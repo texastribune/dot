@@ -39,7 +39,29 @@ provider "heroku" {
 resource "heroku_app" "dot-staging" {
   name   = "${var.app_name}-staging"
   region = var.heroku_region
-  stack = "heroku-22"
+  stack  = "container"
+}
+
+# Build and to the heroku_app
+resource "heroku_build" "dot-staging" {
+  app_id = heroku_app.dot-staging.id # creates a resource dependency on heroku_app.dot-staging
+
+  source {
+    # root directory with dockerfile to build
+    path = "../"
+  }
+}
+
+# resource "heroku_formation" "dot-staging_formation" {
+  app_id   = heroku_app.dot-staging.id
+  type     = "web"
+  quantity = 1
+  size     = "free"
+
+  # create explicit resource dependency on build
+  depends_on = [
+    heroku_build.dot-staging
+  ]
 }
 
 # OUTPUTS
