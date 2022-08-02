@@ -52,7 +52,7 @@ resource "heroku_build" "dot-staging" {
   }
 }
 
-# resource "heroku_formation" "dot-staging_formation" {
+resource "heroku_formation" "dot-staging_formation" {
   app_id   = heroku_app.dot-staging.id
   type     = "web"
   quantity = 1
