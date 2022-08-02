@@ -1,8 +1,6 @@
 # VARIABLES
-variable "GOOGLE_ORGANIZATION_ID" {}
-variable "GOOGLE_PROJECT_ID" {}
-variable "GOOGLE_PROJECT_NAME" {}
-variable "GOOGLE_REGION" { default = "us-central1" }
+variable "heroku_email" {}
+variable "heroku_api_key" {sensitive = true}
 variable "SERVICE_NAME" {
   type        = string
   description = "The name of the Cloud Run service/app"
