@@ -40,6 +40,13 @@ resource "heroku_app" "dot-staging" {
   name   = "${var.app_name}-staging"
   region = var.heroku_region
   stack  = "container"
+
+  config_vars = {
+    "PORT" = "8080",
+    "FLASK_ENV" = "development",
+    "INTERVAL" = 5,
+    "ENDPOINT" = "https://jsonplaceholder.typicode.com/posts"
+  }
 }
 
 # Build and to the heroku_app
