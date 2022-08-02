@@ -39,6 +39,7 @@ provider "heroku" {
 resource "heroku_app" "dot-staging" {
   name =  "${var.app_name}-staging"
   region = var.heroku_region
+  stack = "heroku-22"
 }
 
 # OUTPUTS
