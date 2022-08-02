@@ -41,6 +41,8 @@ resource "heroku_app" "dot-staging" {
   region = var.heroku_region
   stack  = "container"
 
+  # environment variables for heroku runtime
+  # DO NOT add sensitive variables here!
   config_vars = {
     "PORT" = "8080",
     "FLASK_ENV" = "development",
