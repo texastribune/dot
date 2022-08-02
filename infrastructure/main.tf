@@ -1,6 +1,6 @@
 # VARIABLES
 variable "heroku_email" {}
-variable "heroku_api_key" {sensitive = true}
+variable "heroku_api_key" { sensitive = true }
 variable "heroku_region" { default = "us" }
 variable "app_name" {
   type        = string
@@ -37,7 +37,7 @@ provider "heroku" {
 
 # RESOURCES
 resource "heroku_app" "dot-staging" {
-  name =  "${var.app_name}-staging"
+  name   = "${var.app_name}-staging"
   region = var.heroku_region
   stack = "heroku-22"
 }
