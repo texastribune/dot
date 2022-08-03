@@ -48,7 +48,8 @@ resource "heroku_app" "dot-staging" {
     "PORT" = "8080",
     "FLASK_ENV" = "development",
     "INTERVAL" = 5,
-    "ENDPOINT" = "https://jsonplaceholder.typicode.com/posts"
+    "ENDPOINT" = "https://jsonplaceholder.typicode.com/posts",
+    "PROJECT_PATH" = "src"
   }
 
   organization {
