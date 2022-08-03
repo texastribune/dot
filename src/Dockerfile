@@ -14,4 +14,5 @@ RUN pip install -r requirements.txt
 COPY ./ .
 
 # Start Flask App
-CMD [ "flask", "run", "--host=0.0.0.0"]
+# CMD [ "flask", "run", "--host=0.0.0.0"]
+CMD ["gunicorn"  , "-b", "0.0.0.0:8888", "app:app", "--log-level", "debug"]

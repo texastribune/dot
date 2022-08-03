@@ -2,14 +2,14 @@
 INTERVAL=5
 ENDPOINT=https://jsonplaceholder.typicode.com/posts
 
-# Set the host port for localdev to be configurable if a certain port is in use already (5000 on macs, the default for flask, seems to be used by Apple)
-HOST_PORT=5001
+# Set the host port for the dev container
+HOST_PORT=8000
 
 dev: build
 	docker run \
 		--rm -it \
 		--name dot-container \
-		-p ${HOST_PORT}:5000 \
+		-p ${HOST_PORT}:8888 \
 		-v "$$(pwd)/src:/usr/src/app" \
 			-e FLASK_ENV=development \
 			-e FLASK_APP=app \

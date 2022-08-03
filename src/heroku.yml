@@ -2,4 +2,4 @@ build:
   docker:
     web: Dockerfile
 run:
-  web: gunicorn app:app
+  web: gunicorn app:app --log-level debug
