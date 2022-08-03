@@ -83,6 +83,11 @@ resource "heroku_addon" "logging" {
   app_id  = heroku_app.dot-staging.id
   plan = "papertrail:choklad"
 }
+# add redis add-on
+# resource "heroku_addon" "redis" {
+#   app_id  = heroku_app.dot-staging.id
+#   plan = "heroku-redis:hobby-dev"
+# }
 
 # OUTPUTS
 output "dot-staging-url" {
