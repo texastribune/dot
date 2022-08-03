@@ -3,11 +3,16 @@ import os
 import io
 import base64
 import urllib.parse
+import logging
 
 from flask import Flask, request, send_file, make_response
 from flask_apscheduler import APScheduler
 from apscheduler.schedulers.background import BackgroundScheduler
 from collections import Counter
+
+# https://stackoverflow.com/questions/42257942/using-flask-apscheduler-with-gunicorn
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s')
+logger= logging.getLogger(__name__)
 
 
 app = Flask(__name__)
@@ -19,10 +24,15 @@ interval = int(os.environ.get('INTERVAL', 600))
 endpoint = os.environ.get('ENDPOINT')
 
 
+logger.info("INTERVAL: %s seconds", interval)
+
+
 @app.route("/pixel.gif")
 def pixel():
     """Records page views using query params as the key."""
     # Record View
+    logger.info("*INFO get request*")
+
     key = urllib.parse.urlencode(request.args)
     store[key] += 1
 
@@ -47,16 +57,17 @@ def pixel():
 
 @scheduler.task('interval', id='flush', seconds=interval)
 def flush():
+    logger.debug("FLUSH function started...")
     """Attempts to flush `store` to external API at given interval."""
     global store
 
     # Log `store`.
     for x in store:
-        print(f"{store[x]}:\t{x}")
+        logger.info(f"{store[x]}:\t{x}")
 
     # NO-OP if no `endpoint` or `store`.
     if not endpoint or not store:
-        print("••• skipping flush •••")
+        logger.info("••• skipping flush •••")
         return
 
     # Clear `store`.
@@ -66,9 +77,9 @@ def flush():
     try:
         r = requests.post(endpoint, json=dict(store))
         r.raise_for_status()
-        print("••• flushed •••")
+        logger.info("••• flushed •••")
     except Exception as e:
-        print(f"••• flush failed: {e}")
+        logger.info(f"••• flush failed: {e}")
         # Merge `data` back into `store`, which may have been updated.
         store += data
 
