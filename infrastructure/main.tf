@@ -78,6 +78,12 @@ resource "heroku_formation" "dot-staging_formation" {
   ]
 }
 
+# adds logging
+resource "heroku_addon" "logging" {
+  app_id  = heroku_app.dot-staging.id
+  plan = "papertrail:choklad"
+}
+
 # OUTPUTS
 output "dot-staging-url" {
   value = heroku_app.dot-staging.web_url
