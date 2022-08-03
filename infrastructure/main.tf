@@ -2,6 +2,7 @@
 variable "heroku_email" {}
 variable "heroku_api_key" { sensitive = true }
 variable "heroku_region" { default = "us" }
+variable "heroku_team" {}
 variable "app_name" {
   type        = string
   description = "The name of the app"
