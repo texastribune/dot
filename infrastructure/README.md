@@ -10,6 +10,7 @@
    * You may need to login to terraform cloud (`terraform login`)
 1. Create a `tfvars` file to configure terraform
    * ```sh
+      # From the `dot` repo's `dot3/add-infrastructure` branch
       # creates a gitignore'd file that terraform automatically loads at runtime
       cp ./infrastructure/.auto.tfvars.example ./infrastructure/.auto.tfvars
       ```
