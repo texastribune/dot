@@ -70,7 +70,7 @@ resource "heroku_formation" "dot-staging_formation" {
   app_id   = heroku_app.dot-staging.id
   type     = "web"
   quantity = 1
-  size     = "free"
+  size     = "hobby"
 
   # create explicit resource dependency on build
   depends_on = [
