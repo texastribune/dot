@@ -72,6 +72,10 @@ def flush():
         # Merge `data` back into `store`, which may have been updated.
         store += data
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+#  When gunicorn is running as the startup command,
+#  this conditional is coming back false and not being 
+#  run.  Commenting out for now to avoid confusion
+#  about whether or not this is running/being used.
+# if __name__ == "__main__":
+#     port = int(os.environ.get("PORT", 5000))
+#     app.run(host='0.0.0.0', port=port, debug=True)
