@@ -1,0 +1,6 @@
+# heroku
+app_name = "dot"
+
+heroku_api_key = "your_heroku_api_key"
+heroku_email = "your_heroku_email@address.org"
+heroku_team = "texastribune"
