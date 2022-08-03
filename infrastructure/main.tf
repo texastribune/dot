@@ -49,6 +49,10 @@ resource "heroku_app" "dot-staging" {
     "INTERVAL" = 5,
     "ENDPOINT" = "https://jsonplaceholder.typicode.com/posts"
   }
+
+  organization {
+    name = var.heroku_team
+  }
 }
 
 # Build and to the heroku_app
