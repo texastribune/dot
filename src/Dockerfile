@@ -15,4 +15,4 @@ COPY ./ .
 
 # Start Flask App
 # CMD [ "flask", "run", "--host=0.0.0.0"]
-CMD ["gunicorn"  , "-b", "0.0.0.0:8888", "app:app", "--log-level", "debug"]
+CMD ["gunicorn"  , "-b", "0.0.0.0:8888", "app:app", "--log-level", "debug", "--threads", "2"]
