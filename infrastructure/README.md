@@ -75,19 +75,5 @@ Here's an example terraform workflow (to add a redis add-on):
    </details>
 1. If the plan looks good, run `terraform apply`.  Terraform Cloud will ask for confirmation before applying the change.
 
-_Note_ you can deploy code changes this same way (the `heroku_build` resource will show up as a changed resource).
-
-### Terraform
-### Usage
-#### Developing Locally
-From the project root directory:
-```sh
-# initialize terraform, installs providers locally and connects to terraform cloud remote backend
-make terraform/init
-
-# Run a speculative plan (will stream to terminal and show up remotely in terraform cloud workspace)
-make terraform/plan
-
-# Auto format terraform code before commiting
-make terraform/format
-```
+### Note: Deploying Application Code Changes
+you can deploy code changes this same way (the `heroku_build` resource will show up as a changed resource).
