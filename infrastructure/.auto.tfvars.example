@@ -2,5 +2,6 @@
 google_organization_id = 1234
 google_project_id = 1234
 google_project_name = project-name
+google_storage_bucket_name = my-bucket-name
 
 

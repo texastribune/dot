@@ -2,6 +2,7 @@
 variable "google_organization_id" {}
 variable "google_project_id" {}
 variable "google_project_name" {}
+variable "google_storage_bucket_name" {}
 variable "google_region" { default = "us-central1" }
 
 # GLOBAL
@@ -36,7 +37,7 @@ provider "google" {
 
 # RESOURCES
 resource "google_storage_bucket" "static-files" {
-  name = "dot-files"
+  name = var.google_storage_bucket_name
   location = var.google_region
 
   # terraform will destroy objects in bucket before deleting bucket
