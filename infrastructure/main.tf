@@ -86,6 +86,8 @@ resource "google_storage_bucket_object" "analytics" {
   name   = "analytics/${each.key}/pixel.js"
   source = "./static/analytics/${each.key}/pixel.js"
   bucket = google_storage_bucket.static-files.name
+  
+  cache_control = "no-cache, no-store, must-revalidate"
 }
 
 # OUTPUTS
