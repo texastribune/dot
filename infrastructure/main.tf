@@ -1,21 +1,16 @@
 # VARIABLES
-variable "heroku_email" {}
-variable "heroku_api_key" { sensitive = true }
-variable "heroku_region" { default = "us" }
-variable "heroku_team" {}
-variable "app_name" {
-  type        = string
-  description = "The name of the app"
-  default     = "dot"
-}
+variable "google_organization_id" {}
+variable "google_project_id" {}
+variable "google_project_name" {}
+variable "google_region" { default = "us-central1" }
 
 # GLOBAL
 terraform {
   required_providers {
-    # https://registry.terraform.io/providers/heroku/heroku/latest
-    heroku = {
-      source  = "heroku/heroku"
-      version = "~> 5.1.1"
+    # https://registry.terraform.io/providers/hashicorp/google/latest
+    google = {
+      source  = "hashicorp/google"
+      version = "4.30.0"
     }
   }
   # Configure terraform cloud for terraform backend/statefile
@@ -28,68 +23,27 @@ terraform {
 }
 
 # PROVIDERS
-provider "heroku" {
-  email   = var.heroku_email
-  api_key = var.heroku_api_key
+
+## Requires GOOGLE_CREDENTIALS environment variable set at terraform runtime
+## See:  https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_reference
+provider "google" {
+  project = var.google_project_id
+  region  = var.google_region
 }
 
 ## DATA
 ### local data
 
 # RESOURCES
-resource "heroku_app" "dot-staging" {
-  name   = "${var.app_name}-staging"
-  region = var.heroku_region
-  stack  = "container"
+resource "google_storage_bucket" "static-files" {
+  name = "dot-files"
+  location = var.google_region
 
-  # environment variables for heroku runtime
-  # DO NOT add sensitive variables here!
-  config_vars = {
-    "PORT" = "8080",
-    "FLASK_ENV" = "development",
-    "INTERVAL" = 5,
-    "ENDPOINT" = "https://jsonplaceholder.typicode.com/posts",
-  }
+  # terraform will destroy objects in bucket before deleting bucket
+  force_destroy = true
 
-  organization {
-    name = var.heroku_team
-  }
 }
 
-# Build and to the heroku_app
-resource "heroku_build" "dot-staging" {
-  app_id = heroku_app.dot-staging.id # creates a resource dependency on heroku_app.dot-staging
-
-  source {
-    # root directory with dockerfile to build
-    path = "../src"
-  }
-}
-
-resource "heroku_formation" "dot-staging_formation" {
-  app_id   = heroku_app.dot-staging.id
-  type     = "web"
-  quantity = 1
-  size     = "hobby"
-
-  # create explicit resource dependency on build
-  depends_on = [
-    heroku_build.dot-staging
-  ]
-}
-
-# adds logging
-resource "heroku_addon" "logging" {
-  app_id  = heroku_app.dot-staging.id
-  plan = "papertrail:choklad"
-}
-# add redis add-on
-# resource "heroku_addon" "redis" {
-#   app_id  = heroku_app.dot-staging.id
-#   plan = "heroku-redis:hobby-dev"
-# }
 
 # OUTPUTS
-output "dot-staging-url" {
-  value = heroku_app.dot-staging.web_url
-}
+
