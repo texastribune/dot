@@ -36,8 +36,9 @@ provider "google" {
 ### local data
 
 # RESOURCES
+## Create a storage bucket for static files
 resource "google_storage_bucket" "static-files" {
-  name = var.google_storage_bucket_name
+  name     = var.google_storage_bucket_name
   location = var.google_region
 
   # terraform will destroy objects in bucket before deleting bucket
@@ -45,6 +46,47 @@ resource "google_storage_bucket" "static-files" {
 
 }
 
+## Create a local iterable list of the static archived versions to host
+### Note: there's probably a more elegant way to do this, but since the 
+### versions are static hard-coding them in place here seems fine.
+locals {
+  versions = [
+    "2.1.0",
+    "2.2.0",
+    "2.3.0",
+    "2.3.1",
+    "2.3.2",
+    "2.3.3",
+    "2.3.4",
+    "2.3.5",
+    "2.3.6",
+    "2.4.0",
+    "2.5.0",
+    "2.6.0",
+    "2.6.1",
+    "2.6.2",
+    "2.6.3",
+    "2.7.0",
+    "2.8.0",
+    "2.8.1",
+    "2.8.2",
+    "2.8.3",
+    "2.8.4",
+    "2.8.5",
+    "2.8.6",
+    "2.8.7",
+    "2.8.8",
+    "2.8.9",
+    "2.8.10",
+  ]
+}
+## Upload static files to storage bucket
+resource "google_storage_bucket_object" "analytics" {
+  for_each = toset(local.versions)
+  name   = "analytics/${each.key}/pixel.js"
+  source = "./static/analytics/${each.key}/pixel.js"
+  bucket = google_storage_bucket.static-files.name
+}
 
 # OUTPUTS
 
