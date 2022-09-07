@@ -46,6 +46,15 @@ resource "google_storage_bucket" "static-files" {
 
 }
 
+# Configure the storage bucket to be able to be used 
+# as a backend for an https load balancer
+resource "google_compute_backend_bucket" "dot-bucket-backend" {
+  name = "dot-bucket-backend"
+  description = "Static pixel.js and pixel.gif files"
+  bucket_name = google_storage_bucket.static-files.name
+  enable_cdn = true
+}
+
 ## Create a local iterable list of the static archived versions to host
 ### Note: there's probably a more elegant way to do this, but since the 
 ### versions are static hard-coding them in place here seems fine.
