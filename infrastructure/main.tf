@@ -46,6 +46,13 @@ resource "google_storage_bucket" "static-files" {
 
 }
 
+# Set Access Control Policy to make bucket publicly readable
+resource "google_storage_bucket_access_control" "bucket-acl-public-read" {
+  bucket = google_storage_bucket.static-files.name
+  role = "READER"
+  entity = "allUsers"
+}
+
 # Configure the storage bucket to be able to be used 
 # as a backend for an https load balancer
 resource "google_compute_backend_bucket" "dot-bucket-backend" {
