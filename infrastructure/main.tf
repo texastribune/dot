@@ -34,6 +34,19 @@ provider "google" {
   region  = var.google_region
 }
 
+
+module "project-services" {
+  source  = "terraform-google-modules/project-factory/google//modules/project_services"
+  version = "~> 13.0"
+
+  project_id = var.google_project_id
+
+  activate_apis = [
+    "compute.googleapis.com"
+  ]
+  disable_services_on_destroy = true
+}
+
 ## DATA
 ### local data
 
