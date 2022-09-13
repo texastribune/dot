@@ -101,9 +101,9 @@ locals {
 ## Upload static files to storage bucket
 resource "google_storage_bucket_object" "analytics" {
   for_each = toset(local.versions)
-  name   = "analytics/${each.key}/pixel.js"
-  source = "./static/analytics/${each.key}/pixel.js"
-  bucket = google_storage_bucket.static-files.name
+  name     = "analytics/${each.key}/pixel.js"
+  source   = "./static/analytics/${each.key}/pixel.js"
+  bucket   = google_storage_bucket.static-files.name
   
   cache_control = "no-cache, no-store, must-revalidate"
 }
