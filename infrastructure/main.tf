@@ -1,3 +1,5 @@
+# https://cloud.google.com/architecture/serverless-pixel-tracking
+
 # VARIABLES
 variable "google_organization_id" {}
 variable "google_project_id" {}
