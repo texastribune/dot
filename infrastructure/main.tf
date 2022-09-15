@@ -60,6 +60,7 @@ resource "google_storage_bucket" "static-files" {
 
   # terraform will destroy objects in bucket before deleting bucket
   force_destroy = true
+  uniform_bucket_level_access = true
 
 }
 
