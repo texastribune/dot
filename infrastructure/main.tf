@@ -74,6 +74,8 @@ resource "google_storage_bucket_access_control" "bucket-acl-public-read" {
 # Configure the storage bucket to be able to be used 
 # as a backend for an https load balancer
 resource "google_compute_backend_bucket" "dot-bucket-backend" {
+  depends_on = [module.project-services]
+
   name = "dot-bucket-backend"
   description = "Static pixel.js and pixel.gif files"
   bucket_name = google_storage_bucket.static-files.name
