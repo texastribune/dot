@@ -1,3 +1,7 @@
+> **Note**
+> 
+> This app is no longer hosted nor maintained since Jan. 1 2023. We have since migrated to a [serverless solution by Google](https://web.archive.org/web/20201127002041/https://cloud.google.com/solutions/serverless-pixel-tracking).
+
 # Dot: The Texas Tribune's pixel tracker
 
 This app produces a small pixel to include in republished content. The pixel, which is issued with a JSON Web Token to ensure integrity, sends back data that is displayed in a dashboard.
